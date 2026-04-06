@@ -562,7 +562,7 @@
             .spotify-layout {
                 display: flex;
                 flex-direction: row;
-                gap: 20px;
+                gap: 24px;
                 align-items: stretch;
                 width: 100%;
             }
@@ -570,8 +570,8 @@
             .spotify-now-playing {
                 display: flex;
                 flex-direction: row;
-                gap: 20px;
-                flex: 2;
+                gap: 16px;
+                flex: 1;
                 min-width: 0;
             }
 
@@ -622,25 +622,43 @@
 
             .spotify-controls {
                 display: flex;
-                gap: 8px;
+                gap: 4px;
                 justify-content: flex-start;
+                margin-top: -4px;
             }
 
             .icon-btn {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-
-            .icon-btn {
-                padding: 8px 16px;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 4px 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 13px;
+                font-size: 11px;
+                color: var(--muted);
+                opacity: 0.6;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+
+            .icon-btn:hover {
+                opacity: 1;
+                color: var(--gold);
+                transform: scale(1.1);
+            }
+
+            .icon-btn.primary {
+                opacity: 0.9;
+                color: var(--cream);
+            }
+
+            .icon-btn.primary:hover {
+                color: var(--gold);
             }
 
             .spotify-queue-container {
-                flex: 1.2;
+                flex: 1.8;
                 border-left: 1px solid var(--border);
                 padding-left: 20px;
                 height: 140px;
@@ -994,13 +1012,13 @@
 
                                     <div class="spotify-controls">
                                         <button
-                                            class="btn icon-btn"
+                                            class="icon-btn"
                                             onclick="controlSpotify('previous')"
                                         >
                                             ⏮
                                         </button>
                                         <button
-                                            class="btn icon-btn primary"
+                                            class="icon-btn primary"
                                             id="play-pause-btn"
                                             onclick="
                                                 controlSpotify('play/pause')
@@ -1009,7 +1027,7 @@
                                             ⏯
                                         </button>
                                         <button
-                                            class="btn icon-btn"
+                                            class="icon-btn"
                                             onclick="controlSpotify('next')"
                                         >
                                             ⏭
@@ -1020,11 +1038,10 @@
 
                             <div class="spotify-queue-container">
                                 <div class="queue-label">Next in Queue</div>
-                                <div id="spotify-queue" class="spotify-queue">
-                                    <div class="queue-item placeholder">
-                                        Loading queue...
-                                    </div>
-                                </div>
+                                <div
+                                    id="spotify-queue"
+                                    class="spotify-queue"
+                                ></div>
                             </div>
                         </div>
                     </div>
