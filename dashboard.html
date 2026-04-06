@@ -3,9 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Techno Terminal OS</title>
+        <title>Personal Dashboard</title>
         <style>
-            @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+            @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap");
 
             * {
                 box-sizing: border-box;
@@ -17,19 +17,22 @@
                 background: #0b0b0c;
                 color: #e6e6e6;
                 font-family: "JetBrains Mono", monospace;
-                padding: 24px;
+                padding: 32px;
                 display: flex;
                 flex-direction: column;
-                gap: 24px;
+                gap: 32px;
                 min-height: 100vh;
             }
 
-            /* Layout */
+            /* Layout - Broadened grid for wider calendar and news */
             .grid-container {
                 display: grid;
-                grid-template-columns: 260px 300px 1fr;
+                grid-template-columns: 320px minmax(380px, 1.2fr) minmax(
+                        450px,
+                        1.5fr
+                    );
                 grid-template-rows: auto 1fr;
-                gap: 16px;
+                gap: 24px;
                 flex-grow: 1;
             }
 
@@ -37,77 +40,134 @@
             .card {
                 background: #111;
                 border: 1px solid #222;
-                border-radius: 6px;
-                padding: 16px;
+                border-radius: 12px;
+                padding: 20px;
                 display: flex;
                 flex-direction: column;
             }
 
-            /* Titles */
+            /* Titles - Clean, non-techno style */
             .card-title {
-                font-size: 12px;
-                color: #888;
-                margin-bottom: 12px;
-                letter-spacing: 1px;
+                font-family: "Inter", sans-serif;
+                font-size: 15px;
+                font-weight: 500;
+                color: #e0e0e0;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
 
-            /* Clock */
+            /* Clock - Significantly Bigger */
             .time-widget {
                 text-align: center;
+                padding: 10px 0 20px 0;
             }
 
             .clock {
-                font-size: 48px;
+                font-size: 72px; /* Increased size */
                 font-weight: 600;
-                margin-bottom: 8px;
+                margin-bottom: 12px;
+                line-height: 1;
+                color: #ffffff;
             }
 
             .weather-pill {
-                font-size: 12px;
+                font-family: "Inter", sans-serif;
+                font-size: 16px; /* Increased size */
+                font-weight: 500;
                 color: #aaa;
+                display: inline-block;
+                padding: 6px 16px;
+                border-radius: 20px;
+                border: 1px solid #333;
             }
 
-            /* Pomodoro */
+            /* Pomodoro - Visually Appealing Circular Timer */
+            .pomodoro-widget {
+                align-items: center;
+            }
+
+            .timer-wrapper {
+                position: relative;
+                width: 160px;
+                height: 160px;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .progress-ring {
+                position: absolute;
+                top: 0;
+                left: 0;
+                transform: rotate(-90deg);
+            }
+
+            .progress-ring__circle-bg {
+                stroke: #222;
+            }
+
+            .progress-ring__circle {
+                stroke: #00f3ff;
+                transition: stroke-dashoffset 1s linear;
+            }
+
             .timer-display {
-                font-size: 32px;
-                text-align: center;
-                margin-bottom: 12px;
+                font-size: 36px;
+                font-weight: 600;
+                position: absolute;
             }
 
             .timer-controls {
                 display: flex;
-                gap: 8px;
+                gap: 12px;
                 justify-content: center;
+                width: 100%;
             }
 
             .timer-controls button {
-                background: #161616;
-                color: #ddd;
+                background: #1a1a1a;
+                color: #eee;
                 border: 1px solid #333;
-                padding: 6px 12px;
-                font-family: inherit;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-family: "Inter", sans-serif;
+                font-size: 14px;
+                font-weight: 500;
                 cursor: pointer;
+                flex: 1;
+                transition: all 0.2s ease;
             }
 
             .timer-controls button:hover {
-                background: #1f1f1f;
+                background: #2a2a2a;
+                border-color: #555;
             }
 
-            /* Calendar */
+            /* Calendar - Wider & Cleaner */
             .calendar-content {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 16px;
             }
 
             .cal-event {
-                font-size: 12px;
-                color: #bbb;
+                font-family: "Inter", sans-serif;
+                font-size: 14px;
+                color: #e0e0e0;
+                background: #1a1a1a;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border-left: 4px solid #00f3ff;
             }
 
             .cal-event span {
-                color: #666;
+                color: #888;
+                font-size: 12px;
                 display: block;
+                margin-bottom: 4px;
             }
 
             /* Habits */
@@ -115,192 +175,262 @@
                 list-style: none;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
             }
 
             .habit-item {
                 display: flex;
-                gap: 10px;
-                font-size: 13px;
+                align-items: center;
+                gap: 12px;
+                font-family: "Inter", sans-serif;
+                font-size: 14px;
+                background: #1a1a1a;
+                padding: 10px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .habit-item:hover {
+                background: #222;
             }
 
             .habit-item input {
-                accent-color: #999;
+                accent-color: #00f3ff;
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
             }
 
-            /* News */
+            /* News - Broader layout with 3 feeds */
             .news-column {
                 display: flex;
                 flex-direction: column;
-                gap: 16px;
+                gap: 20px;
             }
 
             .news-list {
                 list-style: none;
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
-                font-size: 12px;
+                gap: 12px;
+                font-family: "Inter", sans-serif;
+                font-size: 14px;
+            }
+
+            .news-list li {
+                padding-bottom: 12px;
+                border-bottom: 1px solid #222;
+            }
+
+            .news-list li:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
             }
 
             .news-list a {
                 color: #ccc;
                 text-decoration: none;
+                line-height: 1.4;
+                display: block;
+                transition: color 0.2s;
             }
 
             .news-list a:hover {
-                color: #fff;
+                color: #00f3ff;
             }
 
             /* Spotify */
             .spotify-widget iframe {
-                border-radius: 4px;
+                border-radius: 12px;
             }
 
-            /* Bookmarks */
+            /* Bookmarks - Transformed to Images */
             .bookmarks-container {
                 display: flex;
-                gap: 12px;
+                gap: 16px;
                 justify-content: center;
                 flex-wrap: wrap;
+                background: #111;
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #222;
             }
 
             .bookmark {
-                width: 44px;
-                height: 44px;
-                border: 1px solid #222;
-                border-radius: 6px;
+                width: 48px;
+                height: 48px;
+                border-radius: 10px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #999;
                 text-decoration: none;
-                font-size: 12px;
+                transition:
+                    transform 0.2s,
+                    box-shadow 0.2s;
+                overflow: hidden;
+                background: #fff; /* White bg helps some transparent favicons */
+            }
+
+            .bookmark img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
 
             .bookmark:hover {
-                background: #161616;
-                color: #fff;
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             }
 
             /* Scrollbar */
             ::-webkit-scrollbar {
-                width: 4px;
+                width: 6px;
             }
             ::-webkit-scrollbar-thumb {
-                background: #333;
+                background: #444;
+                border-radius: 3px;
             }
         </style>
     </head>
     <body>
         <div class="grid-container">
-            <div class="time-widget">
-                <div class="clock" id="clock">00:00:00</div>
-                <div class="weather-pill" id="weather-pill">
-                    <span id="temp">--</span>°C |
-                    <span id="condition">Loading...</span>
-                </div>
-                <div style="font-size: 10px; color: #555; margin-top: 8px">
-                    LOC: WARSAW, PL
-                </div>
-            </div>
-
-            <div class="card pomodoro-widget">
-                <div class="card-title">POMO_SYS.exe</div>
-                <div class="timer-display" id="pomodoro-time">25:00</div>
-                <div class="timer-controls">
-                    <button onclick="toggleTimer()" id="timer-btn">
-                        INITIATE
-                    </button>
-                    <button onclick="resetTimer()">ABORT</button>
-                </div>
-            </div>
-
-            <div class="card spotify-widget">
-                <div class="card-title">AUDIO_STREAM</div>
-                <iframe
-                    src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FoK8Tc?utm_source=generator&theme=0"
-                    width="100%"
-                    height="152"
-                    frameborder="0"
-                    allowfullscreen=""
-                    allow="
-                        autoplay;
-                        clipboard-write;
-                        encrypted-media;
-                        fullscreen;
-                        picture-in-picture;
-                    "
-                    loading="lazy"
-                ></iframe>
-            </div>
-
-            <div class="card calendar-widget">
-                <div class="card-title">CALENDAR_SYNC</div>
-                <div class="calendar-content">
-                    <div class="cal-event">
-                        <span>10:00 AM - 11:30 AM</span>
-                        <strong>System Architecture Review</strong>
+            <div style="display: flex; flex-direction: column; gap: 24px">
+                <div class="time-widget">
+                    <div class="clock" id="clock">00:00</div>
+                    <div class="weather-pill" id="weather-pill">
+                        <span id="temp">--</span>°C |
+                        <span id="condition">Loading...</span>
                     </div>
-                    <div class="cal-event">
-                        <span>1:00 PM - 2:00 PM</span>
-                        <strong>Deep Work Protocol</strong>
+                </div>
+
+                <div class="card pomodoro-widget">
+                    <div class="card-title">Pomodoro Timer</div>
+                    <div class="timer-wrapper">
+                        <svg class="progress-ring" width="160" height="160">
+                            <circle
+                                class="progress-ring__circle-bg"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="72"
+                                cx="80"
+                                cy="80"
+                            />
+                            <circle
+                                class="progress-ring__circle"
+                                stroke-width="8"
+                                fill="transparent"
+                                r="72"
+                                cx="80"
+                                cy="80"
+                            />
+                        </svg>
+                        <div class="timer-display" id="pomodoro-time">
+                            25:00
+                        </div>
                     </div>
-                    <div class="cal-event" style="border-left-color: #555">
-                        <span>Tomorrow</span>
-                        <strong style="color: #888"
-                            >Standby Mode Maintenence</strong
+                    <div class="timer-controls">
+                        <button onclick="toggleTimer()" id="timer-btn">
+                            Start Focus
+                        </button>
+                        <button onclick="resetTimer()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="card habits-widget">
+                    <div class="card-title">Daily Habits</div>
+                    <ul class="habit-list">
+                        <label class="habit-item"
+                            ><input type="checkbox" />
+                            <span>Hydration Target (3L)</span></label
                         >
-                    </div>
-                    <div
-                        style="
-                            margin-top: auto;
-                            font-size: 10px;
-                            color: #555;
-                            text-align: center;
-                        "
-                    >
-                        To sync live: Embed public iCloud web URL here.
-                    </div>
+                        <label class="habit-item"
+                            ><input type="checkbox" />
+                            <span>Mindfulness Practice</span></label
+                        >
+                        <label class="habit-item"
+                            ><input type="checkbox" />
+                            <span>Physical Exercise</span></label
+                        >
+                        <label class="habit-item"
+                            ><input type="checkbox" />
+                            <span>Reading (30 Mins)</span></label
+                        >
+                    </ul>
                 </div>
             </div>
 
-            <div class="card habits-widget">
-                <div class="card-title">BIOMETRIC_TRACKER</div>
-                <ul class="habit-list">
-                    <label class="habit-item"
-                        ><input type="checkbox" />
-                        <span>Creatine Load (5g)</span></label
-                    >
-                    <label class="habit-item"
-                        ><input type="checkbox" />
-                        <span>Neural Reset (Meditation)</span></label
-                    >
-                    <label class="habit-item"
-                        ><input type="checkbox" />
-                        <span>Physical Training</span></label
-                    >
-                    <label class="habit-item"
-                        ><input type="checkbox" />
-                        <span>Data Consumption (Read)</span></label
-                    >
-                </ul>
+            <div style="display: flex; flex-direction: column; gap: 24px">
+                <div class="card calendar-widget" style="flex-grow: 1">
+                    <div class="card-title">Upcoming Events</div>
+                    <div class="calendar-content">
+                        <div class="cal-event">
+                            <span>10:00 AM - 11:30 AM</span>
+                            <strong>System Architecture Review</strong>
+                        </div>
+                        <div class="cal-event">
+                            <span>1:00 PM - 2:00 PM</span>
+                            <strong>Deep Work Protocol</strong>
+                        </div>
+                        <div
+                            class="cal-event"
+                            style="border-left-color: #00ff66"
+                        >
+                            <span>3:30 PM - 4:00 PM</span>
+                            <strong>Team Sync & Updates</strong>
+                        </div>
+                        <div
+                            class="cal-event"
+                            style="border-left-color: #555; opacity: 0.7"
+                        >
+                            <span>Tomorrow</span>
+                            <strong>Server Maintenance</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card spotify-widget">
+                    <div class="card-title">Music Player</div>
+                    <iframe
+                        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator&theme=0"
+                        width="100%"
+                        height="152"
+                        frameborder="0"
+                        allowfullscreen=""
+                        allow="
+                            autoplay;
+                            clipboard-write;
+                            encrypted-media;
+                            fullscreen;
+                            picture-in-picture;
+                        "
+                        loading="lazy"
+                    ></iframe>
+                </div>
             </div>
 
             <div class="news-column">
                 <div class="card">
-                    <div class="card-title">DEV_INTEL (Hacker News)</div>
-                    <ul class="news-list" id="hn-list">
-                        <div class="loading">
-                            Establishing secure connection...
+                    <div class="card-title">World News</div>
+                    <ul class="news-list" id="world-list">
+                        <div style="color: #666">
+                            Fetching global headlines...
                         </div>
                     </ul>
                 </div>
+
                 <div class="card">
-                    <div class="card-title">AERO_SPACE_FEED</div>
+                    <div class="card-title">Hacker News</div>
+                    <ul class="news-list" id="hn-list">
+                        <div style="color: #666">Loading top stories...</div>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Spaceflight & Aerospace</div>
                     <ul class="news-list" id="space-list">
-                        <div class="loading">
-                            Establishing secure connection...
+                        <div style="color: #666">
+                            Loading latest launches...
                         </div>
                     </ul>
                 </div>
@@ -308,23 +438,52 @@
         </div>
 
         <div class="bookmarks-container">
-            <a href="https://github.com" class="bookmark" title="GitHub">GH</a>
-            <a href="https://chat.openai.com" class="bookmark" title="ChatGPT"
-                >AI</a
-            >
-            <a href="https://reddit.com" class="bookmark" title="Reddit">RD</a>
-            <a href="https://youtube.com" class="bookmark" title="YouTube"
-                >YT</a
-            >
+            <a href="https://github.com" class="bookmark" title="GitHub">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=github.com&sz=128"
+                    alt="GitHub"
+                />
+            </a>
+            <a href="https://chat.openai.com" class="bookmark" title="ChatGPT">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=openai.com&sz=128"
+                    alt="ChatGPT"
+                />
+            </a>
+            <a href="https://reddit.com" class="bookmark" title="Reddit">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=reddit.com&sz=128"
+                    alt="Reddit"
+                />
+            </a>
+            <a href="https://youtube.com" class="bookmark" title="YouTube">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128"
+                    alt="YouTube"
+                />
+            </a>
             <a
                 href="https://news.ycombinator.com"
                 class="bookmark"
                 title="Hacker News"
-                >HN</a
             >
-            <a href="https://mail.google.com" class="bookmark" title="Mail"
-                >ML</a
-            >
+                <img
+                    src="https://www.google.com/s2/favicons?domain=ycombinator.com&sz=128"
+                    alt="Hacker News"
+                />
+            </a>
+            <a href="https://mail.google.com" class="bookmark" title="Gmail">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=128"
+                    alt="Gmail"
+                />
+            </a>
+            <a href="https://figma.com" class="bookmark" title="Figma">
+                <img
+                    src="https://www.google.com/s2/favicons?domain=figma.com&sz=128"
+                    alt="Figma"
+                />
+            </a>
         </div>
 
         <script>
@@ -333,17 +492,16 @@
                 const now = new Date();
                 const hours = String(now.getHours()).padStart(2, "0");
                 const minutes = String(now.getMinutes()).padStart(2, "0");
-                const seconds = String(now.getSeconds()).padStart(2, "0");
+                // Simplified to HH:MM for cleaner, bigger look
                 document.getElementById("clock").innerText =
-                    `${hours}:${minutes}:${seconds}`;
+                    `${hours}:${minutes}`;
             }
             setInterval(updateClock, 1000);
             updateClock();
 
-            // --- 2. WEATHER API (Open-Meteo for Warsaw, Poland) ---
+            // --- 2. WEATHER API (Open-Meteo for Warsaw) ---
             async function fetchWeather() {
                 try {
-                    // Warsaw coordinates
                     const lat = 52.2298;
                     const lon = 21.0118;
                     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
@@ -359,24 +517,23 @@
                     document.getElementById("condition").innerText =
                         decodeWeather(code);
 
-                    // Techno-color logic based on temp
                     const pill = document.getElementById("weather-pill");
                     if (temp < 5) {
-                        pill.style.borderColor = "#00f3ff"; // Cyan/Cold
+                        pill.style.borderColor = "#00f3ff";
                         pill.style.color = "#00f3ff";
                     } else if (temp < 20) {
-                        pill.style.borderColor = "#00ff66"; // Green/Optimal
+                        pill.style.borderColor = "#00ff66";
                         pill.style.color = "#00ff66";
                     } else {
-                        pill.style.borderColor = "#ff0055"; // Red/Warning Hot
-                        pill.style.color = "#ff0055";
+                        pill.style.borderColor = "#ffaa00";
+                        pill.style.color = "#ffaa00";
                     }
                 } catch (err) {
-                    document.getElementById("condition").innerText = "ERR_CONN";
+                    document.getElementById("condition").innerText =
+                        "Network Error";
                 }
             }
 
-            // WMO Weather interpretation codes
             function decodeWeather(code) {
                 if (code === 0) return "Clear Sky";
                 if (code <= 3) return "Partly Cloudy";
@@ -387,13 +544,25 @@
                 return "Unknown";
             }
             fetchWeather();
-            setInterval(fetchWeather, 600000); // Update every 10 mins
+            setInterval(fetchWeather, 600000);
 
-            // --- 3. POMODORO LOGIC ---
-            let timerDuration = 25 * 60; // 25 minutes
-            let timeRemaining = timerDuration;
+            // --- 3. POMODORO LOGIC WITH SVG ANIMATION ---
+            const TOTAL_DURATION = 25 * 60;
+            let timeRemaining = TOTAL_DURATION;
             let timerInterval = null;
             let isRunning = false;
+
+            const circle = document.querySelector(".progress-ring__circle");
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = 0;
+
+            function setProgress(percent) {
+                const offset = circumference - (percent / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+            }
 
             function updateTimerDisplay() {
                 const mins = String(Math.floor(timeRemaining / 60)).padStart(
@@ -403,13 +572,16 @@
                 const secs = String(timeRemaining % 60).padStart(2, "0");
                 document.getElementById("pomodoro-time").innerText =
                     `${mins}:${secs}`;
+
+                const percent = (timeRemaining / TOTAL_DURATION) * 100;
+                setProgress(percent);
             }
 
             function toggleTimer() {
                 const btn = document.getElementById("timer-btn");
                 if (isRunning) {
                     clearInterval(timerInterval);
-                    btn.innerText = "RESUME";
+                    btn.innerText = "Resume";
                 } else {
                     timerInterval = setInterval(() => {
                         if (timeRemaining > 0) {
@@ -417,22 +589,25 @@
                             updateTimerDisplay();
                         } else {
                             clearInterval(timerInterval);
-                            alert("SYS_MSG: Pomodoro cycle complete.");
+                            alert("Focus session complete!");
                             resetTimer();
                         }
                     }, 1000);
-                    btn.innerText = "PAUSE";
+                    btn.innerText = "Pause";
                 }
                 isRunning = !isRunning;
             }
 
             function resetTimer() {
                 clearInterval(timerInterval);
-                timeRemaining = timerDuration;
+                timeRemaining = TOTAL_DURATION;
                 isRunning = false;
-                document.getElementById("timer-btn").innerText = "INITIATE";
+                document.getElementById("timer-btn").innerText = "Start Focus";
                 updateTimerDisplay();
             }
+
+            // Initialize display
+            updateTimerDisplay();
 
             // --- 4. HABITS TRACKER LOGIC ---
             const checkboxes = document.querySelectorAll(
@@ -453,58 +628,77 @@
 
             // --- 5. REAL NEWS APIs ---
 
-            // Fetch Hacker News (Programming)
+            // A. Fetch World News (Using Reddit's r/worldnews JSON feed)
+            async function fetchWorldNews() {
+                try {
+                    const res = await fetch(
+                        "https://www.reddit.com/r/worldnews/top.json?limit=4&t=day",
+                    );
+                    const data = await res.json();
+                    const list = document.getElementById("world-list");
+                    list.innerHTML = "";
+
+                    data.data.children.forEach((post) => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `<a href="https://reddit.com${post.data.permalink}" target="_blank">${post.data.title}</a>`;
+                        list.appendChild(li);
+                    });
+                } catch (err) {
+                    document.getElementById("world-list").innerHTML =
+                        '<div style="color:#ff4444">Failed to load news.</div>';
+                }
+            }
+
+            // B. Fetch Hacker News
             async function fetchHackerNews() {
                 try {
-                    // Get top 5 story IDs
                     const res = await fetch(
                         "https://hacker-news.firebaseio.com/v0/topstories.json",
                     );
                     const storyIds = await res.json();
-                    const top5 = storyIds.slice(0, 5);
+                    const top5 = storyIds.slice(0, 4);
 
                     const list = document.getElementById("hn-list");
-                    list.innerHTML = ""; // clear loading
+                    list.innerHTML = "";
 
                     for (let id of top5) {
                         const storyRes = await fetch(
                             `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
                         );
                         const story = await storyRes.json();
-
                         const li = document.createElement("li");
-                        li.innerHTML = `<a href="${story.url || `https://news.ycombinator.com/item?id=${id}`}" target="_blank">> ${story.title}</a>`;
+                        li.innerHTML = `<a href="${story.url || `https://news.ycombinator.com/item?id=${id}`}" target="_blank">${story.title}</a>`;
                         list.appendChild(li);
                     }
                 } catch (err) {
                     document.getElementById("hn-list").innerHTML =
-                        '<div class="loading" style="color:#ff0055">ERR_FETCH_DATA</div>';
+                        '<div style="color:#ff4444">Failed to load news.</div>';
                 }
             }
 
-            // Fetch Spaceflight News
+            // C. Fetch Spaceflight News
             async function fetchSpaceNews() {
                 try {
                     const res = await fetch(
-                        "https://api.spaceflightnewsapi.net/v4/articles/?limit=4",
+                        "https://api.spaceflightnewsapi.net/v4/articles/?limit=3",
                     );
                     const data = await res.json();
-
                     const list = document.getElementById("space-list");
                     list.innerHTML = "";
 
                     data.results.forEach((article) => {
                         const li = document.createElement("li");
-                        li.innerHTML = `<a href="${article.url}" target="_blank">> ${article.title}</a>`;
+                        li.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
                         list.appendChild(li);
                     });
                 } catch (err) {
                     document.getElementById("space-list").innerHTML =
-                        '<div class="loading" style="color:#ff0055">ERR_FETCH_DATA</div>';
+                        '<div style="color:#ff4444">Failed to load news.</div>';
                 }
             }
 
             // Initialize Feeds
+            fetchWorldNews();
             fetchHackerNews();
             fetchSpaceNews();
         </script>
