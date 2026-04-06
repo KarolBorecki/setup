@@ -470,6 +470,94 @@
                 opacity: 0.7;
             }
 
+            /* ── Upcoming List Styling ── */
+            .cal-day-label {
+                font-family: var(--mono);
+                font-size: 9px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin: 18px 0 8px 4px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            /* Subtle line next to the day name */
+            .cal-day-label::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    var(--border),
+                    transparent
+                );
+            }
+
+            .cal-event {
+                padding: 10px 14px;
+                border-radius: 9px;
+                border-left: 3px solid var(--muted2);
+                background: rgba(150, 150, 150, 0.03);
+                margin-bottom: 6px;
+                transition: all 0.2s ease;
+                cursor: default;
+            }
+
+            .cal-event:hover {
+                background: rgba(150, 150, 150, 0.07);
+                transform: translateX(2px);
+            }
+
+            /* Color Overrides */
+            .cal-event.gold {
+                border-left-color: var(--gold);
+                background: rgba(200, 150, 58, 0.05);
+            }
+            .cal-event.gold:hover {
+                background: rgba(200, 150, 58, 0.09);
+            }
+
+            .cal-event.green {
+                border-left-color: var(--green);
+                background: rgba(76, 175, 120, 0.05);
+            }
+            .cal-event.green:hover {
+                background: rgba(76, 175, 120, 0.09);
+            }
+
+            .cal-event.orange {
+                border-left-color: #ff9500;
+                background: rgba(255, 149, 0, 0.05);
+            }
+            .cal-event.orange:hover {
+                background: rgba(255, 149, 0, 0.09);
+            }
+
+            .cal-event.dark-blue {
+                border-left-color: #0a4982;
+                background: rgba(10, 73, 130, 0.05);
+            }
+            .cal-event.dark-blue:hover {
+                background: rgba(10, 73, 130, 0.09);
+            }
+
+            .cal-time {
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.05em;
+                margin-bottom: 2px;
+            }
+
+            .cal-title {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--cream);
+                line-height: 1.4;
+            }
+
             /* ── Spotify Layout ── */
             .spotify-layout {
                 display: flex;
@@ -1384,35 +1472,44 @@
                 }
 
                 let lastLabel = "";
+
+                // Only show the next 5 events to keep the card height manageable
                 futureEvents.slice(0, 5).forEach((event) => {
                     const label = getDayLabel(event.start);
 
-                    // Restore the original day headers
+                    // Day Header
                     if (label !== lastLabel) {
                         listContainer.insertAdjacentHTML(
                             "beforeend",
-                            `<div style="font-size:9px; color:var(--muted); margin:15px 0 8px 4px; font-family:var(--mono); text-transform:uppercase; letter-spacing: 0.08em;">${label}</div>`,
+                            `<div class="cal-day-label">${label}</div>`,
                         );
                         lastLabel = label;
                     }
 
+                    // Color Class logic
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
                     const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
 
-                    // Restore the exact cal-event HTML structure
+                    // Event HTML
                     const eventHTML = `
-                            <div class="cal-event${extraClass}">
-                                <div class="cal-time">${timeString}</div>
-                                <div class="cal-title">${event.title}</div>
-                            </div>
-                        `;
+                        <div class="cal-event${extraClass}">
+                            <div class="cal-time">${timeString}</div>
+                            <div class="cal-title">${event.title}</div>
+                        </div>
+                    `;
+
                     listContainer.insertAdjacentHTML("beforeend", eventHTML);
                 });
 
+                // Empty State
                 if (events.length === 0) {
-                    listContainer.innerHTML = `<div class="cal-event dim"><div class="cal-title">No events scheduled</div></div>`;
+                    listContainer.innerHTML = `
+                        <div class="cal-event dim">
+                            <div class="cal-title">No events scheduled</div>
+                        </div>
+                    `;
                 }
             }
 
@@ -1637,7 +1734,6 @@
                             .map((a) => a.name)
                             .join(", ");
 
-                        // Grab the smallest album image (index 2 is usually 64x64)
                         const thumbUrl =
                             track.album.images.length > 0
                                 ? track.album.images[
@@ -1721,7 +1817,7 @@
             fetchWeather();
             setInterval(fetchWeather, 600000);
 
-            // ── Pomodoro ──────────────────────────────────────────────────
+            //  Pomodoro
             const TOTAL = 25 * 60;
             let timeLeft = TOTAL,
                 ticker = null,
