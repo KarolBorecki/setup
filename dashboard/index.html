@@ -106,6 +106,47 @@
                 min-height: 0;
             }
 
+            /* Target all scrollable areas in the dashboard */
+            .scrollable::-webkit-scrollbar,
+            .day-view-scroll::-webkit-scrollbar,
+            .spotify-queue::-webkit-scrollbar {
+                width: 3px; /* Very thin handle */
+                height: 3px;
+            }
+
+            /* The background track - keep it transparent so the card color shows through */
+            .scrollable::-webkit-scrollbar-track,
+            .day-view-scroll::-webkit-scrollbar-track,
+            .spotify-queue::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            /* The draggable handle */
+            .scrollable::-webkit-scrollbar-thumb,
+            .day-view-scroll::-webkit-scrollbar-thumb,
+            .spotify-queue::-webkit-scrollbar-thumb {
+                background: var(
+                    --muted2
+                ); /* Using your existing dark muted color */
+                border-radius: 10px;
+                transition: background 0.2s ease;
+            }
+
+            /* Hover effect - subtle gold glow when interacting */
+            .scrollable::-webkit-scrollbar-thumb:hover,
+            .day-view-scroll::-webkit-scrollbar-thumb:hover,
+            .spotify-queue::-webkit-scrollbar-thumb:hover {
+                background: var(--gold-dim);
+            }
+
+            /* For Firefox support */
+            .scrollable,
+            .day-view-scroll,
+            .spotify-queue {
+                scrollbar-width: thin;
+                scrollbar-color: var(--muted2) transparent;
+            }
+
             /* ── Card ── */
             .card {
                 background: var(--bg3);
