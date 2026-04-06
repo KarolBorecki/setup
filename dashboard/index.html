@@ -676,6 +676,29 @@
                 background: var(--gold-dim);
             }
 
+            .queue-label {
+                font-family: var(--mono);
+                font-size: 9px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin: 18px 0 8px 4px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .queue-label::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(
+                    to right,
+                    var(--border),
+                    transparent
+                );
+            }
+
             .queue-item {
                 display: flex;
                 flex-direction: row; /* Align thumb and text side-by-side */
