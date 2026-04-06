@@ -420,7 +420,6 @@
                 box-shadow: 0 0 8px var(--gold);
             }
 
-            /* ── Upcoming List Section ── */
             .upcoming-section {
                 flex-shrink: 0;
             }
@@ -435,21 +434,20 @@
                 display: flex;
                 flex-direction: row;
                 gap: 20px;
-                align-items: stretch; /* Forces children to match height */
+                align-items: stretch;
                 width: 100%;
             }
 
             .spotify-now-playing {
                 display: flex;
-                flex-direction: row; /* Side-by-side: Art | Details */
+                flex-direction: row;
                 gap: 20px;
                 flex: 2;
                 min-width: 0;
             }
 
-            /* Full Height Cover */
             .spotify-cover {
-                height: 140px; /* Adjust this value to set the overall card height */
+                height: 140px;
                 width: 140px;
                 border-radius: 12px;
                 object-fit: cover;
@@ -458,11 +456,10 @@
                 flex-shrink: 0;
             }
 
-            /* Vertical stack for info and controls */
             .spotify-details {
                 display: flex;
                 flex-direction: column;
-                justify-content: center; /* Centers the whole stack vertically */
+                justify-content: center;
                 gap: 14px;
                 flex: 1;
                 min-width: 0;
@@ -513,14 +510,41 @@
                 font-size: 13px;
             }
 
-            /* ── Spotify Queue ── */
-            /* ── Spotify Queue Styling ── */
-            .spotify-queue {
+            .spotify-queue-container {
+                flex: 1.2;
+                border-left: 1px solid var(--border);
+                padding-left: 20px;
+                height: 140px;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                min-width: 0;
+            }
+            .spotify-queue {
+                flex: 1;
                 overflow-y: auto;
-                padding-right: 4px;
+                overflow-x: hidden;
+                padding-right: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            /* Minimalist Scrollbar for the Queue */
+            .spotify-queue::-webkit-scrollbar {
+                width: 2px;
+            }
+
+            .spotify-queue::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .spotify-queue::-webkit-scrollbar-thumb {
+                background: var(--muted2);
+                border-radius: 2px;
+            }
+
+            .spotify-queue::-webkit-scrollbar-thumb:hover {
+                background: var(--gold-dim);
             }
 
             .queue-item {
@@ -844,10 +868,7 @@
 
                             <div class="spotify-queue-container">
                                 <div class="queue-label">Next in Queue</div>
-                                <div
-                                    id="spotify-queue"
-                                    class="spotify-queue scrollable"
-                                >
+                                <div id="spotify-queue" class="spotify-queue">
                                     <div class="queue-item placeholder">
                                         Loading queue...
                                     </div>
