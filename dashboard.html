@@ -6,8 +6,10 @@
         <title>Dashboard</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet"
         />
         <style>
@@ -23,9 +25,9 @@
                 --muted: #7a7060;
                 --muted2: #504840;
                 --green: #4caf78;
-                --mono: "Space Mono", monospace;
-                --serif: "Playfair Display", serif;
-                --sans: "DM Sans", sans-serif;
+                --mono: "Montserrat", monospace;
+                --serif: "Montserrat", serif;
+                --sans: "Montserrat", sans-serif;
             }
 
             *,
@@ -554,7 +556,7 @@
                     </div>
 
                     <div class="card expand">
-                        <div class="card-label">Daily Habits</div>
+                        <div class="card-label">Reminder</div>
                         <div class="scrollable" id="habit-list"></div>
                     </div>
                 </div>
@@ -591,21 +593,61 @@
 
                     <div class="card spotify-card">
                         <div class="card-label">Now Playing</div>
-                        <iframe
-                            src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator&theme=0"
-                            width="100%"
-                            height="152"
-                            frameborder="0"
-                            allow="
-                                autoplay;
-                                clipboard-write;
-                                encrypted-media;
-                                fullscreen;
-                                picture-in-picture;
+                        <div
+                            id="spotify-container"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                padding: 10px;
                             "
-                            loading="lazy"
                         >
-                        </iframe>
+                            <img
+                                id="album-art"
+                                src=""
+                                alt="Album Art"
+                                style="
+                                    width: 100px;
+                                    height: 100px;
+                                    border-radius: 8px;
+                                    display: none;
+                                "
+                            />
+                            <div
+                                id="track-name"
+                                style="font-weight: bold; margin-top: 10px"
+                            >
+                                Not Playing
+                            </div>
+                            <div
+                                id="artist-name"
+                                style="color: gray; font-size: 0.9em"
+                            >
+                                -
+                            </div>
+
+                            <div
+                                class="controls"
+                                style="
+                                    margin-top: 15px;
+                                    display: flex;
+                                    gap: 10px;
+                                "
+                            >
+                                <button onclick="controlSpotify('previous')">
+                                    ⏮
+                                </button>
+                                <button
+                                    onclick="controlSpotify('play/pause')"
+                                    id="play-pause-btn"
+                                >
+                                    ⏯
+                                </button>
+                                <button onclick="controlSpotify('next')">
+                                    ⏭
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -623,7 +665,7 @@
                     </div>
 
                     <div class="card expand">
-                        <div class="card-label">Hacker News</div>
+                        <div class="card-label">Programming News</div>
                         <ul
                             class="scrollable"
                             id="hn-list"
@@ -634,7 +676,7 @@
                     </div>
 
                     <div class="card expand">
-                        <div class="card-label">Spaceflight</div>
+                        <div class="card-label">Space News</div>
                         <ul
                             class="scrollable"
                             id="space-list"
@@ -746,6 +788,125 @@
             setInterval(updateClock, 1000);
             updateClock();
 
+            // Add your specific details here
+            const CLIENT_ID = "778fe57066b24fb3b9c8ef6c48afe754";
+            const REDIRECT_URI =
+                "file:///run/user/1000/doc/b659a3bf/dashboard.html";
+            const SCOPES =
+                "user-read-currently-playing user-modify-playback-state";
+
+            let accessToken = null;
+
+            // 1. Send the user to Spotify's secure login screen
+            function authenticateSpotify() {
+                // Note: Ensure your authUrl is formatted correctly. Usually, it looks like this:
+                // const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&response_type=token`;
+                const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&response_type=code`;
+                window.location.href = authUrl;
+            }
+
+            // 2. Grab the token from the URL after Spotify sends you back
+            function getAccessTokenFromUrl() {
+                const hash = window.location.hash;
+                console.log("hash:", hash);
+                if (hash) {
+                    // Extract the token string from the URL parameters
+                    const token = hash
+                        .substring(1)
+                        .split("&")
+                        .find((elem) => elem.startsWith("access_token"))
+                        .split("=")[1];
+                    window.location.hash = ""; // Clean up the URL bar so it looks nice
+                    return token;
+                }
+                return null;
+            }
+
+            // 3. Initialize the app on load
+            function initSpotify() {
+                accessToken = getAccessTokenFromUrl();
+
+                if (!accessToken) {
+                    // AUTOMATIC AUTHENTICATION:
+                    // No token found? Instantly trigger the redirect instead of showing a button.
+                    console.log(
+                        "No token found. Redirecting to Spotify automatically...",
+                    );
+                    authenticateSpotify();
+                } else {
+                    // We have a token! Start the polling loop
+                    console.log("Token found! Starting polling loop.");
+                    fetchNowPlaying();
+                    setInterval(fetchNowPlaying, 5000);
+                }
+            }
+
+            // Run the initialization when the page loads
+            initSpotify();
+
+            // ... (Keep the fetchNowPlaying() and controlSpotify() functions from the previous message below here) ...
+
+            async function fetchNowPlaying() {
+                try {
+                    const response = await fetch(
+                        "https://api.spotify.com/v1/me/player/currently-playing",
+                        {
+                            headers: { Authorization: `Bearer ${accessToken}` },
+                        },
+                    );
+
+                    if (response.status === 204 || response.status > 400) {
+                        document.getElementById("track-name").textContent =
+                            "Nothing playing right now";
+                        document.getElementById("album-art").style.display =
+                            "none";
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    // Update UI
+                    document.getElementById("track-name").textContent =
+                        data.item.name;
+                    document.getElementById("artist-name").textContent =
+                        data.item.artists.map((a) => a.name).join(", ");
+
+                    const albumArt = document.getElementById("album-art");
+                    albumArt.src = data.item.album.images[0].url;
+                    albumArt.style.display = "block";
+                } catch (error) {
+                    console.error("Error fetching Spotify data:", error);
+                }
+            }
+
+            async function controlSpotify(action) {
+                let endpoint = "";
+                let method = "POST";
+
+                if (action === "next") endpoint = "next";
+                if (action === "previous") endpoint = "previous";
+                // Play/Pause requires checking current state, but for simplicity:
+                if (action === "play/pause") {
+                    endpoint = "play"; // Or "pause" depending on current state
+                    method = "PUT";
+                }
+
+                await fetch(
+                    `https://api.spotify.com/v1/me/player/${endpoint}`,
+                    {
+                        method: method,
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    },
+                );
+
+                // Refresh the UI after a short delay
+                setTimeout(fetchNowPlaying, 500);
+            }
+
+            // Check every 5 seconds
+            setInterval(fetchNowPlaying, 5000);
+            fetchNowPlaying();
+
             // ── Weather ───────────────────────────────────────────────────
             async function fetchWeather() {
                 try {
@@ -755,23 +916,43 @@
                     const d = await r.json();
                     const temp = Math.round(d.current_weather.temperature);
                     const code = d.current_weather.weathercode;
+
                     document.getElementById("temp").textContent = temp;
                     document.getElementById("condition").textContent =
                         decodeWeather(code);
 
+                    let textColor, borderColor;
+
+                    // Apply new color gradient based on temperature
+                    if (temp < 0) {
+                        // Freezing (Purple)
+                        textColor = "#9c27b0";
+                        borderColor = "rgba(156, 39, 176, 0.3)";
+                    } else if (temp < 5) {
+                        // Very Cold (Dark Blue)
+                        textColor = "#0288d1";
+                        borderColor = "rgba(2, 136, 209, 0.3)";
+                    } else if (temp < 15) {
+                        // Cool (Light Blue - triggers at < 15)
+                        textColor = "#6ec6ff";
+                        borderColor = "rgba(110, 198, 255, 0.3)";
+                    } else if (temp < 20) {
+                        // Mild (Green)
+                        textColor = "#4caf78";
+                        borderColor = "rgba(76, 175, 120, 0.3)";
+                    } else if (temp < 25) {
+                        // Warm (Yellow/Orange)
+                        textColor = "#e8a820";
+                        borderColor = "rgba(232, 168, 32, 0.3)";
+                    } else {
+                        // Hot (Red)
+                        textColor = "#ff5252";
+                        borderColor = "rgba(255, 82, 82, 0.3)";
+                    }
+
                     const pill = document.querySelector(".weather-pill");
-                    pill.style.color =
-                        temp < 5
-                            ? "#6ec6ff"
-                            : temp < 20
-                              ? "#4caf78"
-                              : "#e8a820";
-                    pill.style.borderColor =
-                        temp < 5
-                            ? "rgba(110,198,255,0.3)"
-                            : temp < 20
-                              ? "rgba(76,175,120,0.3)"
-                              : "rgba(200,150,58,0.3)";
+                    pill.style.color = textColor;
+                    pill.style.borderColor = borderColor;
                 } catch {
                     document.getElementById("condition").textContent =
                         "Unavailable";
@@ -846,11 +1027,10 @@
 
             // ── Habits ────────────────────────────────────────────────────
             const HABITS = [
-                "Hydration Target (3L)",
-                "Mindfulness Practice",
-                "Physical Exercise",
+                "Mindfulness",
+                "Workout",
                 "Reading — 30 min",
-                "No phone before 9am",
+                "Ice roller",
             ];
 
             function renderHabits() {
