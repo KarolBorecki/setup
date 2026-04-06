@@ -419,35 +419,27 @@
             }
 
             /* ── Spotify Layout ── */
+            /* ── Spotify Layout ── */
             .spotify-layout {
                 display: flex;
                 flex-direction: row;
-                gap: 24px;
-                align-items: flex-start; /* Align to top now that art is bigger */
+                gap: 20px;
+                align-items: stretch; /* Forces children to match height */
                 width: 100%;
             }
 
             .spotify-now-playing {
                 display: flex;
-                flex-direction: column;
-                gap: 16px;
-                flex: 1.5; /* Give more room to the playing side */
+                flex-direction: row; /* Side-by-side: Art | Details */
+                gap: 20px;
+                flex: 2;
                 min-width: 0;
             }
 
-            /* Header: Side-by-side wrapper */
-            .now-playing-header {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 16px;
-                width: 100%;
-            }
-
-            /* Bigger Cover */
+            /* Full Height Cover */
             .spotify-cover {
-                width: 120px;
-                height: 120px;
+                height: 140px; /* Adjust this value to set the overall card height */
+                width: 140px;
                 border-radius: 12px;
                 object-fit: cover;
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
@@ -455,19 +447,28 @@
                 flex-shrink: 0;
             }
 
-            /* Text moved to the right */
-            .spotify-info {
-                text-align: left; /* Changed from center */
+            /* Vertical stack for info and controls */
+            .spotify-details {
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Centers the whole stack vertically */
+                gap: 14px;
                 flex: 1;
+                min-width: 0;
+            }
+
+            .spotify-info {
+                text-align: left;
+                width: 100%;
                 overflow: hidden;
             }
 
             .spotify-track {
                 font-family: var(--sans);
-                font-size: 16px; /* Slightly larger title */
+                font-size: 16px;
                 font-weight: 600;
                 color: var(--cream);
-                margin-bottom: 4px;
+                margin-bottom: 2px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -484,10 +485,13 @@
 
             .spotify-controls {
                 display: flex;
-                gap: 10px;
-                justify-content: center; /* Keeps buttons centered under the whole block */
-                width: 100%;
-                padding-top: 4px;
+                gap: 8px;
+                justify-content: flex-start;
+            }
+
+            .icon-btn {
+                padding: 8px 14px;
+                font-size: 12px;
             }
 
             .icon-btn {
@@ -500,10 +504,12 @@
 
             /* ── Spotify Queue ── */
             .spotify-queue-container {
-                flex: 1;
+                flex: 1.2;
                 border-left: 1px solid var(--border);
                 padding-left: 20px;
-                height: 170px;
+                height: 140px;
+                display: flex;
+                flex-direction: column;
             }
 
             .queue-label {
@@ -772,15 +778,15 @@
                         <div class="card-label">Spotify</div>
                         <div id="spotify-container" class="spotify-layout">
                             <div class="spotify-now-playing">
-                                <div class="now-playing-header">
-                                    <img
-                                        id="album-art"
-                                        class="spotify-cover"
-                                        src=""
-                                        alt="Album Art"
-                                        style="display: none"
-                                    />
+                                <img
+                                    id="album-art"
+                                    class="spotify-cover"
+                                    src=""
+                                    alt="Album Art"
+                                    style="display: none"
+                                />
 
+                                <div class="spotify-details">
                                     <div class="spotify-info">
                                         <div
                                             id="track-name"
@@ -795,28 +801,30 @@
                                             -
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="spotify-controls">
-                                    <button
-                                        class="btn icon-btn"
-                                        onclick="controlSpotify('previous')"
-                                    >
-                                        ⏮
-                                    </button>
-                                    <button
-                                        class="btn icon-btn primary"
-                                        id="play-pause-btn"
-                                        onclick="controlSpotify('play/pause')"
-                                    >
-                                        ⏯
-                                    </button>
-                                    <button
-                                        class="btn icon-btn"
-                                        onclick="controlSpotify('next')"
-                                    >
-                                        ⏭
-                                    </button>
+                                    <div class="spotify-controls">
+                                        <button
+                                            class="btn icon-btn"
+                                            onclick="controlSpotify('previous')"
+                                        >
+                                            ⏮
+                                        </button>
+                                        <button
+                                            class="btn icon-btn primary"
+                                            id="play-pause-btn"
+                                            onclick="
+                                                controlSpotify('play/pause')
+                                            "
+                                        >
+                                            ⏯
+                                        </button>
+                                        <button
+                                            class="btn icon-btn"
+                                            onclick="controlSpotify('next')"
+                                        >
+                                            ⏭
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
