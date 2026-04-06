@@ -797,55 +797,135 @@
 
             let accessToken = null;
 
-            // 1. Send the user to Spotify's secure login screen
-            function authenticateSpotify() {
-                const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&response_type=token`;
-                window.location.href = authUrl;
-            }
+            // --- FUNKCJE POMOCNICZE DLA PKCE ---
 
-            // 2. Grab the token from the URL after Spotify sends you back
-            function getAccessTokenFromUrl() {
-                console.log("window:", window);
-                console.log("location: ", window.location);
-                const hash = window.location.hash;
-                console.log("hash:", hash);
-                if (hash) {
-                    // Extract the token string from the URL parameters
-                    const token = hash
-                        .substring(1)
-                        .split("&")
-                        .find((elem) => elem.startsWith("access_token"))
-                        .split("=")[1];
-                    window.location.hash = ""; // Clean up the URL bar so it looks nice
-                    console.log("token:", token);
-                    return token;
+            // Generuje losowy ciąg znaków (Code Verifier)
+            function generateRandomString(length) {
+                let text = "";
+                const possible =
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                for (let i = 0; i < length; i++) {
+                    text += possible.charAt(
+                        Math.floor(Math.random() * possible.length),
+                    );
                 }
-                return null;
+                return text;
             }
 
-            // 3. Initialize the app on load
-            function initSpotify() {
-                accessToken = getAccessTokenFromUrl();
+            // Haszuje Code Verifier tworząc Code Challenge
+            async function generateCodeChallenge(codeVerifier) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(codeVerifier);
+                const digest = await window.crypto.subtle.digest(
+                    "SHA-256",
+                    data,
+                );
+                return btoa(String.fromCharCode(...new Uint8Array(digest)))
+                    .replace(/\+/g, "-")
+                    .replace(/\//g, "_")
+                    .replace(/=+$/, "");
+            }
 
-                if (!accessToken) {
-                    // AUTOMATIC AUTHENTICATION:
-                    // No token found? Instantly trigger the redirect instead of showing a button.
+            // --- LOGOWANIE I POBIERANIE TOKENA ---
+
+            // 1. Wyślij użytkownika do Spotify (z kodem weryfikacyjnym PKCE)
+            async function authenticateSpotify() {
+                const codeVerifier = generateRandomString(128);
+                const codeChallenge = await generateCodeChallenge(codeVerifier);
+
+                // Zapisujemy verifier w przeglądarce, żeby użyć go po powrocie ze Spotify
+                window.localStorage.setItem("code_verifier", codeVerifier);
+
+                const params = new URLSearchParams({
+                    client_id: CLIENT_ID,
+                    response_type: "code",
+                    redirect_uri: REDIRECT_URI,
+                    scope: SCOPES,
+                    code_challenge_method: "S256",
+                    code_challenge: codeChallenge,
+                });
+
+                window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
+            }
+
+            // 2. Wymień kod z URL na właściwy Access Token
+            async function getAccessToken(code) {
+                const codeVerifier = localStorage.getItem("code_verifier");
+
+                const body = new URLSearchParams({
+                    client_id: CLIENT_ID,
+                    grant_type: "authorization_code",
+                    code: code,
+                    redirect_uri: REDIRECT_URI,
+                    code_verifier: codeVerifier,
+                });
+
+                try {
+                    const response = await fetch(
+                        "https://accounts.spotify.com/api/token",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
+                            },
+                            body: body,
+                        },
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Nie udało się wymienić kodu na token");
+                    }
+
+                    const data = await response.json();
+                    return data.access_token;
+                } catch (error) {
+                    console.error("Błąd podczas pobierania tokena:", error);
+                    return null;
+                }
+            }
+
+            // 3. Inicjalizacja aplikacji
+            async function initSpotify() {
+                // Sprawdzamy, czy w URL znajduje się parametr ?code=...
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get("code");
+
+                if (code) {
+                    // Zostaliśmy przekierowani ze Spotify! Wymieniamy kod na token.
                     console.log(
-                        "No token found. Redirecting to Spotify automatically...",
+                        "Znaleziono kod autoryzacji. Wymieniam na token...",
+                    );
+                    accessToken = await getAccessToken(code);
+
+                    if (accessToken) {
+                        // Czyścimy pasek adresu z parametru ?code=...
+                        window.history.replaceState(
+                            {},
+                            document.title,
+                            window.location.pathname,
+                        );
+
+                        console.log("Pobrano token! Uruchamiam odpytywanie.");
+                        fetchNowPlaying();
+                        setInterval(fetchNowPlaying, 5000);
+                    } else {
+                        console.log("Błąd tokena, ponowne logowanie...");
+                        authenticateSpotify();
+                    }
+                } else {
+                    // Brak kodu w URL -> Użytkownik wchodzi na stronę po raz pierwszy.
+                    console.log(
+                        "Brak kodu. Przekierowuję do Spotify automatycznie...",
                     );
                     authenticateSpotify();
-                } else {
-                    // We have a token! Start the polling loop
-                    console.log("Token found! Starting polling loop.");
-                    fetchNowPlaying();
-                    setInterval(fetchNowPlaying, 5000);
                 }
             }
 
-            // Run the initialization when the page loads
+            // Uruchom aplikację po załadowaniu
             initSpotify();
 
-            // ... (Keep the fetchNowPlaying() and controlSpotify() functions from the previous message below here) ...
+            // --- RESZTA KODU POZOSTAJE BEZ ZMIAN ---
 
             async function fetchNowPlaying() {
                 try {
@@ -886,9 +966,8 @@
 
                 if (action === "next") endpoint = "next";
                 if (action === "previous") endpoint = "previous";
-                // Play/Pause requires checking current state, but for simplicity:
                 if (action === "play/pause") {
-                    endpoint = "play"; // Or "pause" depending on current state
+                    endpoint = "play";
                     method = "PUT";
                 }
 
@@ -900,13 +979,8 @@
                     },
                 );
 
-                // Refresh the UI after a short delay
                 setTimeout(fetchNowPlaying, 500);
             }
-
-            // Check every 5 seconds
-            setInterval(fetchNowPlaying, 5000);
-            fetchNowPlaying();
 
             // ── Weather ───────────────────────────────────────────────────
             async function fetchWeather() {
