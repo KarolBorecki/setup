@@ -1181,10 +1181,37 @@
                     minute: "2-digit",
                 });
             }
+            // Helper: Check if two dates fall on the exact same day
+            function isSameDay(d1, d2) {
+                return (
+                    d1.getFullYear() === d2.getFullYear() &&
+                    d1.getMonth() === d2.getMonth() &&
+                    d1.getDate() === d2.getDate()
+                );
+            }
+
+            // Helper: Get a clean, human-readable label for the day
+            function getDayLabel(date) {
+                const today = new Date();
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1);
+
+                if (isSameDay(date, today)) return "Today";
+                if (isSameDay(date, tomorrow)) return "Tomorrow";
+
+                // Returns format like "Mon, Apr 8"
+                return date.toLocaleDateString([], {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                });
+            }
+
             function renderEvents(events, failedCalendars) {
                 const container = document.getElementById("calendar-container");
                 container.innerHTML = "";
 
+                // 1. Render Error Warnings (if any)
                 if (failedCalendars && failedCalendars.length > 0) {
                     const failedNames = failedCalendars.join(", ");
                     container.insertAdjacentHTML(
@@ -1194,10 +1221,11 @@
                             <div class="cal-time" style="color: #ff3b30;">Warning</div>
                             <div class="cal-title">Couldn't load: ${failedNames}</div>
                         </div>
-                    `,
+                        `,
                     );
                 }
 
+                // 2. Render Empty State
                 if (events.length === 0) {
                     container.insertAdjacentHTML(
                         "beforeend",
@@ -1205,12 +1233,30 @@
                         <div class="cal-event dim">
                             <div class="cal-title">No upcoming events</div>
                         </div>
-                    `,
+                        `,
                     );
                     return;
                 }
 
-                events.slice(0, 5).forEach((event) => {
+                // 3. Render Events Grouped by Day
+                let currentDayLabel = "";
+
+                events.slice(0, 6).forEach((event) => {
+                    const dayLabel = getDayLabel(event.start);
+
+                    // If we hit a new day in the chronological list, insert a minimalist date divider
+                    if (dayLabel !== currentDayLabel) {
+                        container.insertAdjacentHTML(
+                            "beforeend",
+                            `
+                            <div style="font-size: 10px; color: var(--muted); margin: 12px 0 6px 4px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;">
+                                ${dayLabel}
+                            </div>
+                            `,
+                        );
+                        currentDayLabel = dayLabel; // Update the tracker
+                    }
+
                     const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
