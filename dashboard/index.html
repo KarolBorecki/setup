@@ -844,7 +844,10 @@
 
                             <div class="spotify-queue-container">
                                 <div class="queue-label">Next in Queue</div>
-                                <div id="spotify-queue" class="spotify-queue">
+                                <div
+                                    id="spotify-queue"
+                                    class="spotify-queue scrollable"
+                                >
                                     <div class="queue-item placeholder">
                                         Loading queue...
                                     </div>
@@ -1311,14 +1314,22 @@
                     );
                 }
 
-                // 5. Render Upcoming List
+                if (failedCalendars.length > 0) {
+                    listContainer.insertAdjacentHTML(
+                        "beforeend",
+                        `<div class="cal-event dim" style="border-left-color: #ff3b30; font-size:10px; padding:5px 10px; margin-bottom:10px;">Warning: ${failedCalendars.join(", ")} failed.</div>`,
+                    );
+                }
+
                 let lastLabel = "";
-                futureEvents.slice(0, 4).forEach((event) => {
+                futureEvents.slice(0, 5).forEach((event) => {
                     const label = getDayLabel(event.start);
+
+                    // Restore the original day headers
                     if (label !== lastLabel) {
                         listContainer.insertAdjacentHTML(
                             "beforeend",
-                            `<div style="font-size:9px; color:var(--muted); margin:10px 0 5px; font-family:var(--mono); text-transform:uppercase;">${label}</div>`,
+                            `<div style="font-size:9px; color:var(--muted); margin:15px 0 8px 4px; font-family:var(--mono); text-transform:uppercase; letter-spacing: 0.08em;">${label}</div>`,
                         );
                         lastLabel = label;
                     }
@@ -1326,16 +1337,21 @@
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
-                    listContainer.insertAdjacentHTML(
-                        "beforeend",
-                        `
-                        <div class="cal-event${extraClass}">
-                            <div class="cal-time">${formatTime(event.start)}</div>
-                            <div class="cal-title">${event.title}</div>
-                        </div>
-                    `,
-                    );
+                    const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
+
+                    // Restore the exact cal-event HTML structure
+                    const eventHTML = `
+                            <div class="cal-event${extraClass}">
+                                <div class="cal-time">${timeString}</div>
+                                <div class="cal-title">${event.title}</div>
+                            </div>
+                        `;
+                    listContainer.insertAdjacentHTML("beforeend", eventHTML);
                 });
+
+                if (events.length === 0) {
+                    listContainer.innerHTML = `<div class="cal-event dim"><div class="cal-title">No events scheduled</div></div>`;
+                }
             }
 
             fetchAppleCalendars();
