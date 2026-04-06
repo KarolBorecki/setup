@@ -799,7 +799,7 @@
 
             // 1. Send the user to Spotify's secure login screen
             function authenticateSpotify() {
-                const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&response_type=code`;
+                const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&response_type=token`;
                 window.location.href = authUrl;
             }
 
@@ -807,7 +807,7 @@
             function getAccessTokenFromUrl() {
                 console.log("window:", window);
                 console.log("location: ", window.location);
-                const hash = window.location.code;
+                const hash = window.location.hash;
                 console.log("hash:", hash);
                 if (hash) {
                     // Extract the token string from the URL parameters
