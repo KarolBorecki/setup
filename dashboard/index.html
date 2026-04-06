@@ -561,35 +561,16 @@
                     </div>
                 </div>
 
-                <!-- COL 2 -->
                 <div class="col">
                     <div class="card expand">
                         <div class="card-label">Upcoming Events</div>
-                        <div class="scrollable">
-                            <div class="cal-event">
-                                <div class="cal-time">10:00 AM – 11:30 AM</div>
-                                <div class="cal-title">
-                                    System Architecture Review
-                                </div>
-                            </div>
-                            <div class="cal-event">
-                                <div class="cal-time">1:00 PM – 2:00 PM</div>
-                                <div class="cal-title">Deep Work Protocol</div>
-                            </div>
-                            <div class="cal-event green">
-                                <div class="cal-time">3:30 PM – 4:00 PM</div>
-                                <div class="cal-title">
-                                    Team Sync &amp; Updates
-                                </div>
-                            </div>
+                        <div class="scrollable" id="calendar-container">
                             <div class="cal-event dim">
-                                <div class="cal-time">Tomorrow</div>
-                                <div class="cal-title">
-                                    Server Maintenance Window
-                                </div>
+                                <div class="cal-title">Loading calendar...</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
                     <div class="card spotify-card">
                         <div class="card-label">Now Playing</div>
@@ -788,7 +769,115 @@
             setInterval(updateClock, 1000);
             updateClock();
 
-            // Add your specific details here
+            // APPLE CALENDAR INTEGRATION
+            const appleCalendarUrl = 'https://pXX-caldav.icloud.com/published/2/webcal://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY';
+
+                // We use a CORS proxy to prevent browser security blocks when fetching iCloud data
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(appleCalendarUrl)}`;
+
+                async function fetchAppleCalendar() {
+                    try {
+                        const response = await fetch(proxyUrl);
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        const icsData = await response.text();
+
+                        const events = parseICS(icsData);
+                        renderEvents(events);
+                    } catch (error) {
+                        console.error('Error fetching calendar:', error);
+                        document.getElementById('calendar-container').innerHTML = `
+                            <div class="cal-event dim">
+                                <div class="cal-title">Failed to load events.</div>
+                            </div>`;
+                    }
+                }
+
+                // 2. A lightweight function to parse the .ics file text
+                function parseICS(icsString) {
+                    const lines = icsString.split(/\r\n|\n|\r/);
+                    const events = [];
+                    let currentEvent = null;
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.startsWith('BEGIN:VEVENT')) {
+                            currentEvent = {};
+                        } else if (line.startsWith('END:VEVENT')) {
+                            if (currentEvent && currentEvent.start) events.push(currentEvent);
+                            currentEvent = null;
+                        } else if (currentEvent) {
+                            if (line.startsWith('SUMMARY:')) {
+                                currentEvent.title = line.substring(8);
+                            } else if (line.startsWith('DTSTART')) {
+                                currentEvent.start = parseICSTime(line.split(':')[1]);
+                            } else if (line.startsWith('DTEND')) {
+                                currentEvent.end = parseICSTime(line.split(':')[1]);
+                            }
+                        }
+                    }
+
+                    // Filter out past events and sort by soonest first
+                    const now = new Date();
+                    return events
+                        .filter(e => e.start > now)
+                        .sort((a, b) => a.start - b.start);
+                }
+
+                // Helper: Convert ICS time string (YYYYMMDDTHHMMSSZ) to JS Date object
+                function parseICSTime(dateStr) {
+                    if (!dateStr || dateStr.length < 15) return new Date();
+                    const y = dateStr.substring(0, 4);
+                    const m = dateStr.substring(4, 6) - 1; // JS months are 0-indexed
+                    const d = dateStr.substring(6, 8);
+                    const h = dateStr.substring(9, 11);
+                    const min = dateStr.substring(11, 13);
+                    const s = dateStr.substring(13, 15);
+                    return new Date(Date.UTC(y, m, d, h, min, s));
+                }
+
+                // Helper: Format Date to "10:00 AM"
+                function formatTime(date) {
+                    if (!date) return '';
+                    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                }
+
+                // 3. Render the events into the HTML structure
+                function renderEvents(events) {
+                    const container = document.getElementById('calendar-container');
+                    container.innerHTML = ''; // Clear out the "Loading..." text
+
+                    if (events.length === 0) {
+                        container.innerHTML = `
+                            <div class="cal-event dim">
+                                <div class="cal-title">No upcoming events</div>
+                            </div>`;
+                        return;
+                    }
+
+                    // Render the next 4 events
+                    events.slice(0, 4).forEach((event, index) => {
+                        const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
+
+                        // Optional: Add specific classes to the first few events to match your original styling
+                        let extraClass = '';
+                        if (index === 2) extraClass = ' green';
+                        if (index === 3) extraClass = ' dim';
+
+                        const eventHTML = `
+                            <div class="cal-event${extraClass}">
+                                <div class="cal-time">${timeString}</div>
+                                <div class="cal-title">${event.title}</div>
+                            </div>
+                        `;
+
+                        container.insertAdjacentHTML('beforeend', eventHTML);
+                    });
+                }
+
+                // Initialize
+                fetchAppleCalendar();
+
+            // SPOTIFY INTEGRATION
             const CLIENT_ID = "778fe57066b24fb3b9c8ef6c48afe754";
             const REDIRECT_URI =
                 "https://karolborecki.github.io/setup/dashboard/index.html";
@@ -797,9 +886,7 @@
 
             let accessToken = null;
 
-            // --- FUNKCJE POMOCNICZE DLA PKCE ---
 
-            // Generuje losowy ciąg znaków (Code Verifier)
             function generateRandomString(length) {
                 let text = "";
                 const possible =
