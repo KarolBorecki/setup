@@ -3,704 +3,964 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Personal Dashboard</title>
+        <title>Dashboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
         <style>
-            @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap");
+            :root {
+                --bg: #0c0b09;
+                --bg2: #121109;
+                --bg3: #181610;
+                --border: rgba(200, 170, 90, 0.12);
+                --border2: rgba(200, 170, 90, 0.22);
+                --gold: #c8973a;
+                --gold-dim: #8a6420;
+                --cream: #ece8de;
+                --muted: #7a7060;
+                --muted2: #504840;
+                --green: #4caf78;
+                --mono: "Space Mono", monospace;
+                --serif: "Playfair Display", serif;
+                --sans: "DM Sans", sans-serif;
+            }
 
-            * {
+            *,
+            *::before,
+            *::after {
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
             }
 
+            html,
             body {
-                background: #0b0b0c;
-                color: #e6e6e6;
-                font-family: "JetBrains Mono", monospace;
-                padding: 32px;
-                display: flex;
-                flex-direction: column;
-                gap: 32px;
-                min-height: 100vh;
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                background: var(--bg);
+                color: var(--cream);
+                font-family: var(--sans);
             }
 
-            /* Layout - Broadened grid for wider calendar and news */
-            .grid-container {
+            /* Subtle grain overlay */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 1;
+                opacity: 0.4;
+            }
+
+            /* Ambient warm glow */
+            body::after {
+                content: "";
+                position: fixed;
+                width: 600px;
+                height: 600px;
+                top: -200px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: radial-gradient(
+                    circle,
+                    rgba(200, 150, 58, 0.06) 0%,
+                    transparent 70%
+                );
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            .layout {
+                position: relative;
+                z-index: 2;
                 display: grid;
-                grid-template-columns: 320px minmax(380px, 1.2fr) minmax(
-                        450px,
-                        1.5fr
-                    );
-                grid-template-rows: auto 1fr;
-                gap: 24px;
-                flex-grow: 1;
+                grid-template-rows: 1fr auto;
+                height: 100vh;
+                padding: 20px 24px 16px;
+                gap: 16px;
             }
 
-            /* Card */
-            .card {
-                background: #111;
-                border: 1px solid #222;
-                border-radius: 12px;
-                padding: 20px;
+            .grid {
+                display: grid;
+                grid-template-columns: 280px 1fr 1.4fr;
+                gap: 16px;
+                min-height: 0;
+            }
+
+            .col {
                 display: flex;
                 flex-direction: column;
+                gap: 14px;
+                min-height: 0;
             }
 
-            /* Titles - Clean, non-techno style */
-            .card-title {
-                font-family: "Inter", sans-serif;
-                font-size: 15px;
-                font-weight: 500;
-                color: #e0e0e0;
-                margin-bottom: 16px;
+            /* ── Card ── */
+            .card {
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 18px 20px;
+                display: flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                position: relative;
+                overflow: hidden;
+                animation: fadeUp 0.5s ease both;
+            }
+
+            .card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 14px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(200, 150, 58, 0.04) 0%,
+                    transparent 60%
+                );
+                pointer-events: none;
+            }
+
+            .card.expand {
+                flex: 1;
+                min-height: 0;
+            }
+
+            .card-label {
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--gold-dim);
+                margin-bottom: 14px;
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 gap: 8px;
             }
 
-            /* Clock - Significantly Bigger */
-            .time-widget {
+            .card-label::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+
+            .scrollable {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-right: 4px;
+            }
+
+            .scrollable::-webkit-scrollbar {
+                width: 2px;
+            }
+            .scrollable::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .scrollable::-webkit-scrollbar-thumb {
+                background: var(--muted2);
+                border-radius: 2px;
+            }
+
+            /* ── Clock ── */
+            .clock-card {
                 text-align: center;
-                padding: 10px 0 20px 0;
+                padding: 22px 20px 18px;
+                flex-shrink: 0;
             }
 
             .clock {
-                font-size: 72px; /* Increased size */
-                font-weight: 600;
-                margin-bottom: 12px;
+                font-family: var(--serif);
+                font-size: 76px;
+                font-weight: 700;
                 line-height: 1;
-                color: #ffffff;
+                color: var(--cream);
+                letter-spacing: -2px;
+                margin-bottom: 6px;
+                text-shadow: 0 0 60px rgba(200, 150, 58, 0.15);
+            }
+
+            .date-line {
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--muted);
+                letter-spacing: 0.08em;
+                margin-bottom: 12px;
             }
 
             .weather-pill {
-                font-family: "Inter", sans-serif;
-                font-size: 16px; /* Increased size */
-                font-weight: 500;
-                color: #aaa;
-                display: inline-block;
-                padding: 6px 16px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(200, 150, 58, 0.08);
+                border: 1px solid var(--border2);
                 border-radius: 20px;
-                border: 1px solid #333;
+                padding: 6px 16px;
+                font-family: var(--sans);
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--gold);
+                transition: all 0.4s ease;
             }
 
-            /* Pomodoro - Visually Appealing Circular Timer */
-            .pomodoro-widget {
+            /* ── Pomodoro ── */
+            .pomodoro-card {
                 align-items: center;
+                gap: 0;
             }
 
-            .timer-wrapper {
+            .ring-wrap {
                 position: relative;
-                width: 160px;
-                height: 160px;
-                margin-bottom: 20px;
+                width: 140px;
+                height: 140px;
+                margin: 8px auto 16px;
                 display: flex;
-                justify-content: center;
                 align-items: center;
+                justify-content: center;
             }
 
             .progress-ring {
                 position: absolute;
-                top: 0;
-                left: 0;
+                inset: 0;
                 transform: rotate(-90deg);
             }
-
-            .progress-ring__circle-bg {
-                stroke: #222;
+            .ring-bg {
+                stroke: var(--bg2);
             }
-
-            .progress-ring__circle {
-                stroke: #00f3ff;
+            .ring-fg {
+                stroke: var(--gold);
+                stroke-linecap: round;
                 transition: stroke-dashoffset 1s linear;
+                filter: drop-shadow(0 0 6px rgba(200, 150, 58, 0.5));
             }
 
-            .timer-display {
-                font-size: 36px;
-                font-weight: 600;
+            .timer-num {
+                font-family: var(--serif);
+                font-size: 32px;
+                font-weight: 500;
+                color: var(--cream);
                 position: absolute;
             }
 
-            .timer-controls {
+            .pom-btns {
                 display: flex;
-                gap: 12px;
-                justify-content: center;
+                gap: 10px;
                 width: 100%;
             }
 
-            .timer-controls button {
-                background: #1a1a1a;
-                color: #eee;
-                border: 1px solid #333;
+            .btn {
+                flex: 1;
+                padding: 9px 14px;
                 border-radius: 8px;
-                padding: 10px 20px;
-                font-family: "Inter", sans-serif;
-                font-size: 14px;
+                border: 1px solid var(--border2);
+                background: rgba(200, 150, 58, 0.06);
+                color: var(--cream);
+                font-family: var(--sans);
+                font-size: 13px;
                 font-weight: 500;
                 cursor: pointer;
-                flex: 1;
                 transition: all 0.2s ease;
             }
 
-            .timer-controls button:hover {
-                background: #2a2a2a;
-                border-color: #555;
+            .btn:hover {
+                background: rgba(200, 150, 58, 0.14);
+                border-color: var(--gold);
+                color: var(--gold);
             }
 
-            /* Calendar - Wider & Cleaner */
-            .calendar-content {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
+            .btn.primary {
+                background: rgba(200, 150, 58, 0.15);
+                border-color: var(--border2);
             }
 
-            .cal-event {
-                font-family: "Inter", sans-serif;
-                font-size: 14px;
-                color: #e0e0e0;
-                background: #1a1a1a;
-                padding: 12px 16px;
-                border-radius: 8px;
-                border-left: 4px solid #00f3ff;
-            }
-
-            .cal-event span {
-                color: #888;
-                font-size: 12px;
-                display: block;
-                margin-bottom: 4px;
-            }
-
-            /* Habits */
-            .habit-list {
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-
+            /* ── Habits ── */
             .habit-item {
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                font-family: "Inter", sans-serif;
-                font-size: 14px;
-                background: #1a1a1a;
-                padding: 10px 14px;
+                padding: 10px 12px;
                 border-radius: 8px;
+                border: 1px solid transparent;
                 cursor: pointer;
-                transition: background 0.2s;
+                transition: all 0.2s ease;
+                margin-bottom: 6px;
+                font-size: 13px;
+                font-weight: 400;
+                color: #b8b0a0;
             }
 
             .habit-item:hover {
-                background: #222;
+                background: rgba(200, 150, 58, 0.06);
+                border-color: var(--border);
+            }
+            .habit-item input[type="checkbox"] {
+                display: none;
             }
 
-            .habit-item input {
-                accent-color: #00f3ff;
+            .habit-box {
                 width: 16px;
                 height: 16px;
-                cursor: pointer;
-            }
-
-            /* News - Broader layout with 3 feeds */
-            .news-column {
+                border: 1.5px solid var(--muted2);
+                border-radius: 4px;
+                flex-shrink: 0;
+                transition: all 0.2s ease;
                 display: flex;
-                flex-direction: column;
-                gap: 20px;
+                align-items: center;
+                justify-content: center;
             }
 
-            .news-list {
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                font-family: "Inter", sans-serif;
-                font-size: 14px;
+            .habit-item.checked .habit-box {
+                background: var(--gold);
+                border-color: var(--gold);
             }
 
-            .news-list li {
-                padding-bottom: 12px;
-                border-bottom: 1px solid #222;
+            .habit-item.checked .habit-box::after {
+                content: "✓";
+                font-size: 10px;
+                color: #0c0b09;
+                font-weight: 700;
             }
 
-            .news-list li:last-child {
+            .habit-item.checked span {
+                text-decoration: line-through;
+                color: var(--muted);
+            }
+
+            /* ── Calendar events ── */
+            .cal-event {
+                padding: 11px 14px;
+                border-radius: 9px;
+                border-left: 3px solid var(--gold);
+                background: rgba(200, 150, 58, 0.05);
+                margin-bottom: 8px;
+                flex-shrink: 0;
+                transition: background 0.2s;
+            }
+
+            .cal-event:hover {
+                background: rgba(200, 150, 58, 0.09);
+            }
+            .cal-event.green {
+                border-left-color: var(--green);
+                background: rgba(76, 175, 120, 0.05);
+            }
+            .cal-event.green:hover {
+                background: rgba(76, 175, 120, 0.09);
+            }
+            .cal-event.dim {
+                border-left-color: var(--muted2);
+                opacity: 0.6;
+            }
+
+            .cal-time {
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.06em;
+                margin-bottom: 3px;
+            }
+
+            .cal-title {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--cream);
+                line-height: 1.3;
+            }
+
+            /* ── News ── */
+            .news-item {
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .news-item:last-child {
                 border-bottom: none;
                 padding-bottom: 0;
+                margin-bottom: 0;
             }
 
-            .news-list a {
-                color: #ccc;
+            .news-item a {
+                font-size: 13px;
+                color: #b8b0a0;
                 text-decoration: none;
-                line-height: 1.4;
+                line-height: 1.45;
                 display: block;
                 transition: color 0.2s;
             }
 
-            .news-list a:hover {
-                color: #00f3ff;
+            .news-item a:hover {
+                color: var(--gold);
             }
 
-            /* Spotify */
-            .spotify-widget iframe {
-                border-radius: 12px;
+            /* ── Spotify ── */
+            .spotify-card iframe {
+                border-radius: 10px;
+                display: block;
             }
 
-            /* Bookmarks - Transformed to Images */
-            .bookmarks-container {
+            /* ── Bookmarks ── */
+            .bookmarks {
                 display: flex;
-                gap: 16px;
+                gap: 10px;
                 justify-content: center;
                 flex-wrap: wrap;
-                background: #111;
-                padding: 20px;
-                border-radius: 12px;
-                border: 1px solid #222;
+                padding: 12px 20px;
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                flex-shrink: 0;
+                position: relative;
+                z-index: 2;
             }
 
-            .bookmark {
-                width: 48px;
-                height: 48px;
-                border-radius: 10px;
+            .bm {
+                width: 38px;
+                height: 38px;
+                border-radius: 9px;
+                background: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                text-decoration: none;
+                overflow: hidden;
                 transition:
                     transform 0.2s,
                     box-shadow 0.2s;
-                overflow: hidden;
-                background: #fff; /* White bg helps some transparent favicons */
+                text-decoration: none;
             }
 
-            .bookmark img {
+            .bm:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .bm img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
 
-            .bookmark:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
-            /* Scrollbar */
-            ::-webkit-scrollbar {
-                width: 6px;
+            .card:nth-child(1) {
+                animation-delay: 0.05s;
             }
-            ::-webkit-scrollbar-thumb {
-                background: #444;
-                border-radius: 3px;
+            .card:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+            .card:nth-child(3) {
+                animation-delay: 0.15s;
+            }
+
+            .col:nth-child(2) .card:nth-child(1) {
+                animation-delay: 0.12s;
+            }
+            .col:nth-child(2) .card:nth-child(2) {
+                animation-delay: 0.18s;
+            }
+            .col:nth-child(3) .card:nth-child(1) {
+                animation-delay: 0.18s;
+            }
+            .col:nth-child(3) .card:nth-child(2) {
+                animation-delay: 0.23s;
+            }
+            .col:nth-child(3) .card:nth-child(3) {
+                animation-delay: 0.28s;
+            }
+
+            .placeholder {
+                color: var(--muted);
+                font-size: 12px;
+                font-family: var(--mono);
             }
         </style>
     </head>
     <body>
-        <div class="grid-container">
-            <div style="display: flex; flex-direction: column; gap: 24px">
-                <div class="time-widget">
-                    <div class="clock" id="clock">00:00</div>
-                    <div class="weather-pill" id="weather-pill">
-                        <span id="temp">--</span>°C |
-                        <span id="condition">Loading...</span>
-                    </div>
-                </div>
-
-                <div class="card pomodoro-widget">
-                    <div class="card-title">Pomodoro Timer</div>
-                    <div class="timer-wrapper">
-                        <svg class="progress-ring" width="160" height="160">
-                            <circle
-                                class="progress-ring__circle-bg"
-                                stroke-width="8"
-                                fill="transparent"
-                                r="72"
-                                cx="80"
-                                cy="80"
-                            />
-                            <circle
-                                class="progress-ring__circle"
-                                stroke-width="8"
-                                fill="transparent"
-                                r="72"
-                                cx="80"
-                                cy="80"
-                            />
-                        </svg>
-                        <div class="timer-display" id="pomodoro-time">
-                            25:00
+        <div class="layout">
+            <div class="grid">
+                <!-- COL 1 -->
+                <div class="col">
+                    <div class="card clock-card">
+                        <div class="clock" id="clock">00:00</div>
+                        <div class="date-line" id="dateline">
+                            Monday, April 06
+                        </div>
+                        <div class="weather-pill">
+                            <span>&#9675;</span>
+                            <span id="temp">--</span>°C &nbsp;·&nbsp;
+                            <span id="condition">Loading</span>
                         </div>
                     </div>
-                    <div class="timer-controls">
-                        <button onclick="toggleTimer()" id="timer-btn">
-                            Start Focus
-                        </button>
-                        <button onclick="resetTimer()">Reset</button>
+
+                    <div class="card pomodoro-card">
+                        <div class="card-label">Focus Timer</div>
+                        <div class="ring-wrap">
+                            <svg
+                                class="progress-ring"
+                                viewBox="0 0 140 140"
+                                width="140"
+                                height="140"
+                            >
+                                <circle
+                                    class="ring-bg"
+                                    stroke-width="6"
+                                    fill="none"
+                                    r="62"
+                                    cx="70"
+                                    cy="70"
+                                />
+                                <circle
+                                    class="ring-fg"
+                                    stroke-width="6"
+                                    fill="none"
+                                    r="62"
+                                    cx="70"
+                                    cy="70"
+                                    id="ring"
+                                />
+                            </svg>
+                            <div class="timer-num" id="pomodoro-time">
+                                25:00
+                            </div>
+                        </div>
+                        <div class="pom-btns">
+                            <button
+                                class="btn primary"
+                                onclick="toggleTimer()"
+                                id="timer-btn"
+                            >
+                                Start Focus
+                            </button>
+                            <button class="btn" onclick="resetTimer()">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card expand">
+                        <div class="card-label">Daily Habits</div>
+                        <div class="scrollable" id="habit-list"></div>
                     </div>
                 </div>
 
-                <div class="card habits-widget">
-                    <div class="card-title">Daily Habits</div>
-                    <ul class="habit-list">
-                        <label class="habit-item"
-                            ><input type="checkbox" />
-                            <span>Hydration Target (3L)</span></label
+                <!-- COL 2 -->
+                <div class="col">
+                    <div class="card expand">
+                        <div class="card-label">Upcoming Events</div>
+                        <div class="scrollable">
+                            <div class="cal-event">
+                                <div class="cal-time">10:00 AM – 11:30 AM</div>
+                                <div class="cal-title">
+                                    System Architecture Review
+                                </div>
+                            </div>
+                            <div class="cal-event">
+                                <div class="cal-time">1:00 PM – 2:00 PM</div>
+                                <div class="cal-title">Deep Work Protocol</div>
+                            </div>
+                            <div class="cal-event green">
+                                <div class="cal-time">3:30 PM – 4:00 PM</div>
+                                <div class="cal-title">
+                                    Team Sync &amp; Updates
+                                </div>
+                            </div>
+                            <div class="cal-event dim">
+                                <div class="cal-time">Tomorrow</div>
+                                <div class="cal-title">
+                                    Server Maintenance Window
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card spotify-card">
+                        <div class="card-label">Now Playing</div>
+                        <iframe
+                            src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator&theme=0"
+                            width="100%"
+                            height="152"
+                            frameborder="0"
+                            allow="
+                                autoplay;
+                                clipboard-write;
+                                encrypted-media;
+                                fullscreen;
+                                picture-in-picture;
+                            "
+                            loading="lazy"
                         >
-                        <label class="habit-item"
-                            ><input type="checkbox" />
-                            <span>Mindfulness Practice</span></label
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- COL 3 -->
+                <div class="col">
+                    <div class="card expand">
+                        <div class="card-label">World News</div>
+                        <ul
+                            class="scrollable"
+                            id="world-list"
+                            style="list-style: none"
                         >
-                        <label class="habit-item"
-                            ><input type="checkbox" />
-                            <span>Physical Exercise</span></label
+                            <div class="placeholder">Fetching headlines…</div>
+                        </ul>
+                    </div>
+
+                    <div class="card expand">
+                        <div class="card-label">Hacker News</div>
+                        <ul
+                            class="scrollable"
+                            id="hn-list"
+                            style="list-style: none"
                         >
-                        <label class="habit-item"
-                            ><input type="checkbox" />
-                            <span>Reading (30 Mins)</span></label
+                            <div class="placeholder">Loading top stories…</div>
+                        </ul>
+                    </div>
+
+                    <div class="card expand">
+                        <div class="card-label">Spaceflight</div>
+                        <ul
+                            class="scrollable"
+                            id="space-list"
+                            style="list-style: none"
                         >
-                    </ul>
+                            <div class="placeholder">Loading launches…</div>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 24px">
-                <div class="card calendar-widget" style="flex-grow: 1">
-                    <div class="card-title">Upcoming Events</div>
-                    <div class="calendar-content">
-                        <div class="cal-event">
-                            <span>10:00 AM - 11:30 AM</span>
-                            <strong>System Architecture Review</strong>
-                        </div>
-                        <div class="cal-event">
-                            <span>1:00 PM - 2:00 PM</span>
-                            <strong>Deep Work Protocol</strong>
-                        </div>
-                        <div
-                            class="cal-event"
-                            style="border-left-color: #00ff66"
-                        >
-                            <span>3:30 PM - 4:00 PM</span>
-                            <strong>Team Sync & Updates</strong>
-                        </div>
-                        <div
-                            class="cal-event"
-                            style="border-left-color: #555; opacity: 0.7"
-                        >
-                            <span>Tomorrow</span>
-                            <strong>Server Maintenance</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card spotify-widget">
-                    <div class="card-title">Music Player</div>
-                    <iframe
-                        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator&theme=0"
-                        width="100%"
-                        height="152"
-                        frameborder="0"
-                        allowfullscreen=""
-                        allow="
-                            autoplay;
-                            clipboard-write;
-                            encrypted-media;
-                            fullscreen;
-                            picture-in-picture;
-                        "
-                        loading="lazy"
-                    ></iframe>
-                </div>
+            <!-- Bookmarks -->
+            <div class="bookmarks">
+                <a href="https://github.com" class="bm" title="GitHub"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=github.com&sz=128"
+                        alt="GitHub"
+                /></a>
+                <a href="https://claude.ai" class="bm" title="Claude"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=claude.ai&sz=128"
+                        alt="Claude"
+                /></a>
+                <a href="https://chat.openai.com" class="bm" title="ChatGPT"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=openai.com&sz=128"
+                        alt="ChatGPT"
+                /></a>
+                <a href="https://reddit.com" class="bm" title="Reddit"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=reddit.com&sz=128"
+                        alt="Reddit"
+                /></a>
+                <a href="https://youtube.com" class="bm" title="YouTube"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128"
+                        alt="YouTube"
+                /></a>
+                <a
+                    href="https://news.ycombinator.com"
+                    class="bm"
+                    title="Hacker News"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=ycombinator.com&sz=128"
+                        alt="HN"
+                /></a>
+                <a href="https://mail.google.com" class="bm" title="Gmail"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=128"
+                        alt="Gmail"
+                /></a>
+                <a href="https://figma.com" class="bm" title="Figma"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=figma.com&sz=128"
+                        alt="Figma"
+                /></a>
+                <a href="https://linear.app" class="bm" title="Linear"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=linear.app&sz=128"
+                        alt="Linear"
+                /></a>
+                <a href="https://notion.so" class="bm" title="Notion"
+                    ><img
+                        src="https://www.google.com/s2/favicons?domain=notion.so&sz=128"
+                        alt="Notion"
+                /></a>
             </div>
-
-            <div class="news-column">
-                <div class="card">
-                    <div class="card-title">World News</div>
-                    <ul class="news-list" id="world-list">
-                        <div style="color: #666">
-                            Fetching global headlines...
-                        </div>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Hacker News</div>
-                    <ul class="news-list" id="hn-list">
-                        <div style="color: #666">Loading top stories...</div>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Spaceflight & Aerospace</div>
-                    <ul class="news-list" id="space-list">
-                        <div style="color: #666">
-                            Loading latest launches...
-                        </div>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="bookmarks-container">
-            <a href="https://github.com" class="bookmark" title="GitHub">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=github.com&sz=128"
-                    alt="GitHub"
-                />
-            </a>
-            <a href="https://chat.openai.com" class="bookmark" title="ChatGPT">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=openai.com&sz=128"
-                    alt="ChatGPT"
-                />
-            </a>
-            <a href="https://reddit.com" class="bookmark" title="Reddit">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=reddit.com&sz=128"
-                    alt="Reddit"
-                />
-            </a>
-            <a href="https://youtube.com" class="bookmark" title="YouTube">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128"
-                    alt="YouTube"
-                />
-            </a>
-            <a
-                href="https://news.ycombinator.com"
-                class="bookmark"
-                title="Hacker News"
-            >
-                <img
-                    src="https://www.google.com/s2/favicons?domain=ycombinator.com&sz=128"
-                    alt="Hacker News"
-                />
-            </a>
-            <a href="https://mail.google.com" class="bookmark" title="Gmail">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=128"
-                    alt="Gmail"
-                />
-            </a>
-            <a href="https://figma.com" class="bookmark" title="Figma">
-                <img
-                    src="https://www.google.com/s2/favicons?domain=figma.com&sz=128"
-                    alt="Figma"
-                />
-            </a>
         </div>
 
         <script>
-            // --- 1. CLOCK LOGIC ---
+            // ── Clock & Date ──────────────────────────────────────────────
+            const DAYS = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+            ];
+            const MONTHS = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+
             function updateClock() {
                 const now = new Date();
-                const hours = String(now.getHours()).padStart(2, "0");
-                const minutes = String(now.getMinutes()).padStart(2, "0");
-                // Simplified to HH:MM for cleaner, bigger look
-                document.getElementById("clock").innerText =
-                    `${hours}:${minutes}`;
+                document.getElementById("clock").textContent =
+                    String(now.getHours()).padStart(2, "0") +
+                    ":" +
+                    String(now.getMinutes()).padStart(2, "0");
+                document.getElementById("dateline").textContent =
+                    DAYS[now.getDay()] +
+                    ", " +
+                    MONTHS[now.getMonth()] +
+                    " " +
+                    String(now.getDate()).padStart(2, "0");
             }
             setInterval(updateClock, 1000);
             updateClock();
 
-            // --- 2. WEATHER API (Open-Meteo for Warsaw) ---
+            // ── Weather ───────────────────────────────────────────────────
             async function fetchWeather() {
                 try {
-                    const lat = 52.2298;
-                    const lon = 21.0118;
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-
-                    const response = await fetch(url);
-                    const data = await response.json();
-
-                    const temp = data.current_weather.temperature;
-                    const code = data.current_weather.weathercode;
-
-                    document.getElementById("temp").innerText =
-                        Math.round(temp);
-                    document.getElementById("condition").innerText =
+                    const r = await fetch(
+                        "https://api.open-meteo.com/v1/forecast?latitude=52.2298&longitude=21.0118&current_weather=true",
+                    );
+                    const d = await r.json();
+                    const temp = Math.round(d.current_weather.temperature);
+                    const code = d.current_weather.weathercode;
+                    document.getElementById("temp").textContent = temp;
+                    document.getElementById("condition").textContent =
                         decodeWeather(code);
 
-                    const pill = document.getElementById("weather-pill");
-                    if (temp < 5) {
-                        pill.style.borderColor = "#00f3ff";
-                        pill.style.color = "#00f3ff";
-                    } else if (temp < 20) {
-                        pill.style.borderColor = "#00ff66";
-                        pill.style.color = "#00ff66";
-                    } else {
-                        pill.style.borderColor = "#ffaa00";
-                        pill.style.color = "#ffaa00";
-                    }
-                } catch (err) {
-                    document.getElementById("condition").innerText =
-                        "Network Error";
+                    const pill = document.querySelector(".weather-pill");
+                    pill.style.color =
+                        temp < 5
+                            ? "#6ec6ff"
+                            : temp < 20
+                              ? "#4caf78"
+                              : "#e8a820";
+                    pill.style.borderColor =
+                        temp < 5
+                            ? "rgba(110,198,255,0.3)"
+                            : temp < 20
+                              ? "rgba(76,175,120,0.3)"
+                              : "rgba(200,150,58,0.3)";
+                } catch {
+                    document.getElementById("condition").textContent =
+                        "Unavailable";
                 }
             }
 
-            function decodeWeather(code) {
-                if (code === 0) return "Clear Sky";
-                if (code <= 3) return "Partly Cloudy";
-                if (code <= 49) return "Fog/Haze";
-                if (code <= 69) return "Rain";
-                if (code <= 79) return "Snow";
-                if (code <= 99) return "Thunderstorm";
+            function decodeWeather(c) {
+                if (c === 0) return "Clear Sky";
+                if (c <= 3) return "Partly Cloudy";
+                if (c <= 49) return "Fog";
+                if (c <= 69) return "Rainy";
+                if (c <= 79) return "Snowy";
+                if (c <= 99) return "Stormy";
                 return "Unknown";
             }
             fetchWeather();
             setInterval(fetchWeather, 600000);
 
-            // --- 3. POMODORO LOGIC WITH SVG ANIMATION ---
-            const TOTAL_DURATION = 25 * 60;
-            let timeRemaining = TOTAL_DURATION;
-            let timerInterval = null;
-            let isRunning = false;
+            // ── Pomodoro ──────────────────────────────────────────────────
+            const TOTAL = 25 * 60;
+            let timeLeft = TOTAL,
+                ticker = null,
+                running = false;
+            const ring = document.getElementById("ring");
+            const r = 62;
+            const circ = r * 2 * Math.PI;
+            ring.style.strokeDasharray = `${circ} ${circ}`;
+            ring.style.strokeDashoffset = 0;
 
-            const circle = document.querySelector(".progress-ring__circle");
-            const radius = circle.r.baseVal.value;
-            const circumference = radius * 2 * Math.PI;
-
-            circle.style.strokeDasharray = `${circumference} ${circumference}`;
-            circle.style.strokeDashoffset = 0;
-
-            function setProgress(percent) {
-                const offset = circumference - (percent / 100) * circumference;
-                circle.style.strokeDashoffset = offset;
+            function setRing(pct) {
+                ring.style.strokeDashoffset = circ - (pct / 100) * circ;
             }
 
-            function updateTimerDisplay() {
-                const mins = String(Math.floor(timeRemaining / 60)).padStart(
-                    2,
-                    "0",
-                );
-                const secs = String(timeRemaining % 60).padStart(2, "0");
-                document.getElementById("pomodoro-time").innerText =
-                    `${mins}:${secs}`;
-
-                const percent = (timeRemaining / TOTAL_DURATION) * 100;
-                setProgress(percent);
+            function updateDisplay() {
+                const m = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+                const s = String(timeLeft % 60).padStart(2, "0");
+                document.getElementById("pomodoro-time").textContent =
+                    `${m}:${s}`;
+                setRing((timeLeft / TOTAL) * 100);
             }
 
             function toggleTimer() {
                 const btn = document.getElementById("timer-btn");
-                if (isRunning) {
-                    clearInterval(timerInterval);
-                    btn.innerText = "Resume";
+                if (running) {
+                    clearInterval(ticker);
+                    btn.textContent = "Resume";
                 } else {
-                    timerInterval = setInterval(() => {
-                        if (timeRemaining > 0) {
-                            timeRemaining--;
-                            updateTimerDisplay();
+                    ticker = setInterval(() => {
+                        if (timeLeft > 0) {
+                            timeLeft--;
+                            updateDisplay();
                         } else {
-                            clearInterval(timerInterval);
-                            alert("Focus session complete!");
+                            clearInterval(ticker);
+                            alert("Focus session complete! Take a break.");
                             resetTimer();
                         }
                     }, 1000);
-                    btn.innerText = "Pause";
+                    btn.textContent = "Pause";
                 }
-                isRunning = !isRunning;
+                running = !running;
             }
 
             function resetTimer() {
-                clearInterval(timerInterval);
-                timeRemaining = TOTAL_DURATION;
-                isRunning = false;
-                document.getElementById("timer-btn").innerText = "Start Focus";
-                updateTimerDisplay();
+                clearInterval(ticker);
+                timeLeft = TOTAL;
+                running = false;
+                document.getElementById("timer-btn").textContent =
+                    "Start Focus";
+                updateDisplay();
+            }
+            updateDisplay();
+
+            // ── Habits ────────────────────────────────────────────────────
+            const HABITS = [
+                "Hydration Target (3L)",
+                "Mindfulness Practice",
+                "Physical Exercise",
+                "Reading — 30 min",
+                "No phone before 9am",
+            ];
+
+            function renderHabits() {
+                const list = document.getElementById("habit-list");
+                list.innerHTML = "";
+                HABITS.forEach((h, i) => {
+                    const saved = localStorage.getItem(`habit_${i}`) === "true";
+                    const el = document.createElement("label");
+                    el.className = "habit-item" + (saved ? " checked" : "");
+                    el.innerHTML = `
+        <input type="checkbox" ${saved ? "checked" : ""}/>
+        <div class="habit-box"></div>
+        <span>${h}</span>
+      `;
+                    el.querySelector("input").addEventListener(
+                        "change",
+                        (e) => {
+                            localStorage.setItem(
+                                `habit_${i}`,
+                                e.target.checked,
+                            );
+                            el.classList.toggle("checked", e.target.checked);
+                        },
+                    );
+                    list.appendChild(el);
+                });
+            }
+            renderHabits();
+
+            // ── News helpers ──────────────────────────────────────────────
+            function renderNews(listId, items) {
+                const ul = document.getElementById(listId);
+                ul.innerHTML = "";
+                items.forEach(({ url, title }) => {
+                    const li = document.createElement("li");
+                    li.className = "news-item";
+                    li.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${title}</a>`;
+                    ul.appendChild(li);
+                });
             }
 
-            // Initialize display
-            updateTimerDisplay();
-
-            // --- 4. HABITS TRACKER LOGIC ---
-            const checkboxes = document.querySelectorAll(
-                '.habit-item input[type="checkbox"]',
-            );
-            checkboxes.forEach((cb, index) => {
-                const savedState = localStorage.getItem(
-                    `techno_habit_${index}`,
-                );
-                if (savedState === "true") cb.checked = true;
-                cb.addEventListener("change", (e) => {
-                    localStorage.setItem(
-                        `techno_habit_${index}`,
-                        e.target.checked,
-                    );
-                });
-            });
-
-            // --- 5. REAL NEWS APIs ---
-
-            // A. Fetch World News (Using Reddit's r/worldnews JSON feed)
             async function fetchWorldNews() {
                 try {
-                    const res = await fetch(
-                        "https://www.reddit.com/r/worldnews/top.json?limit=4&t=day",
+                    const r = await fetch(
+                        "https://www.reddit.com/r/worldnews/top.json?limit=7&t=day",
                     );
-                    const data = await res.json();
-                    const list = document.getElementById("world-list");
-                    list.innerHTML = "";
-
-                    data.data.children.forEach((post) => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `<a href="https://reddit.com${post.data.permalink}" target="_blank">${post.data.title}</a>`;
-                        list.appendChild(li);
-                    });
-                } catch (err) {
+                    const d = await r.json();
+                    renderNews(
+                        "world-list",
+                        d.data.children.map((p) => ({
+                            url: "https://reddit.com" + p.data.permalink,
+                            title: p.data.title,
+                        })),
+                    );
+                } catch {
                     document.getElementById("world-list").innerHTML =
-                        '<div style="color:#ff4444">Failed to load news.</div>';
+                        '<div class="placeholder" style="color:#c0504a">Failed to load.</div>';
                 }
             }
 
-            // B. Fetch Hacker News
-            async function fetchHackerNews() {
+            async function fetchHN() {
                 try {
-                    const res = await fetch(
-                        "https://hacker-news.firebaseio.com/v0/topstories.json",
+                    const ids = await (
+                        await fetch(
+                            "https://hacker-news.firebaseio.com/v0/topstories.json",
+                        )
+                    ).json();
+                    const top = ids.slice(0, 7);
+                    const stories = await Promise.all(
+                        top.map((id) =>
+                            fetch(
+                                `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
+                            ).then((r) => r.json()),
+                        ),
                     );
-                    const storyIds = await res.json();
-                    const top5 = storyIds.slice(0, 4);
-
-                    const list = document.getElementById("hn-list");
-                    list.innerHTML = "";
-
-                    for (let id of top5) {
-                        const storyRes = await fetch(
-                            `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
-                        );
-                        const story = await storyRes.json();
-                        const li = document.createElement("li");
-                        li.innerHTML = `<a href="${story.url || `https://news.ycombinator.com/item?id=${id}`}" target="_blank">${story.title}</a>`;
-                        list.appendChild(li);
-                    }
-                } catch (err) {
+                    renderNews(
+                        "hn-list",
+                        stories.map((s) => ({
+                            url:
+                                s.url ||
+                                `https://news.ycombinator.com/item?id=${s.id}`,
+                            title: s.title,
+                        })),
+                    );
+                } catch {
                     document.getElementById("hn-list").innerHTML =
-                        '<div style="color:#ff4444">Failed to load news.</div>';
+                        '<div class="placeholder" style="color:#c0504a">Failed to load.</div>';
                 }
             }
 
-            // C. Fetch Spaceflight News
-            async function fetchSpaceNews() {
+            async function fetchSpace() {
                 try {
-                    const res = await fetch(
-                        "https://api.spaceflightnewsapi.net/v4/articles/?limit=3",
+                    const d = await (
+                        await fetch(
+                            "https://api.spaceflightnewsapi.net/v4/articles/?limit=7",
+                        )
+                    ).json();
+                    renderNews(
+                        "space-list",
+                        d.results.map((a) => ({ url: a.url, title: a.title })),
                     );
-                    const data = await res.json();
-                    const list = document.getElementById("space-list");
-                    list.innerHTML = "";
-
-                    data.results.forEach((article) => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
-                        list.appendChild(li);
-                    });
-                } catch (err) {
+                } catch {
                     document.getElementById("space-list").innerHTML =
-                        '<div style="color:#ff4444">Failed to load news.</div>';
+                        '<div class="placeholder" style="color:#c0504a">Failed to load.</div>';
                 }
             }
 
-            // Initialize Feeds
             fetchWorldNews();
-            fetchHackerNews();
-            fetchSpaceNews();
+            fetchHN();
+            fetchSpace();
         </script>
     </body>
 </html>
