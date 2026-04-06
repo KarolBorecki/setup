@@ -345,110 +345,89 @@
             :root {
                 --hour-height: 80px; /* How tall one hour is */
             }
-
-            .calendar-wrapper {
+            /* ── Custom Day View Grid ── */
+            .day-view-scroll {
+                flex: 1; /* Takes up top half of card */
                 position: relative;
-                background: #1a1a1a;
-                border-radius: 8px;
                 overflow-y: auto;
-                height: 100%;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 15px;
+                padding-right: 5px;
             }
 
-            /* The horizontal hour lines */
-            .time-grid {
+            .day-grid {
                 position: relative;
                 width: 100%;
+                padding-left: 50px; /* Space for time labels */
             }
 
-            .hour-row {
-                height: var(--hour-height);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                display: flex;
-                align-items: flex-start;
+            .hour-block {
+                height: 60px; /* Control density of the grid */
+                border-top: 1px solid var(--border);
+                position: relative;
             }
 
-            .hour-label {
-                width: 60px;
-                font-size: 10px;
-                color: var(--muted);
-                text-align: right;
-                padding-right: 10px;
-                margin-top: -6px;
+            .hour-text {
+                position: absolute;
+                left: -50px;
+                top: -7px;
+                width: 40px;
                 font-family: var(--mono);
+                font-size: 9px;
+                color: var(--muted2);
+                text-align: right;
             }
 
-            /* The container for events */
-            .events-layer {
+            /* Today's Event Blocks */
+            .day-event-block {
                 position: absolute;
-                top: 0;
-                left: 60px; /* Offset for hour labels */
-                right: 10px;
-                height: 100%;
-                pointer-events: none;
-            }
-
-            /* Individual Event Styling */
-            .cal-event-apple {
-                position: absolute;
-                pointer-events: auto;
+                left: 10px;
+                right: 5px;
+                border-radius: 6px;
                 border-left: 3px solid var(--gold);
-                background: rgba(200, 150, 58, 0.15);
-                border-radius: 4px;
+                background: rgba(200, 150, 58, 0.1);
                 padding: 6px 10px;
-                font-family: var(--sans);
-                overflow: hidden;
-                transition: transform 0.1s;
-            }
-
-            .cal-event-apple:hover {
-                filter: brightness(1.2);
-            }
-
-            .apple-title {
                 font-size: 12px;
+                z-index: 2;
+                overflow: hidden;
+                pointer-events: auto;
+            }
+
+            .day-event-block .title {
                 font-weight: 600;
-                color: #fff;
-                margin-bottom: 2px;
+                color: var(--cream);
             }
 
-            .apple-subtitle {
-                font-size: 11px;
-                color: rgba(255, 255, 255, 0.6);
-            }
-
-            /* Current Time Indicator */
-            .now-indicator-line {
+            /* Custom "Now" Line */
+            .timeline-now {
                 position: absolute;
                 left: 0;
                 right: 0;
-                height: 2px;
-                background: #ff3b30;
-                z-index: 10;
+                height: 1px;
+                background: var(--gold);
+                z-index: 5;
+                pointer-events: none;
             }
-
-            .now-indicator-line::before {
+            .timeline-now::before {
                 content: "";
                 position: absolute;
-                left: 55px;
-                top: -4px;
-                width: 10px;
-                height: 10px;
-                background: #ff3b30;
+                left: 45px;
+                top: -3px;
+                width: 7px;
+                height: 7px;
+                background: var(--gold);
                 border-radius: 50%;
+                box-shadow: 0 0 8px var(--gold);
             }
 
-            /* Colors matching your classes */
-            .cal-event-apple.green {
-                border-left-color: #34c759;
-                background: rgba(52, 199, 89, 0.1);
+            /* ── Upcoming List Section ── */
+            .upcoming-section {
+                flex-shrink: 0;
             }
-            .cal-event-apple.orange {
-                border-left-color: #ff9500;
-                background: rgba(255, 149, 0, 0.1);
-            }
-            .cal-event-apple.dark-blue {
-                border-left-color: #0a4982;
-                background: rgba(10, 73, 130, 0.1);
+            .card-label.small {
+                font-size: 9px;
+                margin-bottom: 10px;
+                opacity: 0.7;
             }
 
             /* ── Spotify Layout ── */
@@ -794,11 +773,19 @@
 
                 <div class="col">
                     <div class="card expand">
-                        <div class="card-label">Day View</div>
+                        <div class="card-label">Schedule</div>
+
                         <div
-                            class="calendar-wrapper"
-                            id="calendar-container"
+                            class="day-view-scroll"
+                            id="day-view-container"
                         ></div>
+
+                        <div class="upcoming-section">
+                            <div class="card-label small">
+                                Upcoming This Week
+                            </div>
+                            <div id="upcoming-list-container"></div>
+                        </div>
                     </div>
 
                     <div class="card spotify-card">
@@ -1248,78 +1235,107 @@
             }
 
             function renderEvents(events, failedCalendars) {
-                const container = document.getElementById("calendar-container");
-                container.innerHTML = "";
+                const dayContainer =
+                    document.getElementById("day-view-container");
+                const listContainer = document.getElementById(
+                    "upcoming-list-container",
+                );
+
+                dayContainer.innerHTML = "";
+                listContainer.innerHTML = "";
 
                 const now = new Date();
-                const hourHeight = 80; // Must match --hour-height in CSS
-                const startHour = 8; // Start the grid at 8 AM
-                const endHour = 23; // End at 11 PM
+                const hourHeight = 60; // Must match .hour-block height in CSS
+                const startHour = 7; // Grid starts at 7 AM
+                const endHour = 23; // Grid ends at 11 PM
 
-                // 1. Create the Time Grid (Background lines)
+                // 1. Generate the Time Grid
                 const grid = document.createElement("div");
-                grid.className = "time-grid";
+                grid.className = "day-grid";
                 for (let i = startHour; i <= endHour; i++) {
-                    const row = document.createElement("div");
-                    row.className = "hour-row";
-                    const label =
-                        i === 12 ? "Noon" : i > 12 ? i - 12 + " PM" : i + " AM";
-                    row.innerHTML = `<div class="hour-label">${label}</div>`;
-                    grid.appendChild(row);
+                    const hourDiv = document.createElement("div");
+                    hourDiv.className = "hour-block";
+                    const label = i > 12 ? i - 12 + " PM" : i + " AM";
+                    hourDiv.innerHTML = `<span class="hour-text">${label}</span>`;
+                    grid.appendChild(hourDiv);
                 }
-                container.appendChild(grid);
+                dayContainer.appendChild(grid);
 
-                // 2. Create the Events Layer
-                const eventsLayer = document.createElement("div");
-                eventsLayer.className = "events-layer";
-                grid.appendChild(eventsLayer);
-
-                // 3. Render Today's Events
+                // 2. Filter Events
                 const todayEvents = events.filter((e) =>
                     isSameDay(e.start, now),
                 );
+                const futureEvents = events.filter(
+                    (e) => !isSameDay(e.start, now),
+                );
 
+                // 3. Render Today's Events on Grid
                 todayEvents.forEach((event) => {
                     const startMins =
                         (event.start.getHours() - startHour) * 60 +
                         event.start.getMinutes();
-                    const durationMins =
-                        (event.end - event.start) / (1000 * 60);
+                    const duration = (event.end - event.start) / (1000 * 60);
 
-                    const top = (startMins / 60) * hourHeight;
-                    const height = (durationMins / 60) * hourHeight;
+                    if (startMins >= 0) {
+                        const top = (startMins / 60) * hourHeight;
+                        const height = (duration / 60) * hourHeight;
+                        const extraClass = event.colorClass
+                            ? ` ${event.colorClass}`
+                            : "";
+
+                        const eventHTML = `
+                            <div class="day-event-block${extraClass}" style="top:${top}px; height:${height}px;">
+                                <div class="title">${event.title}</div>
+                            </div>`;
+                        grid.insertAdjacentHTML("beforeend", eventHTML);
+                    }
+                });
+
+                // 4. Draw "Now" Line
+                const currentMins =
+                    (now.getHours() - startHour) * 60 + now.getMinutes();
+                if (currentMins >= 0 && now.getHours() <= endHour) {
+                    const nowTop = (currentMins / 60) * hourHeight;
+                    grid.insertAdjacentHTML(
+                        "beforeend",
+                        `<div class="timeline-now" style="top:${nowTop}px"></div>`,
+                    );
+                    // Auto-scroll to now
+                    setTimeout(
+                        () =>
+                            dayContainer.scrollTo({
+                                top: nowTop - 60,
+                                behavior: "smooth",
+                            }),
+                        500,
+                    );
+                }
+
+                // 5. Render Upcoming List
+                let lastLabel = "";
+                futureEvents.slice(0, 4).forEach((event) => {
+                    const label = getDayLabel(event.start);
+                    if (label !== lastLabel) {
+                        listContainer.insertAdjacentHTML(
+                            "beforeend",
+                            `<div style="font-size:9px; color:var(--muted); margin:10px 0 5px; font-family:var(--mono); text-transform:uppercase;">${label}</div>`,
+                        );
+                        lastLabel = label;
+                    }
 
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
-
-                    const eventHTML = `
-                        <div class="cal-event-apple${extraClass}" style="top: ${top}px; height: ${height}px;">
-                            <div class="apple-title">${event.title}</div>
-                            ${durationMins > 30 ? `<div class="apple-subtitle">${formatTime(event.start)}</div>` : ""}
-                        </div>
-                    `;
-                    eventsLayer.insertAdjacentHTML("beforeend", eventHTML);
-                });
-
-                // 4. Render "Now" Line
-                if (now.getHours() >= startHour && now.getHours() <= endHour) {
-                    const nowMins =
-                        (now.getHours() - startHour) * 60 + now.getMinutes();
-                    const nowTop = (nowMins / 60) * hourHeight;
-                    eventsLayer.insertAdjacentHTML(
+                    listContainer.insertAdjacentHTML(
                         "beforeend",
-                        `<div class="now-indicator-line" style="top: ${nowTop}px"></div>`,
+                        `
+                        <div class="cal-event${extraClass}">
+                            <div class="cal-time">${formatTime(event.start)}</div>
+                            <div class="cal-title">${event.title}</div>
+                        </div>
+                    `,
                     );
-
-                    // Auto-scroll to current time
-                    setTimeout(() => {
-                        container.scrollTo({
-                            top: nowTop - 100,
-                            behavior: "smooth",
-                        });
-                    }, 500);
-                }
+                });
             }
 
             fetchAppleCalendars();
