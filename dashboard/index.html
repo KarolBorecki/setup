@@ -1077,45 +1077,56 @@
             ];
 
             async function fetchAppleCalendars() {
-                try {
-                    // Create an array of network requests for all calendars
-                    const fetchPromises = calendars.map(async (calendar) => {
+                let failedCalendars = [];
+
+                const fetchPromises = calendars.map(async (calendar) => {
+                    try {
                         const proxyUrl =
                             "https://corsproxy.io/?" +
                             encodeURIComponent(calendar.url);
                         const response = await fetch(proxyUrl);
 
-                        if (!response.ok)
-                            throw new Error(`Failed to fetch ${calendar.name}`);
+                        if (!response.ok) {
+                            throw new Error(
+                                `Network response was ${response.status}`,
+                            );
+                        }
 
                         const icsData = await response.text();
-                        // Parse the data and attach the specific color class to these events
                         return parseICS(icsData, calendar.colorClass);
-                    });
+                    } catch (error) {
+                        console.error(
+                            `Failed to fetch ${calendar.name}:`,
+                            error,
+                        );
+                        failedCalendars.push(calendar.name);
+                        return [];
+                    }
+                });
 
-                    // Wait for ALL calendars to finish downloading and parsing
+                try {
                     const allResults = await Promise.all(fetchPromises);
 
-                    // Flatten the array of arrays into one single list of events
                     let allEvents = allResults.flat();
 
-                    // Filter out past events and sort everything globally by time
                     const now = new Date();
                     allEvents = allEvents
                         .filter((e) => e.start > now)
                         .sort((a, b) => a.start - b.start);
 
-                    renderEvents(allEvents);
+                    renderEvents(allEvents, failedCalendars);
                 } catch (error) {
-                    console.error("Error fetching calendars:", error);
+                    console.error(
+                        "Critical error processing calendars:",
+                        error,
+                    );
                     document.getElementById("calendar-container").innerHTML = `
-                              <div class="cal-event dim">
-                                  <div class="cal-title">Failed to load events.</div>
-                              </div>`;
+                        <div class="cal-event dim">
+                            <div class="cal-title">Critical error loading calendar module.</div>
+                        </div>`;
                 }
             }
 
-            // 2. Parse ICS function (Updated to accept and apply colorClass)
             function parseICS(icsString, colorClass) {
                 const lines = icsString.split(/\r\n|\n|\r/);
                 const events = [];
@@ -1127,7 +1138,6 @@
                         currentEvent = {};
                     } else if (line.startsWith("END:VEVENT")) {
                         if (currentEvent && currentEvent.start) {
-                            // Attach the color class to the event object before saving it
                             currentEvent.colorClass = colorClass;
                             events.push(currentEvent);
                         }
@@ -1147,7 +1157,6 @@
                 return events;
             }
 
-            // Helper: Convert ICS time string to JS Date object
             function parseICSTime(dateStr) {
                 if (!dateStr || dateStr.length < 15) return new Date();
                 const y = dateStr.substring(0, 4);
@@ -1167,41 +1176,52 @@
                     minute: "2-digit",
                 });
             }
-
-            // 3. Render Events (Updated to use the event's assigned color)
-            function renderEvents(events) {
+            function renderEvents(events, failedCalendars) {
                 const container = document.getElementById("calendar-container");
                 container.innerHTML = "";
 
+                if (failedCalendars && failedCalendars.length > 0) {
+                    const failedNames = failedCalendars.join(", ");
+                    container.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                        <div class="cal-event dim" style="border-left-color: #ff3b30; background: rgba(255, 59, 48, 0.05);">
+                            <div class="cal-time" style="color: #ff3b30;">Warning</div>
+                            <div class="cal-title">Couldn't load: ${failedNames}</div>
+                        </div>
+                    `,
+                    );
+                }
+
                 if (events.length === 0) {
-                    container.innerHTML = `
-                              <div class="cal-event dim">
-                                  <div class="cal-title">No upcoming events</div>
-                              </div>`;
+                    container.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                        <div class="cal-event dim">
+                            <div class="cal-title">No upcoming events</div>
+                        </div>
+                    `,
+                    );
                     return;
                 }
 
-                // Render the next 4 upcoming events across all calendars
-                events.slice(0, 4).forEach((event) => {
+                events.slice(0, 5).forEach((event) => {
                     const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
-
-                    // Add a leading space if a class exists so it formats properly in HTML
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
 
                     const eventHTML = `
-                              <div class="cal-event${extraClass}">
-                                  <div class="cal-time">${timeString}</div>
-                                  <div class="cal-title">${event.title}</div>
-                              </div>
-                          `;
+                        <div class="cal-event${extraClass}">
+                            <div class="cal-time">${timeString}</div>
+                            <div class="cal-title">${event.title}</div>
+                        </div>
+                    `;
 
                     container.insertAdjacentHTML("beforeend", eventHTML);
                 });
             }
 
-            // Initialize
             fetchAppleCalendars();
 
             // SPOTIFY INTEGRATION
@@ -1213,9 +1233,6 @@
 
             let accessToken = null;
 
-            // --- FUNKCJE POMOCNICZE DLA PKCE ---
-
-            // Generuje losowy ciąg znaków (Code Verifier)
             function generateRandomString(length) {
                 let text = "";
                 const possible =
@@ -1228,7 +1245,6 @@
                 return text;
             }
 
-            // Haszuje Code Verifier tworząc Code Challenge
             async function generateCodeChallenge(codeVerifier) {
                 const encoder = new TextEncoder();
                 const data = encoder.encode(codeVerifier);
@@ -1242,14 +1258,10 @@
                     .replace(/=+$/, "");
             }
 
-            // --- LOGOWANIE I POBIERANIE TOKENA ---
-
-            // 1. Wyślij użytkownika do Spotify (z kodem weryfikacyjnym PKCE)
             async function authenticateSpotify() {
                 const codeVerifier = generateRandomString(128);
                 const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-                // Zapisujemy verifier w przeglądarce, żeby użyć go po powrocie ze Spotify
                 window.localStorage.setItem("code_verifier", codeVerifier);
 
                 const params = new URLSearchParams({
@@ -1264,7 +1276,6 @@
                 window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
             }
 
-            // 2. Wymień kod z URL na właściwy Access Token
             async function getAccessToken(code) {
                 const codeVerifier = localStorage.getItem("code_verifier");
 
@@ -1301,21 +1312,17 @@
                 }
             }
 
-            // 3. Inicjalizacja aplikacji
             async function initSpotify() {
-                // Sprawdzamy, czy w URL znajduje się parametr ?code=...
                 const urlParams = new URLSearchParams(window.location.search);
                 const code = urlParams.get("code");
 
                 if (code) {
-                    // Zostaliśmy przekierowani ze Spotify! Wymieniamy kod na token.
                     console.log(
                         "Znaleziono kod autoryzacji. Wymieniam na token...",
                     );
                     accessToken = await getAccessToken(code);
 
                     if (accessToken) {
-                        // Czyścimy pasek adresu z parametru ?code=...
                         window.history.replaceState(
                             {},
                             document.title,
@@ -1330,7 +1337,6 @@
                         authenticateSpotify();
                     }
                 } else {
-                    // Brak kodu w URL -> Użytkownik wchodzi na stronę po raz pierwszy.
                     console.log(
                         "Brak kodu. Przekierowuję do Spotify automatycznie...",
                     );
@@ -1338,12 +1344,8 @@
                 }
             }
 
-            // Uruchom aplikację po załadowaniu
             initSpotify();
 
-            // --- RESZTA KODU POZOSTAJE BEZ ZMIAN ---
-
-            // Global state to track if music is currently playing
             let isPlaying = false;
 
             async function fetchNowPlaying() {
@@ -1370,12 +1372,10 @@
 
                     const data = await response.json();
 
-                    // Track play state and update button icon
                     isPlaying = data.is_playing;
                     document.getElementById("play-pause-btn").textContent =
                         isPlaying ? "⏸" : "⏯";
 
-                    // Update UI
                     document.getElementById("track-name").textContent =
                         data.item.name;
                     document.getElementById("artist-name").textContent =
@@ -1385,7 +1385,6 @@
                     albumArt.src = data.item.album.images[0].url;
                     albumArt.style.display = "block";
 
-                    // Fetch the queue every time we update Now Playing
                     fetchSpotifyQueue();
                 } catch (error) {
                     console.error("Error fetching Spotify data:", error);
@@ -1399,13 +1398,11 @@
                 if (action === "next") endpoint = "next";
                 if (action === "previous") endpoint = "previous";
                 if (action === "play/pause") {
-                    // Now it knows whether to send a "pause" or "play" command!
                     endpoint = isPlaying ? "pause" : "play";
                     method = "PUT";
                 }
 
                 try {
-                    // Note: The template literal is fixed below (${endpoint})
                     await fetch(
                         `https://api.spotify.com/v1/me/player/${endpoint}`,
                         {
@@ -1414,7 +1411,6 @@
                         },
                     );
 
-                    // Wait half a second for Spotify servers to catch up before refreshing UI
                     setTimeout(fetchNowPlaying, 500);
                 } catch (error) {
                     console.error("Error controlling Spotify:", error);
@@ -1442,7 +1438,6 @@
                         return;
                     }
 
-                    // Grab the next 4 songs in the queue
                     data.queue.slice(0, 4).forEach((track) => {
                         const artistName = track.artists
                             .map((a) => a.name)
@@ -1463,7 +1458,7 @@
                 }
             }
 
-            // ── Weather ───────────────────────────────────────────────────
+            //  Weather
             async function fetchWeather() {
                 try {
                     const r = await fetch(
@@ -1479,29 +1474,22 @@
 
                     let textColor, borderColor;
 
-                    // Apply new color gradient based on temperature
                     if (temp < 0) {
-                        // Freezing (Purple)
                         textColor = "#9c27b0";
                         borderColor = "rgba(156, 39, 176, 0.3)";
                     } else if (temp < 5) {
-                        // Very Cold (Dark Blue)
                         textColor = "#0288d1";
                         borderColor = "rgba(2, 136, 209, 0.3)";
                     } else if (temp < 15) {
-                        // Cool (Light Blue - triggers at < 15)
                         textColor = "#6ec6ff";
                         borderColor = "rgba(110, 198, 255, 0.3)";
                     } else if (temp < 20) {
-                        // Mild (Green)
                         textColor = "#4caf78";
                         borderColor = "rgba(76, 175, 120, 0.3)";
                     } else if (temp < 25) {
-                        // Warm (Yellow/Orange)
                         textColor = "#e8a820";
                         borderColor = "rgba(232, 168, 32, 0.3)";
                     } else {
-                        // Hot (Red)
                         textColor = "#ff5252";
                         borderColor = "rgba(255, 82, 82, 0.3)";
                     }
@@ -1581,7 +1569,7 @@
             }
             updateDisplay();
 
-            // ── Habits ────────────────────────────────────────────────────
+            //  Habits
             const HABITS = [
                 "Mindfulness",
                 "Workout",
@@ -1617,7 +1605,7 @@
             }
             renderHabits();
 
-            // ── News helpers ──────────────────────────────────────────────
+            //  News helpers
             function renderNews(listId, items) {
                 const ul = document.getElementById(listId);
                 ul.innerHTML = "";
