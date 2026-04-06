@@ -805,6 +805,8 @@
 
             // 2. Grab the token from the URL after Spotify sends you back
             function getAccessTokenFromUrl() {
+                console.log("window:", window);
+                console.log("location: ", window.location);
                 const hash = window.location.code;
                 console.log("hash:", hash);
                 if (hash) {
