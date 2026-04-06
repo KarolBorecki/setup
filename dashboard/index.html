@@ -772,8 +772,8 @@
             const appleCalendarUrl =
                 "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmIvqcwqHmGXEHMfBOpcr7dO-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY";
 
-            // We use a CORS proxy to prevent browser security blocks when fetching iCloud data
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(appleCalendarUrl)}`;
+            const proxyUrl =
+                "https://corsproxy.io/?" + encodeURIComponent(appleCalendarUrl);
 
             async function fetchAppleCalendar() {
                 try {
