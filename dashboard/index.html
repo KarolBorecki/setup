@@ -1083,27 +1083,16 @@
 
             async function fetchAppleCalendars() {
                 let failedCalendars = [];
-
                 const fetchPromises = calendars.map(async (calendar) => {
                     try {
                         const proxyUrl =
                             "https://corsproxy.io/?" +
                             encodeURIComponent(calendar.url);
                         const response = await fetch(proxyUrl);
-
-                        if (!response.ok) {
-                            throw new Error(
-                                `Network response was ${response.status}`,
-                            );
-                        }
-
+                        if (!response.ok) throw new Error();
                         const icsData = await response.text();
                         return parseICS(icsData, calendar.colorClass);
                     } catch (error) {
-                        console.error(
-                            `Failed to fetch ${calendar.name}:`,
-                            error,
-                        );
                         failedCalendars.push(calendar.name);
                         return [];
                     }
@@ -1111,24 +1100,28 @@
 
                 try {
                     const allResults = await Promise.all(fetchPromises);
-
                     let allEvents = allResults.flat();
 
                     const now = new Date();
-                    allEvents = allEvents
-                        .filter((e) => e.start > now)
-                        .sort((a, b) => a.start - b.start);
-
-                    renderEvents(allEvents, failedCalendars);
-                } catch (error) {
-                    console.error(
-                        "Critical error processing calendars:",
-                        error,
+                    const startOfToday = new Date(
+                        now.getFullYear(),
+                        now.getMonth(),
+                        now.getDate(),
                     );
-                    document.getElementById("calendar-container").innerHTML = `
-                        <div class="cal-event dim">
-                            <div class="cal-title">Critical error loading calendar module.</div>
-                        </div>`;
+
+                    // Sort all events globally
+                    allEvents.sort((a, b) => a.start - b.start);
+
+                    // Filter events that haven't ended yet today, or are in the future
+                    const validEvents = allEvents.filter((e) => {
+                        const end =
+                            e.end || new Date(e.start.getTime() + 3600000); // fallback 1hr
+                        return end > now || e.start > now;
+                    });
+
+                    renderEvents(validEvents, failedCalendars);
+                } catch (error) {
+                    console.error("Critical error:", error);
                 }
             }
 
@@ -1173,7 +1166,6 @@
                 return new Date(Date.UTC(y, m, d, h, min, s));
             }
 
-            // Helper: Format Date
             function formatTime(date) {
                 if (!date) return "";
                 return date.toLocaleTimeString([], {
@@ -1181,7 +1173,6 @@
                     minute: "2-digit",
                 });
             }
-            // Helper: Check if two dates fall on the exact same day
             function isSameDay(d1, d2) {
                 return (
                     d1.getFullYear() === d2.getFullYear() &&
@@ -1190,7 +1181,6 @@
                 );
             }
 
-            // Helper: Get a clean, human-readable label for the day
             function getDayLabel(date) {
                 const today = new Date();
                 const tomorrow = new Date();
@@ -1210,67 +1200,97 @@
             function renderEvents(events, failedCalendars) {
                 const container = document.getElementById("calendar-container");
                 container.innerHTML = "";
+                const now = new Date();
 
-                // 1. Render Error Warnings (if any)
-                if (failedCalendars && failedCalendars.length > 0) {
-                    const failedNames = failedCalendars.join(", ");
+                // 1. Handle Warnings
+                if (failedCalendars.length > 0) {
                     container.insertAdjacentHTML(
                         "beforeend",
-                        `
-                        <div class="cal-event dim" style="border-left-color: #ff3b30; background: rgba(255, 59, 48, 0.05);">
-                            <div class="cal-time" style="color: #ff3b30;">Warning</div>
-                            <div class="cal-title">Couldn't load: ${failedNames}</div>
-                        </div>
-                        `,
+                        `<div class="cal-event dim" style="border-left-color: #ff3b30; font-size:10px; padding:5px 10px; margin-bottom:10px;">Warning: ${failedCalendars.join(", ")} failed.</div>`,
                     );
                 }
 
-                // 2. Render Empty State
-                if (events.length === 0) {
+                // 2. Split events into Today vs Upcoming
+                const todayEvents = events.filter((e) =>
+                    isSameDay(e.start, now),
+                );
+                const upcomingEvents = events.filter(
+                    (e) => !isSameDay(e.start, now),
+                );
+
+                // ── SECTION: TODAY TIMELINE ──
+                if (todayEvents.length > 0) {
                     container.insertAdjacentHTML(
                         "beforeend",
-                        `
-                        <div class="cal-event dim">
-                            <div class="cal-title">No upcoming events</div>
-                        </div>
-                        `,
+                        `<div class="card-label" style="margin-top:0; border:none;">Today</div>`,
                     );
-                    return;
+
+                    let timelineHTML = `<div class="timeline-container" id="timeline">`;
+
+                    // Calculate "Now" position
+                    // We assume the timeline represents a window from the earliest event to the latest
+                    const dayStart = todayEvents[0].start.getTime();
+                    const dayEnd =
+                        todayEvents[todayEvents.length - 1].end.getTime();
+                    const totalRange = dayEnd - dayStart;
+                    const nowPos =
+                        ((now.getTime() - dayStart) / totalRange) * 100;
+
+                    // Add "Now" dot if it falls within the range
+                    if (nowPos >= 0 && nowPos <= 100) {
+                        timelineHTML += `<div class="now-indicator" style="top: ${nowPos}%"></div>`;
+                    }
+
+                    todayEvents.forEach((event) => {
+                        const extraClass = event.colorClass
+                            ? ` ${event.colorClass}`
+                            : "";
+                        timelineHTML += `
+                            <div class="cal-event${extraClass}" style="margin-left: 10px;">
+                                <div class="cal-time">${formatTime(event.start)}</div>
+                                <div class="cal-title">${event.title}</div>
+                            </div>`;
+                    });
+
+                    timelineHTML += `</div>`;
+                    container.insertAdjacentHTML("beforeend", timelineHTML);
                 }
 
-                // 3. Render Events Grouped by Day
-                let currentDayLabel = "";
+                // ── SECTION: UPCOMING THIS WEEK ──
+                if (upcomingEvents.length > 0) {
+                    container.insertAdjacentHTML(
+                        "beforeend",
+                        `<div class="card-label" style="margin-top:20px; border:none;">Upcoming Week</div>`,
+                    );
 
-                events.slice(0, 6).forEach((event) => {
-                    const dayLabel = getDayLabel(event.start);
+                    let currentDayLabel = "";
+                    upcomingEvents.slice(0, 5).forEach((event) => {
+                        const dayLabel = getDayLabel(event.start);
 
-                    // If we hit a new day in the chronological list, insert a minimalist date divider
-                    if (dayLabel !== currentDayLabel) {
+                        if (dayLabel !== currentDayLabel) {
+                            container.insertAdjacentHTML(
+                                "beforeend",
+                                `<div style="font-size: 10px; color: var(--muted); margin: 15px 0 5px 4px; font-family: var(--mono); text-transform: uppercase;">${dayLabel}</div>`,
+                            );
+                            currentDayLabel = dayLabel;
+                        }
+
+                        const extraClass = event.colorClass
+                            ? ` ${event.colorClass}`
+                            : "";
                         container.insertAdjacentHTML(
                             "beforeend",
                             `
-                            <div style="font-size: 10px; color: var(--muted); margin: 12px 0 6px 4px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;">
-                                ${dayLabel}
+                            <div class="cal-event${extraClass}">
+                                <div class="cal-time">${formatTime(event.start)}</div>
+                                <div class="cal-title">${event.title}</div>
                             </div>
-                            `,
+                        `,
                         );
-                        currentDayLabel = dayLabel; // Update the tracker
-                    }
-
-                    const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
-                    const extraClass = event.colorClass
-                        ? ` ${event.colorClass}`
-                        : "";
-
-                    const eventHTML = `
-                        <div class="cal-event${extraClass}">
-                            <div class="cal-time">${timeString}</div>
-                            <div class="cal-title">${event.title}</div>
-                        </div>
-                    `;
-
-                    container.insertAdjacentHTML("beforeend", eventHTML);
-                });
+                    });
+                } else if (todayEvents.length === 0) {
+                    container.innerHTML = `<div class="cal-event dim"><div class="cal-title">No events this week</div></div>`;
+                }
             }
 
             fetchAppleCalendars();
