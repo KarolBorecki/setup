@@ -744,6 +744,35 @@
             .cal-event.orange:hover {
                 background: rgba(211, 84, 0, 0.09);
             }
+            .title-cw {
+                color: #5dade2 !important;
+            }
+            .title-lab {
+                color: #a569bd !important;
+            }
+            .title-proj {
+                color: var(--green) !important;
+            }
+            .title-wyk {
+                color: var(--muted) !important;
+            }
+            .title-alert {
+                color: #ff4d4d !important;
+                font-weight: bold;
+                text-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
+            }
+
+            @keyframes pulse-border {
+                0% {
+                    border-left-color: #ff3b30;
+                }
+                50% {
+                    border-left-color: #ff9500;
+                }
+                100% {
+                    border-left-color: #ff3b30;
+                }
+            }
 
             .cal-time {
                 font-family: var(--mono);
@@ -1701,6 +1730,18 @@
                 });
             }
 
+            function getTitleColorClass(title) {
+                if (!title) return "";
+                const t = title.toUpperCase();
+                if (t.startsWith("[CW]")) return "title-cw";
+                if (t.startsWith("[LAB]")) return "title-lab";
+                if (t.startsWith("[PROJ]")) return "title-proj";
+                if (t.startsWith("[WYK]")) return "title-wyk";
+                if (t.startsWith("[KOLOS]") || t.startsWith("[EGZAMIN]"))
+                    return "title-alert";
+                return "";
+            }
+
             function renderEvents(events, failedCalendars) {
                 console.log("Got events:", events);
                 const dayContainer =
@@ -1753,9 +1794,16 @@
                         const extraClass = event.colorClass
                             ? ` ${event.colorClass}`
                             : "";
+
+                        const titlePrefixClass = getTitleColorClass(
+                            event.title,
+                        );
+
                         grid.insertAdjacentHTML(
                             "beforeend",
-                            `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;"><div class="title">${event.title}</div></div>`,
+                            `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
+                                <div class="title ${titlePrefixClass}">${event.title}</div>
+                            </div>`,
                         );
                     }
                 });
@@ -1799,12 +1847,15 @@
                         ? ` ${event.colorClass}`
                         : "";
                     const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
+
+                    const titlePrefixClass = getTitleColorClass(event.title);
+
                     listContainer.insertAdjacentHTML(
                         "beforeend",
                         `
                         <div class="cal-event${extraClass}">
                             <div class="cal-time">${timeString}</div>
-                            <div class="cal-title">${event.title}</div>
+                            <div class="cal-title ${titlePrefixClass}">${event.title}</div>
                         </div>`,
                     );
                 });
