@@ -311,43 +311,39 @@
             /* ── Bookmarks (in col 1 now) ── */
             .bookmarks {
                 display: flex;
-                flex-direction: column;
-                gap: 16px;
-                padding: 20px;
-                background: rgba(200, 170, 90, 0.03);
+                gap: 8px;
+                flex-wrap: wrap;
+                padding: 10px 12px;
+                background: var(--bg3);
                 border: 1px solid var(--border);
-                border-radius: 20px;
-                width: fit-content;
-                margin: 20px auto;
-            }
-
-            /* Individual horizontal rows */
-            .bm-row {
-                display: flex;
-                flex-direction: row;
-                gap: 15px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            /* Horizontal line between rows */
-            .bm-separator {
-                width: 100%;
-                height: 1px;
-                background: var(--border2);
-                opacity: 0.3;
+                border-radius: 12px;
+                flex-shrink: 0;
+                animation: fadeUp 0.5s ease both;
             }
 
             .bm {
-                transition:
-                    transform 0.2s ease,
-                    color 0.2s ease;
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: rgba(150, 150, 150, 0.04);
+                border: 1px solid transparent;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--muted);
+                transition: all 0.2s ease;
+                text-decoration: none;
             }
-
+            .bm svg {
+                width: 16px;
+                height: 16px;
+                stroke-width: 1.5px;
+            }
             .bm:hover {
-                transform: translateY(
-                    -3px
-                ); /* Hover up feels natural in horizontal rows */
+                transform: translateY(-2px);
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+                background: rgba(200, 150, 58, 0.12);
+                border-color: var(--border2);
                 color: var(--gold);
             }
 
