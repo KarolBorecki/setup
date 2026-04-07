@@ -24,6 +24,11 @@
                 --border2: rgba(200, 170, 90, 0.22);
                 --gold: #c8973a;
                 --gold-dim: #8a6420;
+                --dark-green: #2e7d32;
+                --dark-blue: #1565c0;
+                --yellow: #fbc02d;
+                --purple: #8e44ad;
+                --orange: #d35400;
                 --cream: #ece8de;
                 --muted: #7a7060;
                 --muted2: #504840;
@@ -698,6 +703,46 @@
             }
             .cal-event.green:hover {
                 background: rgba(76, 175, 120, 0.09);
+            }
+
+            .cal-event.dark-green {
+                border-left-color: var(--dark-green);
+                background: rgba(46, 125, 50, 0.05);
+            }
+            .cal-event.dark-green:hover {
+                background: rgba(46, 125, 50, 0.09);
+            }
+
+            .cal-event.dark-blue {
+                border-left-color: var(--dark-blue);
+                background: rgba(21, 101, 192, 0.05);
+            }
+            .cal-event.dark-blue:hover {
+                background: rgba(21, 101, 192, 0.09);
+            }
+
+            .cal-event.yellow {
+                border-left-color: var(--yellow);
+                background: rgba(251, 192, 45, 0.05);
+            }
+            .cal-event.yellow:hover {
+                background: rgba(251, 192, 45, 0.09);
+            }
+
+            .cal-event.purple {
+                border-left-color: var(--purple);
+                background: rgba(142, 68, 173, 0.05);
+            }
+            .cal-event.purple:hover {
+                background: rgba(142, 68, 173, 0.09);
+            }
+
+            .cal-event.orange {
+                border-left-color: var(--orange);
+                background: rgba(211, 84, 0, 0.05);
+            }
+            .cal-event.orange:hover {
+                background: rgba(211, 84, 0, 0.09);
             }
 
             .cal-time {
@@ -1532,27 +1577,27 @@
                 {
                     name: "Private",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY",
-                    colorClass: "",
+                    colorClass: "dark-green",
                 },
                 {
                     name: "Exams",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkAOEMf7v8Z8Hkcnjo0oOQyeqn_UGv3TLQlhEr5mN7xLG5okW3cF4_CvGfCHYVvvdBA",
-                    colorClass: "green",
+                    colorClass: "orange",
                 },
                 {
                     name: "Holidays",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                    colorClass: "dim",
+                    colorClass: "yellow",
                 },
                 {
                     name: "School",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkC0WuIMLarWx6-sl4FVEhVW0cJwAdPUB0hOujpXACsaAgMbguioo9ic4d5-jUts5MM",
-                    colorClass: "dim",
+                    colorClass: "dark-blue",
                 },
                 {
                     name: "Work",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                    colorClass: "dim",
+                    colorClass: "gold",
                 },
             ];
 
@@ -1657,6 +1702,7 @@
             }
 
             function renderEvents(events, failedCalendars) {
+                console.log("Got events:", events);
                 const dayContainer =
                     document.getElementById("day-view-container");
                 const listContainer = document.getElementById(
