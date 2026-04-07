@@ -1796,6 +1796,9 @@
                     (e) => !isSameDay(e.start, now),
                 );
 
+                console.log("todayEvents", todayEvents);
+                console.log("futureEvents", futureEvents);
+
                 todayEvents.forEach((event) => {
                     const startMins =
                         event.start.getHours() * 60 + event.start.getMinutes();
@@ -1808,6 +1811,9 @@
                         ? ` ${event.colorClass}`
                         : "";
                     const titlePrefixClass = getTitleColorClass(event.title);
+                    console.log("event", event);
+                    console.log("top", top);
+                    console.log("height", height);
 
                     grid.insertAdjacentHTML(
                         "beforeend",
