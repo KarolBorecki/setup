@@ -50,10 +50,26 @@
             body {
                 height: 100%;
                 width: 100%;
-                overflow: hidden;
                 background: var(--bg);
                 color: var(--cream);
                 font-family: var(--sans);
+            }
+
+            /* Only lock overflow on wide (true desktop) layouts */
+            @media (min-width: 1100px) {
+                html,
+                body {
+                    overflow: hidden;
+                }
+            }
+
+            @media (max-width: 1099px) {
+                html,
+                body {
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                    height: auto;
+                }
             }
 
             body::before {
@@ -86,15 +102,111 @@
             .layout {
                 position: relative;
                 z-index: 2;
-                height: 100vh;
                 padding: 18px 22px;
             }
 
+            /* ── Grid layouts ── */
+
+            /* Wide: 3 columns, full viewport height */
             .grid {
                 display: grid;
-                grid-template-columns: 390px 1.15fr 0.95fr;
                 gap: 14px;
-                height: 100%;
+            }
+
+            @media (min-width: 1100px) {
+                .layout {
+                    height: 100vh;
+                }
+                .grid {
+                    grid-template-columns: 390px 1.15fr 0.95fr;
+                    grid-template-rows: 1fr;
+                    height: 100%;
+                }
+                .col {
+                    overflow: hidden;
+                }
+                .col-3 {
+                    grid-column: 3;
+                    grid-row: 1;
+                }
+            }
+
+            /* Medium: 2 columns on top, col3 spans full width at bottom */
+            @media (min-width: 700px) and (max-width: 1099px) {
+                .layout {
+                    min-height: 100vh;
+                }
+                .grid {
+                    grid-template-columns: 360px 1fr;
+                    grid-template-rows: auto auto;
+                }
+                .col-1 {
+                    grid-column: 1;
+                    grid-row: 1;
+                }
+                .col-2 {
+                    grid-column: 2;
+                    grid-row: 1;
+                }
+                .col-3 {
+                    grid-column: 1 / -1;
+                    grid-row: 2;
+                    /* Horizontal layout for col-3 cards */
+                    flex-direction: row !important;
+                    flex-wrap: wrap;
+                }
+                .col-3 .card {
+                    flex: 1 1 280px;
+                    min-width: 260px;
+                }
+                .col-3 .spotify-card {
+                    flex: 2 1 480px;
+                }
+                /* Remove fixed expand behavior since we're horizontal */
+                .col-3 .card.expand {
+                    flex: 1 1 280px;
+                    min-height: 280px;
+                }
+            }
+
+            /* Narrow: single column stack */
+            @media (max-width: 699px) {
+                .layout {
+                    padding: 12px 14px;
+                    min-height: 100vh;
+                }
+                .grid {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: auto;
+                }
+                .col-1,
+                .col-2,
+                .col-3 {
+                    grid-column: 1;
+                }
+                .col-1 {
+                    grid-row: 1;
+                }
+                .col-2 {
+                    grid-row: 2;
+                }
+                .col-3 {
+                    grid-row: 3;
+                }
+
+                .clock {
+                    font-size: 72px !important;
+                }
+                .spotify-layout {
+                    flex-direction: column !important;
+                }
+                .spotify-queue-container {
+                    border-left: none !important;
+                    border-top: 1px solid var(--border);
+                    padding-left: 0 !important;
+                    padding-top: 12px;
+                    height: auto !important;
+                }
             }
 
             .col {
@@ -102,7 +214,13 @@
                 flex-direction: column;
                 gap: 12px;
                 min-height: 0;
-                overflow: hidden;
+            }
+
+            /* On wide screens, cols need overflow hidden for scrollable cards */
+            @media (min-width: 1100px) {
+                .col {
+                    overflow: hidden;
+                }
             }
 
             /* Scrollbars */
@@ -159,9 +277,19 @@
                 );
                 pointer-events: none;
             }
-            .card.expand {
-                flex: 1;
-                min-height: 0;
+
+            /* expand only works on wide layout */
+            @media (min-width: 1100px) {
+                .card.expand {
+                    flex: 1;
+                    min-height: 0;
+                }
+            }
+            @media (max-width: 1099px) {
+                .card.expand {
+                    min-height: 280px;
+                    max-height: 420px;
+                }
             }
 
             .card-label {
@@ -308,7 +436,7 @@
                 margin-top: 1px;
             }
 
-            /* ── Bookmarks (in col 1 now) ── */
+            /* ── Bookmarks ── */
             .bookmarks {
                 display: flex;
                 flex-direction: column;
@@ -356,7 +484,7 @@
             }
 
             .bm svg {
-                width: 18px; /* Slightly larger for better visibility */
+                width: 18px;
                 height: 18px;
                 stroke-width: 2px;
             }
@@ -608,6 +736,14 @@
                 padding-right: 5px;
             }
 
+            /* On non-wide layouts, give day view a fixed height */
+            @media (max-width: 1099px) {
+                .day-view-scroll {
+                    max-height: 360px;
+                    flex: none;
+                }
+            }
+
             .day-grid {
                 position: relative;
                 width: 100%;
@@ -726,7 +862,6 @@
             .cal-event.green:hover {
                 background: rgba(76, 175, 120, 0.09);
             }
-
             .cal-event.dark-green {
                 border-left-color: var(--dark-green);
                 background: rgba(46, 125, 50, 0.05);
@@ -734,7 +869,6 @@
             .cal-event.dark-green:hover {
                 background: rgba(46, 125, 50, 0.09);
             }
-
             .cal-event.dark-blue {
                 border-left-color: var(--dark-blue);
                 background: rgba(21, 101, 192, 0.05);
@@ -742,7 +876,6 @@
             .cal-event.dark-blue:hover {
                 background: rgba(21, 101, 192, 0.09);
             }
-
             .cal-event.yellow {
                 border-left-color: var(--yellow);
                 background: rgba(251, 192, 45, 0.05);
@@ -750,7 +883,6 @@
             .cal-event.yellow:hover {
                 background: rgba(251, 192, 45, 0.09);
             }
-
             .cal-event.purple {
                 border-left-color: var(--purple);
                 background: rgba(142, 68, 173, 0.05);
@@ -758,7 +890,6 @@
             .cal-event.purple:hover {
                 background: rgba(142, 68, 173, 0.09);
             }
-
             .cal-event.orange {
                 border-left-color: var(--orange);
                 background: rgba(211, 84, 0, 0.05);
@@ -766,6 +897,7 @@
             .cal-event.orange:hover {
                 background: rgba(211, 84, 0, 0.09);
             }
+
             .title-cw {
                 color: #5dade2 !important;
             }
@@ -842,7 +974,6 @@
                 flex-shrink: 0;
             }
 
-            /* Placeholder art when nothing is playing */
             .spotify-cover-placeholder {
                 height: 130px;
                 width: 130px;
@@ -932,8 +1063,6 @@
             .icon-btn.primary:hover {
                 color: var(--gold);
             }
-
-            /* Disabled controls state */
             .icon-btn:disabled {
                 opacity: 0.2;
                 cursor: default;
@@ -1114,7 +1243,7 @@
         <div class="layout">
             <div class="grid">
                 <!-- COL 1 -->
-                <div class="col">
+                <div class="col col-1">
                     <!-- Clock (no card) -->
                     <div class="clock-section">
                         <div class="clock" id="clock">00:00</div>
@@ -1165,6 +1294,7 @@
                             >
                         </div>
                     </div>
+
                     <div class="bookmarks">
                         <div class="bm-row">
                             <a
@@ -1260,9 +1390,7 @@
                                 </svg>
                             </a>
                         </div>
-
                         <div class="bm-separator"></div>
-
                         <div class="bm-row">
                             <a
                                 href="https://github.com"
@@ -1336,9 +1464,7 @@
                                 </svg>
                             </a>
                         </div>
-
                         <div class="bm-separator"></div>
-
                         <div class="bm-row">
                             <a
                                 href="https://www.youtube.com"
@@ -1414,11 +1540,10 @@
                             </a>
                         </div>
                     </div>
+
                     <!-- Pomodoro -->
                     <div class="card pomodoro-card">
                         <div class="card-label">Focus Timer</div>
-
-                        <!-- Preset buttons -->
                         <div class="pom-presets">
                             <button
                                 class="preset-btn"
@@ -1467,7 +1592,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <div class="ring-wrap">
                             <svg
                                 class="progress-ring"
@@ -1502,11 +1626,9 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="pom-sessions">
                             Sessions today: <span id="session-count">0</span>
                         </div>
-
                         <div class="pom-btns">
                             <button
                                 class="btn primary"
@@ -1529,15 +1651,13 @@
                 </div>
 
                 <!-- COL 2 -->
-                <div class="col">
+                <div class="col col-2">
                     <div class="card expand">
                         <div class="card-label">Schedule</div>
-
                         <div
                             class="day-view-scroll"
                             id="day-view-container"
                         ></div>
-
                         <div class="upcoming-section">
                             <div
                                 class="card-label"
@@ -1554,9 +1674,9 @@
                     </div>
                 </div>
 
-                <!-- COL 3 -->
-                <div class="col">
-                    <!-- Spotify (now at top of col 3) -->
+                <!-- COL 3 — moves to bottom row on medium/narrow screens -->
+                <div class="col col-3">
+                    <!-- Spotify -->
                     <div class="card spotify-card">
                         <div class="card-label">Spotify</div>
                         <div id="spotify-container" class="spotify-layout">
@@ -1574,7 +1694,6 @@
                                 >
                                     ♪
                                 </div>
-
                                 <div class="spotify-details">
                                     <div class="spotify-info">
                                         <div
@@ -1620,7 +1739,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="spotify-queue-container">
                                 <div class="queue-label">Next in Queue</div>
                                 <div id="spotify-queue" class="spotify-queue">
@@ -1759,7 +1877,6 @@
                 try {
                     const allResults = await Promise.all(fetchPromises);
                     let allEvents = allResults.flat();
-                    const now = new Date();
                     allEvents.sort((a, b) => a.start - b.start);
                     const validEvents = allEvents.filter((e) => {
                         const now = new Date();
@@ -1780,7 +1897,6 @@
                 const lines = icsString.split(/\r\n|\n|\r/);
                 const events = [];
                 let currentEvent = null;
-
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
                     if (line.startsWith("BEGIN:VEVENT")) {
@@ -1792,50 +1908,10 @@
                         }
                         currentEvent = null;
                     } else if (currentEvent) {
-                        // Split by first colon to separate property from value
                         const firstColon = line.indexOf(":");
                         if (firstColon === -1) continue;
-
                         const prop = line.substring(0, firstColon);
                         const val = line.substring(firstColon + 1);
-
-                        if (prop.startsWith("SUMMARY")) {
-                            currentEvent.title = val;
-                        } else if (prop.startsWith("DTSTART")) {
-                            const res = parseICSTime(val);
-                            currentEvent.start = res.date;
-                            if (res.isAllDay) currentEvent.allDay = true;
-                        } else if (prop.startsWith("DTEND")) {
-                            currentEvent.end = parseICSTime(val).date;
-                        }
-                    }
-                }
-                return events;
-            }
-
-            function parseICS(icsString, colorClass) {
-                const lines = icsString.split(/\r\n|\n|\r/);
-                const events = [];
-                let currentEvent = null;
-
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (line.startsWith("BEGIN:VEVENT")) {
-                        currentEvent = { allDay: false };
-                    } else if (line.startsWith("END:VEVENT")) {
-                        if (currentEvent && currentEvent.start) {
-                            currentEvent.colorClass = colorClass;
-                            events.push(currentEvent);
-                        }
-                        currentEvent = null;
-                    } else if (currentEvent) {
-                        // Split by first colon to separate property from value
-                        const firstColon = line.indexOf(":");
-                        if (firstColon === -1) continue;
-
-                        const prop = line.substring(0, firstColon);
-                        const val = line.substring(firstColon + 1);
-
                         if (prop.startsWith("SUMMARY")) {
                             currentEvent.title = val;
                         } else if (prop.startsWith("DTSTART")) {
@@ -1852,24 +1928,17 @@
 
             function parseICSTime(dateStr) {
                 if (!dateStr) return { date: new Date(), isAllDay: false };
-
                 const y = parseInt(dateStr.substring(0, 4)),
                     m = parseInt(dateStr.substring(4, 6)) - 1,
                     d = parseInt(dateStr.substring(6, 8));
-
-                // If string is exactly 8 chars (YYYYMMDD), it's an All-Day event
-                if (dateStr.length <= 8) {
+                if (dateStr.length <= 8)
                     return { date: new Date(y, m, d, 0, 0, 0), isAllDay: true };
-                }
-
                 const h = parseInt(dateStr.substring(9, 11)),
                     min = parseInt(dateStr.substring(11, 13)),
                     s = parseInt(dateStr.substring(13, 15));
-
                 const date = dateStr.endsWith("Z")
                     ? new Date(Date.UTC(y, m, d, h, min, s))
                     : new Date(y, m, d, h, min, s);
-
                 return { date, isAllDay: false };
             }
 
@@ -1931,31 +2000,18 @@
                 );
                 dayContainer.innerHTML = "";
                 listContainer.innerHTML = "";
-
                 const now = new Date();
                 const hourHeight = 60;
-
-                const startHour = 0;
-                const endHour = 23;
-
                 const grid = document.createElement("div");
                 grid.className = "day-grid";
-
-                for (let i = startHour; i <= endHour; i++) {
+                for (let i = 0; i <= 23; i++) {
                     const hourDiv = document.createElement("div");
                     hourDiv.className = "hour-block";
-
                     let label;
-                    if (i === 0) {
-                        label = "12 AM";
-                    } else if (i === 12) {
-                        label = "12 PM";
-                    } else if (i > 12) {
-                        label = i - 12 + " PM";
-                    } else {
-                        label = i + " AM";
-                    }
-
+                    if (i === 0) label = "12 AM";
+                    else if (i === 12) label = "12 PM";
+                    else if (i > 12) label = i - 12 + " PM";
+                    else label = i + " AM";
                     hourDiv.innerHTML = `<span class="hour-text">${label}</span>`;
                     grid.appendChild(hourDiv);
                 }
@@ -1968,25 +2024,19 @@
                     (e) => !isSameDay(e.start, now),
                 );
 
-                console.log("todayEvents", todayEvents);
-                console.log("futureEvents", futureEvents);
-
                 todayEvents.forEach((event) => {
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
                     const titlePrefixClass = getTitleColorClass(event.title);
-
                     if (event.allDay) {
-                        // Render as a sticky-style bar at the top of the grid
                         grid.insertAdjacentHTML(
                             "beforeend",
-                            `<div class="day-event-block all-day-event${extraClass}" style="top:0; height:30px; width:100%; z-index:10;">
-                                <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
+                            `<div class="day-event-block all-day-event${extraClass}" style="top:0;height:30px;width:100%;z-index:10;">
+                              <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
                             </div>`,
                         );
                     } else {
-                        // Standard time-based rendering
                         const startMins =
                             event.start.getHours() * 60 +
                             event.start.getMinutes();
@@ -1997,12 +2047,9 @@
                             (duration / 60) * hourHeight,
                             22,
                         );
-
                         grid.insertAdjacentHTML(
                             "beforeend",
-                            `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
-                                <div class="title ${titlePrefixClass}">${event.title}</div>
-                            </div>`,
+                            `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;"><div class="title ${titlePrefixClass}">${event.title}</div></div>`,
                         );
                     }
                 });
@@ -2013,7 +2060,6 @@
                     "beforeend",
                     `<div class="timeline-now" style="top:${nowTop}px"></div>`,
                 );
-
                 setTimeout(() => {
                     dayContainer.scrollTo({
                         top: nowTop - 100,
@@ -2044,16 +2090,10 @@
                     const timeString = event.allDay
                         ? "All Day"
                         : `${formatTime(event.start)} – ${formatTime(event.end)}`;
-
                     const titlePrefixClass = getTitleColorClass(event.title);
-
                     listContainer.insertAdjacentHTML(
                         "beforeend",
-                        `
-                        <div class="cal-event${extraClass}">
-                            <div class="cal-time">${timeString}</div>
-                            <div class="cal-title ${titlePrefixClass}">${event.title}</div>
-                        </div>`,
+                        `<div class="cal-event${extraClass}"><div class="cal-time">${timeString}</div><div class="cal-title ${titlePrefixClass}">${event.title}</div></div>`,
                     );
                 });
 
@@ -2201,30 +2241,25 @@
                         "https://api.spotify.com/v1/me/player/currently-playing",
                         { headers: { Authorization: `Bearer ${accessToken}` } },
                     );
-
                     if (response.status === 204 || response.status > 400) {
                         setSpotifyIdleState();
                         isPlaying = false;
                         return;
                     }
-
                     const data = await response.json();
                     if (!data || !data.item) {
                         setSpotifyIdleState();
                         isPlaying = false;
                         return;
                     }
-
                     isPlaying = data.is_playing;
                     document.getElementById("play-pause-btn").textContent =
                         isPlaying ? "⏸" : "▶";
-
                     setSpotifyActiveState(
                         data.item.name,
                         data.item.artists.map((a) => a.name).join(", "),
                         data.item.album.images[0].url,
                     );
-
                     fetchSpotifyQueue();
                 } catch (error) {
                     console.error("Error fetching Spotify data:", error);
@@ -2282,14 +2317,7 @@
                                 : "";
                         queueContainer.insertAdjacentHTML(
                             "beforeend",
-                            `
-                            <div class="queue-item">
-                                <img src="${thumbUrl}" class="queue-thumb" alt="art">
-                                <div class="queue-details">
-                                    <div class="queue-track">${track.name}</div>
-                                    <div class="queue-artist">${artistName}</div>
-                                </div>
-                            </div>`,
+                            `<div class="queue-item"><img src="${thumbUrl}" class="queue-thumb" alt="art"><div class="queue-details"><div class="queue-track">${track.name}</div><div class="queue-artist">${artistName}</div></div></div>`,
                         );
                     });
                 } catch (error) {
@@ -2303,8 +2331,7 @@
             async function fetchWeather() {
                 try {
                     const r = await fetch(
-                        "https://api.open-meteo.com/v1/forecast?latitude=52.2298&longitude=21.0118" +
-                            "&current=temperature_2m,apparent_temperature,precipitation,weathercode,wind_speed_10m,relative_humidity_2m",
+                        "https://api.open-meteo.com/v1/forecast?latitude=52.2298&longitude=21.0118&current=temperature_2m,apparent_temperature,precipitation,weathercode,wind_speed_10m,relative_humidity_2m",
                     );
                     const d = await r.json();
                     const cur = d.current;
@@ -2314,8 +2341,6 @@
                     const humidity = Math.round(cur.relative_humidity_2m);
                     const precip = cur.precipitation;
                     const code = cur.weathercode;
-
-                    // Temp color
                     let textColor;
                     if (temp < 0) textColor = "#9c27b0";
                     else if (temp < 5) textColor = "#0288d1";
@@ -2323,7 +2348,6 @@
                     else if (temp < 15) textColor = "#4caf78";
                     else if (temp < 22) textColor = "#e8a820";
                     else textColor = "#ff5252";
-
                     document.getElementById("temp").textContent = temp + "°C";
                     document.getElementById("temp").style.color = textColor;
                     document.getElementById("condition").textContent =
@@ -2336,8 +2360,6 @@
                         humidity + "%";
                     document.getElementById("precip").textContent =
                         precip + " mm";
-
-                    // Clothing suggestion
                     const { icon, advice } = getClothingAdvice(
                         temp,
                         feels,
@@ -2369,10 +2391,8 @@
                 const isSnowy = code >= 70 && code <= 79;
                 const isStormy = code >= 80;
                 const isWindy = wind > 25;
-
-                let base = "";
-                let icon = "👕";
-
+                let base = "",
+                    icon = "👕";
                 if (feels < -5) {
                     base =
                         "Heavy winter coat, thermal layers, gloves, scarf & hat.";
@@ -2400,19 +2420,14 @@
                         "Lightweight, breathable clothing. Don't forget sunscreen.";
                     icon = "🌞";
                 }
-
                 let extra = "";
                 if (isStormy) {
                     extra = " ⛈ Avoid being outside if possible.";
                     icon = "⛈️";
-                } else if (isSnowy) {
+                } else if (isSnowy)
                     extra = " ❄️ Boots and waterproof outerwear.";
-                } else if (isRainy) {
-                    extra = " ☂️ Take an umbrella.";
-                } else if (isWindy) {
-                    extra = " 💨 Windbreaker recommended.";
-                }
-
+                else if (isRainy) extra = " ☂️ Take an umbrella.";
+                else if (isWindy) extra = " 💨 Windbreaker recommended.";
                 return { icon, advice: base + extra };
             }
 
@@ -2446,21 +2461,17 @@
             }
 
             function setPreset(minutes, btn) {
-                const wasRunning = running;
                 if (running) {
                     clearInterval(ticker);
                     running = false;
                 }
                 TOTAL = minutes * 60;
                 timeLeft = TOTAL;
-
-                // Label based on minutes
                 if (minutes <= 10) currentModeLabel = "Short Break";
                 else if (minutes <= 20) currentModeLabel = "Long Break";
                 else currentModeLabel = "Focus";
                 document.getElementById("timer-mode").textContent =
                     currentModeLabel;
-
                 document
                     .querySelectorAll(".preset-btn")
                     .forEach((b) => b.classList.remove("active"));
