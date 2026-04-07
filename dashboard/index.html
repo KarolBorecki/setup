@@ -311,14 +311,30 @@
             /* ── Bookmarks (in col 1 now) ── */
             .bookmarks {
                 display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-                padding: 10px 12px;
+                flex-direction: column; /* Stacks the rows vertically */
+                gap: 12px;
+                padding: 12px;
                 background: var(--bg3);
                 border: 1px solid var(--border);
                 border-radius: 12px;
-                flex-shrink: 0;
                 animation: fadeUp 0.5s ease both;
+                width: fit-content;
+                margin: 20px auto;
+            }
+
+            .bm-row {
+                display: flex;
+                flex-direction: row; /* Keeps icons in a line */
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .bm-separator {
+                height: 1px;
+                width: 100%;
+                background: var(--border);
+                opacity: 0.5;
+                margin: 2px 0;
             }
 
             .bm {
@@ -334,11 +350,13 @@
                 transition: all 0.2s ease;
                 text-decoration: none;
             }
+
             .bm svg {
-                width: 16px;
-                height: 16px;
-                stroke-width: 1.5px;
+                width: 18px; /* Slightly larger for better visibility */
+                height: 18px;
+                stroke-width: 2px;
             }
+
             .bm:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
@@ -1155,7 +1173,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1182,7 +1199,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1214,7 +1230,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1236,7 +1251,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1260,7 +1274,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1279,7 +1292,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1298,7 +1310,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1320,7 +1331,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1344,7 +1354,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1366,7 +1375,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1383,7 +1391,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
@@ -1401,7 +1408,6 @@
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                 >
