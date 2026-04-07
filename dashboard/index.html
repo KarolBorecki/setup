@@ -311,7 +311,7 @@
             /* ── Bookmarks (in col 1 now) ── */
             .bookmarks {
                 display: flex;
-                flex-direction: column; /* Stacks the rows vertically */
+                flex-direction: column;
                 gap: 12px;
                 padding: 12px;
                 background: var(--bg3);
@@ -319,14 +319,16 @@
                 border-radius: 12px;
                 animation: fadeUp 0.5s ease both;
                 width: fit-content;
-                margin: 20px auto;
+                margin: 10px auto;
             }
 
             .bm-row {
                 display: flex;
-                flex-direction: row; /* Keeps icons in a line */
+                flex-direction: row;
+                align-items: center;
                 gap: 8px;
-                justify-content: center;
+                width: 100%;
+                justify-content: space-between;
             }
 
             .bm-separator {
@@ -334,12 +336,12 @@
                 width: 100%;
                 background: var(--border);
                 opacity: 0.5;
-                margin: 2px 0;
+                margin: 1px 0;
             }
 
             .bm {
-                width: 36px;
-                height: 36px;
+                width: 45px;
+                height: 45px;
                 border-radius: 10px;
                 background: rgba(150, 150, 150, 0.04);
                 border: 1px solid transparent;
