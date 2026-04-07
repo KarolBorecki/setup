@@ -56,14 +56,14 @@
             }
 
             /* Only lock overflow on wide (true desktop) layouts */
-            @media (min-width: 1100px) {
+            @media (min-width: 1150px) {
                 html,
                 body {
                     overflow: hidden;
                 }
             }
 
-            @media (max-width: 1100px) {
+            @media (max-width: 1150px) {
                 html,
                 body {
                     overflow-x: hidden;
@@ -113,7 +113,7 @@
                 gap: 14px;
             }
 
-            @media (min-width: 1100px) {
+            @media (min-width: 1150px) {
                 .layout {
                     height: 100vh;
                 }
@@ -132,7 +132,7 @@
             }
 
             /* Medium: 2 columns on top, col3 spans full width at bottom */
-            @media (min-width: 700px) and (max-width: 1100px) {
+            @media (min-width: 700px) and (max-width: 1150px) {
                 .layout {
                     min-height: 100vh;
                 }
@@ -218,7 +218,7 @@
             }
 
             /* On wide screens, cols need overflow hidden for scrollable cards */
-            @media (min-width: 1100px) {
+            @media (min-width: 1150px) {
                 .col {
                     overflow: hidden;
                 }
@@ -280,13 +280,13 @@
             }
 
             /* expand only works on wide layout */
-            @media (min-width: 1100px) {
+            @media (min-width: 1150px) {
                 .card.expand {
                     flex: 1;
                     min-height: 0;
                 }
             }
-            @media (max-width: 1100px) {
+            @media (max-width: 1150px) {
                 .card.expand {
                     min-height: 280px;
                 }
@@ -737,9 +737,8 @@
             }
 
             /* On non-wide layouts, give day view a fixed height */
-            @media (max-width: 1100px) {
+            @media (max-width: 1150px) {
                 .day-view-scroll {
-                    max-height: 360px;
                     flex: none;
                 }
             }
