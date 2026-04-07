@@ -6,8 +6,6 @@
         <title>Dashboard</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet"
@@ -53,7 +51,6 @@
                 font-family: var(--sans);
             }
 
-            /* Subtle grain overlay */
             body::before {
                 content: "";
                 position: fixed;
@@ -64,7 +61,6 @@
                 opacity: 0.4;
             }
 
-            /* Ambient warm glow */
             body::after {
                 content: "";
                 position: fixed;
@@ -85,61 +81,47 @@
             .layout {
                 position: relative;
                 z-index: 2;
-                display: grid;
-                grid-template-rows: 1fr auto;
                 height: 100vh;
-                padding: 20px 24px 16px;
-                gap: 16px;
+                padding: 18px 22px;
             }
 
             .grid {
                 display: grid;
-                grid-template-columns: 450px 1.1fr 0.9fr;
-                gap: 16px;
-                min-height: 0;
+                grid-template-columns: 390px 1.15fr 0.95fr;
+                gap: 14px;
+                height: 100%;
             }
 
             .col {
                 display: flex;
                 flex-direction: column;
-                gap: 14px;
+                gap: 12px;
                 min-height: 0;
+                overflow: hidden;
             }
 
-            /* Target all scrollable areas in the dashboard */
+            /* Scrollbars */
             .scrollable::-webkit-scrollbar,
             .day-view-scroll::-webkit-scrollbar,
             .spotify-queue::-webkit-scrollbar {
-                width: 3px; /* Very thin handle */
-                height: 3px;
+                width: 3px;
             }
-
-            /* The background track - keep it transparent so the card color shows through */
             .scrollable::-webkit-scrollbar-track,
             .day-view-scroll::-webkit-scrollbar-track,
             .spotify-queue::-webkit-scrollbar-track {
                 background: transparent;
             }
-
-            /* The draggable handle */
             .scrollable::-webkit-scrollbar-thumb,
             .day-view-scroll::-webkit-scrollbar-thumb,
             .spotify-queue::-webkit-scrollbar-thumb {
-                background: var(
-                    --muted2
-                ); /* Using your existing dark muted color */
+                background: var(--muted2);
                 border-radius: 10px;
-                transition: background 0.2s ease;
             }
-
-            /* Hover effect - subtle gold glow when interacting */
             .scrollable::-webkit-scrollbar-thumb:hover,
             .day-view-scroll::-webkit-scrollbar-thumb:hover,
             .spotify-queue::-webkit-scrollbar-thumb:hover {
                 background: var(--gold-dim);
             }
-
-            /* For Firefox support */
             .scrollable,
             .day-view-scroll,
             .spotify-queue {
@@ -152,7 +134,7 @@
                 background: var(--bg3);
                 border: 1px solid var(--border);
                 border-radius: 14px;
-                padding: 18px 20px;
+                padding: 16px 18px;
                 display: flex;
                 flex-direction: column;
                 flex-shrink: 0;
@@ -160,7 +142,6 @@
                 overflow: hidden;
                 animation: fadeUp 0.5s ease both;
             }
-
             .card::before {
                 content: "";
                 position: absolute;
@@ -173,7 +154,6 @@
                 );
                 pointer-events: none;
             }
-
             .card.expand {
                 flex: 1;
                 min-height: 0;
@@ -185,13 +165,12 @@
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
                 color: var(--gold-dim);
-                margin-bottom: 14px;
+                margin-bottom: 12px;
                 flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 gap: 8px;
             }
-
             .card-label::after {
                 content: "";
                 flex: 1;
@@ -206,33 +185,21 @@
                 padding-right: 4px;
             }
 
-            .scrollable::-webkit-scrollbar {
-                width: 2px;
-            }
-            .scrollable::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .scrollable::-webkit-scrollbar-thumb {
-                background: var(--muted2);
-                border-radius: 2px;
-            }
-
-            /* ── Clock ── */
-            .clock-card {
-                text-align: center;
-                padding: 22px 20px 18px;
+            /* ── Clock Section (no card) ── */
+            .clock-section {
                 flex-shrink: 0;
+                padding: 6px 4px 0;
             }
 
             .clock {
                 font-family: var(--serif);
-                font-size: 76px;
+                font-size: 100px;
                 font-weight: 700;
                 line-height: 1;
                 color: var(--cream);
-                letter-spacing: -2px;
-                margin-bottom: 6px;
-                text-shadow: 0 0 60px rgba(200, 150, 58, 0.15);
+                letter-spacing: -4px;
+                text-shadow: 0 0 80px rgba(200, 150, 58, 0.18);
+                animation: fadeUp 0.4s ease both;
             }
 
             .date-line {
@@ -240,22 +207,139 @@
                 font-size: 11px;
                 color: var(--muted);
                 letter-spacing: 0.08em;
+                margin-top: 4px;
                 margin-bottom: 12px;
             }
 
-            .weather-pill {
-                display: inline-flex;
+            /* ── Advanced Weather ── */
+            .weather-block {
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 12px 14px;
+                animation: fadeUp 0.45s ease both;
+            }
+
+            .weather-main-row {
+                display: flex;
                 align-items: center;
-                gap: 8px;
-                background: rgba(200, 150, 58, 0.08);
-                border: 1px solid var(--border2);
-                border-radius: 20px;
-                padding: 6px 16px;
+                gap: 12px;
+                margin-bottom: 10px;
+            }
+
+            .weather-temp-big {
+                font-family: var(--serif);
+                font-size: 38px;
+                font-weight: 700;
+                line-height: 1;
+                color: var(--cream);
+                transition: color 0.4s ease;
+            }
+
+            .weather-right {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .weather-condition {
                 font-family: var(--sans);
                 font-size: 13px;
-                font-weight: 500;
+                font-weight: 600;
+                color: var(--cream);
+                margin-bottom: 2px;
+            }
+
+            .weather-feels {
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.05em;
+            }
+
+            .weather-stats {
+                display: flex;
+                gap: 16px;
+                padding-top: 8px;
+                border-top: 1px solid var(--border);
+                margin-bottom: 10px;
+            }
+
+            .weather-stat {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .weather-stat-label {
+                font-family: var(--mono);
+                font-size: 9px;
+                color: var(--muted2);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            .weather-stat-val {
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--cream);
+            }
+
+            .clothing-tag {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                background: rgba(200, 150, 58, 0.07);
+                border: 1px solid var(--border2);
+                border-radius: 8px;
+                padding: 8px 10px;
+                font-size: 11px;
+                color: #c0b898;
+                line-height: 1.4;
+            }
+
+            .clothing-icon {
+                font-size: 14px;
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+
+            /* ── Bookmarks (in col 1 now) ── */
+            .bookmarks {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                padding: 10px 12px;
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                flex-shrink: 0;
+                animation: fadeUp 0.5s ease both;
+            }
+
+            .bm {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: rgba(150, 150, 150, 0.04);
+                border: 1px solid transparent;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--muted);
+                transition: all 0.2s ease;
+                text-decoration: none;
+            }
+            .bm svg {
+                width: 16px;
+                height: 16px;
+                stroke-width: 1.5px;
+            }
+            .bm:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+                background: rgba(200, 150, 58, 0.12);
+                border-color: var(--border2);
                 color: var(--gold);
-                transition: all 0.4s ease;
             }
 
             /* ── Pomodoro ── */
@@ -264,11 +348,92 @@
                 gap: 0;
             }
 
+            .pom-presets {
+                display: flex;
+                gap: 6px;
+                width: 100%;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+
+            .preset-btn {
+                flex: 1;
+                padding: 5px 6px;
+                border-radius: 6px;
+                border: 1px solid var(--border);
+                background: transparent;
+                color: var(--muted);
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.06em;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                min-width: 36px;
+            }
+
+            .preset-btn:hover {
+                background: rgba(200, 150, 58, 0.1);
+                border-color: var(--gold-dim);
+                color: var(--gold);
+            }
+
+            .preset-btn.active {
+                background: rgba(200, 150, 58, 0.15);
+                border-color: var(--border2);
+                color: var(--gold);
+            }
+
+            .preset-custom {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                flex: 1.5;
+                min-width: 60px;
+            }
+
+            .custom-min-input {
+                width: 100%;
+                padding: 4px 6px;
+                border-radius: 6px;
+                border: 1px solid var(--border);
+                background: transparent;
+                color: var(--cream);
+                font-family: var(--mono);
+                font-size: 10px;
+                text-align: center;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .custom-min-input:focus {
+                border-color: var(--gold-dim);
+            }
+            .custom-min-input::placeholder {
+                color: var(--muted2);
+            }
+
+            .custom-set-btn {
+                padding: 4px 8px;
+                border-radius: 6px;
+                border: 1px solid var(--border);
+                background: transparent;
+                color: var(--muted);
+                font-family: var(--mono);
+                font-size: 9px;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: all 0.2s;
+            }
+            .custom-set-btn:hover {
+                border-color: var(--gold-dim);
+                color: var(--gold);
+            }
+
             .ring-wrap {
                 position: relative;
-                width: 140px;
-                height: 140px;
-                margin: 8px auto 16px;
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 12px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -289,40 +454,66 @@
                 filter: drop-shadow(0 0 6px rgba(200, 150, 58, 0.5));
             }
 
+            .timer-inner {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                gap: 2px;
+            }
+
             .timer-num {
                 font-family: var(--serif);
-                font-size: 32px;
+                font-size: 26px;
                 font-weight: 500;
                 color: var(--cream);
-                position: absolute;
+            }
+
+            .timer-mode-label {
+                font-family: var(--mono);
+                font-size: 8px;
+                color: var(--muted);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+
+            .pom-sessions {
+                font-family: var(--mono);
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 0.06em;
+                margin-bottom: 10px;
+            }
+
+            .pom-sessions span {
+                color: var(--gold);
             }
 
             .pom-btns {
                 display: flex;
-                gap: 10px;
+                gap: 8px;
                 width: 100%;
             }
 
             .btn {
                 flex: 1;
-                padding: 9px 14px;
+                padding: 8px 12px;
                 border-radius: 8px;
                 border: 1px solid var(--border2);
                 background: rgba(200, 150, 58, 0.06);
                 color: var(--cream);
                 font-family: var(--sans);
-                font-size: 13px;
+                font-size: 12px;
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s ease;
             }
-
             .btn:hover {
                 background: rgba(200, 150, 58, 0.14);
                 border-color: var(--gold);
                 color: var(--gold);
             }
-
             .btn.primary {
                 background: rgba(200, 150, 58, 0.15);
                 border-color: var(--border2);
@@ -332,18 +523,17 @@
             .habit-item {
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                padding: 10px 12px;
+                gap: 10px;
+                padding: 8px 10px;
                 border-radius: 8px;
                 border: 1px solid transparent;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                margin-bottom: 6px;
-                font-size: 13px;
+                margin-bottom: 4px;
+                font-size: 12px;
                 font-weight: 400;
                 color: #b8b0a0;
             }
-
             .habit-item:hover {
                 background: rgba(200, 150, 58, 0.06);
                 border-color: var(--border);
@@ -351,10 +541,9 @@
             .habit-item input[type="checkbox"] {
                 display: none;
             }
-
             .habit-box {
-                width: 16px;
-                height: 16px;
+                width: 15px;
+                height: 15px;
                 border: 1.5px solid var(--muted2);
                 border-radius: 4px;
                 flex-shrink: 0;
@@ -363,83 +552,75 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .habit-item.checked .habit-box {
                 background: var(--gold);
                 border-color: var(--gold);
             }
-
             .habit-item.checked .habit-box::after {
                 content: "✓";
-                font-size: 10px;
+                font-size: 9px;
                 color: #0c0b09;
                 font-weight: 700;
             }
-
             .habit-item.checked span {
                 text-decoration: line-through;
                 color: var(--muted);
             }
 
-            /* ── Calendar events ── */
-            /* Base Event Structure */
+            /* ── Calendar ── */
             :root {
-                --hour-height: 80px; /* How tall one hour is */
+                --hour-height: 60px;
             }
-            /* ── Custom Day View Grid ── */
+
             .day-view-scroll {
-                flex: 1; /* Takes up top half of card */
+                flex: 1;
                 position: relative;
                 overflow-y: auto;
                 border-bottom: 1px solid var(--border);
-                margin-bottom: 15px;
+                margin-bottom: 12px;
                 padding-right: 5px;
             }
 
             .day-grid {
                 position: relative;
                 width: 100%;
-                padding-left: 50px; /* Space for time labels */
+                padding-left: 46px;
             }
 
             .hour-block {
-                height: 60px; /* Control density of the grid */
+                height: 60px;
                 border-top: 1px solid var(--border);
                 position: relative;
             }
 
             .hour-text {
                 position: absolute;
-                left: -50px;
+                left: -46px;
                 top: -7px;
-                width: 40px;
+                width: 38px;
                 font-family: var(--mono);
                 font-size: 9px;
                 color: var(--muted2);
                 text-align: right;
             }
 
-            /* Today's Event Blocks */
             .day-event-block {
                 position: absolute;
-                left: 10px;
-                right: 5px;
+                left: 8px;
+                right: 4px;
                 border-radius: 6px;
                 border-left: 3px solid var(--gold);
                 background: rgba(200, 150, 58, 0.1);
-                padding: 6px 10px;
-                font-size: 12px;
+                padding: 5px 8px;
+                font-size: 11px;
                 z-index: 2;
                 overflow: hidden;
-                pointer-events: auto;
             }
-
             .day-event-block .title {
                 font-weight: 600;
                 color: var(--cream);
             }
 
-            /* Custom "Now" Line */
             .timeline-now {
                 position: absolute;
                 left: 0;
@@ -452,7 +633,7 @@
             .timeline-now::before {
                 content: "";
                 position: absolute;
-                left: 45px;
+                left: 41px;
                 top: -3px;
                 width: 7px;
                 height: 7px;
@@ -461,29 +642,22 @@
                 box-shadow: 0 0 8px var(--gold);
             }
 
+            /* ── Upcoming (compact) ── */
             .upcoming-section {
                 flex-shrink: 0;
             }
-            .card-label.small {
-                font-size: 9px;
-                margin-bottom: 10px;
-                opacity: 0.7;
-            }
 
-            /* ── Upcoming List Styling ── */
             .cal-day-label {
                 font-family: var(--mono);
-                font-size: 9px;
+                font-size: 8px;
                 color: var(--muted);
                 text-transform: uppercase;
                 letter-spacing: 0.08em;
-                margin: 18px 0 8px 4px;
+                margin: 10px 0 5px 3px;
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             }
-
-            /* Subtle line next to the day name */
             .cal-day-label::after {
                 content: "";
                 flex: 1;
@@ -494,23 +668,23 @@
                     transparent
                 );
             }
+            .cal-day-label:first-child {
+                margin-top: 0;
+            }
 
             .cal-event {
-                padding: 10px 14px;
-                border-radius: 9px;
-                border-left: 3px solid var(--muted2);
+                padding: 7px 10px;
+                border-radius: 7px;
+                border-left: 2px solid var(--muted2);
                 background: rgba(150, 150, 150, 0.03);
-                margin-bottom: 6px;
+                margin-bottom: 4px;
                 transition: all 0.2s ease;
                 cursor: default;
             }
-
             .cal-event:hover {
                 background: rgba(150, 150, 150, 0.07);
                 transform: translateX(2px);
             }
-
-            /* Color Overrides */
             .cal-event.gold {
                 border-left-color: var(--gold);
                 background: rgba(200, 150, 58, 0.05);
@@ -518,7 +692,6 @@
             .cal-event.gold:hover {
                 background: rgba(200, 150, 58, 0.09);
             }
-
             .cal-event.green {
                 border-left-color: var(--green);
                 background: rgba(76, 175, 120, 0.05);
@@ -527,42 +700,25 @@
                 background: rgba(76, 175, 120, 0.09);
             }
 
-            .cal-event.orange {
-                border-left-color: #ff9500;
-                background: rgba(255, 149, 0, 0.05);
-            }
-            .cal-event.orange:hover {
-                background: rgba(255, 149, 0, 0.09);
-            }
-
-            .cal-event.dark-blue {
-                border-left-color: #0a4982;
-                background: rgba(10, 73, 130, 0.05);
-            }
-            .cal-event.dark-blue:hover {
-                background: rgba(10, 73, 130, 0.09);
-            }
-
             .cal-time {
                 font-family: var(--mono);
-                font-size: 10px;
+                font-size: 9px;
                 color: var(--muted);
-                letter-spacing: 0.05em;
-                margin-bottom: 2px;
+                letter-spacing: 0.04em;
+                margin-bottom: 1px;
             }
-
             .cal-title {
-                font-size: 13px;
+                font-size: 11px;
                 font-weight: 500;
                 color: var(--cream);
-                line-height: 1.4;
+                line-height: 1.3;
             }
 
-            /* ── Spotify Layout ── */
+            /* ── Spotify ── */
             .spotify-layout {
                 display: flex;
                 flex-direction: row;
-                gap: 24px;
+                gap: 18px;
                 align-items: stretch;
                 width: 100%;
             }
@@ -570,26 +726,41 @@
             .spotify-now-playing {
                 display: flex;
                 flex-direction: row;
-                gap: 16px;
-                flex: 1.5;
+                gap: 14px;
+                flex: 1.4;
                 min-width: 0;
             }
 
             .spotify-cover {
-                height: 150px;
-                width: 150px;
-                border-radius: 12px;
+                height: 130px;
+                width: 130px;
+                border-radius: 10px;
                 object-fit: cover;
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
                 border: 1px solid var(--border);
                 flex-shrink: 0;
             }
 
+            /* Placeholder art when nothing is playing */
+            .spotify-cover-placeholder {
+                height: 130px;
+                width: 130px;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                flex-shrink: 0;
+                background: var(--bg2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--muted2);
+                font-size: 28px;
+            }
+
             .spotify-details {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                gap: 14px;
+                gap: 12px;
                 flex: 1;
                 min-width: 0;
             }
@@ -601,8 +772,7 @@
             }
 
             .spotify-track {
-                font-family: var(--sans);
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: 600;
                 color: var(--cream);
                 margin-bottom: 2px;
@@ -611,9 +781,14 @@
                 text-overflow: ellipsis;
             }
 
-            .spotify-artist {
-                font-family: var(--sans);
+            .spotify-track.idle {
+                color: var(--muted);
+                font-weight: 400;
                 font-size: 13px;
+            }
+
+            .spotify-artist {
+                font-size: 12px;
                 color: var(--muted);
                 white-space: nowrap;
                 overflow: hidden;
@@ -622,50 +797,53 @@
 
             .spotify-controls {
                 display: flex;
-                gap: 12px;
+                gap: 8px;
                 justify-content: flex-start;
-                margin-top: 4px;
+                margin-top: 2px;
             }
 
             .icon-btn {
                 background: transparent !important;
                 border: none !important;
                 box-shadow: none !important;
-                padding: 8px 10px;
+                padding: 6px 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 32px;
+                font-size: 26px;
                 color: var(--muted);
                 opacity: 0.7;
                 transition: all 0.2s ease;
                 cursor: pointer;
             }
-
             #play-pause-btn {
-                font-size: 44px;
+                font-size: 36px;
             }
-
             .icon-btn:hover {
                 opacity: 1;
                 color: var(--gold);
-                transform: scale(1.15);
+                transform: scale(1.12);
             }
-
             .icon-btn.primary {
                 opacity: 0.9;
                 color: var(--cream);
             }
-
             .icon-btn.primary:hover {
                 color: var(--gold);
             }
 
+            /* Disabled controls state */
+            .icon-btn:disabled {
+                opacity: 0.2;
+                cursor: default;
+                pointer-events: none;
+            }
+
             .spotify-queue-container {
-                flex: 1.7;
+                flex: 1.6;
                 border-left: 1px solid var(--border);
-                padding-left: 20px;
-                height: 140px;
+                padding-left: 16px;
+                height: 130px;
                 display: flex;
                 flex-direction: column;
                 min-width: 0;
@@ -675,42 +853,23 @@
                 flex: 1;
                 overflow-y: auto;
                 overflow-x: hidden;
-                padding-right: 8px;
+                padding-right: 6px;
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
-            }
-
-            /* Minimalist Scrollbar for the Queue */
-            .spotify-queue::-webkit-scrollbar {
-                width: 2px;
-            }
-
-            .spotify-queue::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            .spotify-queue::-webkit-scrollbar-thumb {
-                background: var(--muted2);
-                border-radius: 2px;
-            }
-
-            .spotify-queue::-webkit-scrollbar-thumb:hover {
-                background: var(--gold-dim);
+                gap: 5px;
             }
 
             .queue-label {
                 font-family: var(--mono);
-                font-size: 9px;
+                font-size: 8px;
                 color: var(--muted);
                 text-transform: uppercase;
                 letter-spacing: 0.08em;
-                margin: 18px 0 8px 4px;
+                margin-bottom: 8px;
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             }
-
             .queue-label::after {
                 content: "";
                 flex: 1;
@@ -724,40 +883,37 @@
 
             .queue-item {
                 display: flex;
-                flex-direction: row; /* Align thumb and text side-by-side */
+                flex-direction: row;
                 align-items: center;
-                gap: 12px;
+                gap: 10px;
                 background: rgba(150, 150, 150, 0.04);
-                padding: 6px;
-                border-radius: 8px;
+                padding: 5px;
+                border-radius: 7px;
                 border: 1px solid transparent;
                 transition: all 0.2s ease;
             }
-
             .queue-item:hover {
                 background: rgba(150, 150, 150, 0.08);
                 border-color: var(--border);
             }
 
             .queue-thumb {
-                width: 36px;
-                height: 36px;
+                width: 32px;
+                height: 32px;
                 border-radius: 4px;
                 object-fit: cover;
                 flex-shrink: 0;
                 border: 1px solid rgba(255, 255, 255, 0.05);
             }
-
             .queue-details {
                 flex: 1;
-                min-width: 0; /* Ensures text truncation works */
+                min-width: 0;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
             }
-
             .queue-track {
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: 500;
                 color: var(--cream);
                 white-space: nowrap;
@@ -765,90 +921,49 @@
                 text-overflow: ellipsis;
                 margin-bottom: 1px;
             }
-
             .queue-artist {
-                font-size: 11px;
+                font-size: 10px;
                 color: var(--muted);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
 
-            /* ── News ── */
-            .news-item {
-                padding-bottom: 10px;
-                margin-bottom: 10px;
-                border-bottom: 1px solid var(--border);
+            .spotify-connect-hint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted2);
+                letter-spacing: 0.06em;
             }
 
+            /* ── News ── */
+            .news-item {
+                padding-bottom: 9px;
+                margin-bottom: 9px;
+                border-bottom: 1px solid var(--border);
+            }
             .news-item:last-child {
                 border-bottom: none;
                 padding-bottom: 0;
                 margin-bottom: 0;
             }
-
             .news-item a {
-                font-size: 13px;
+                font-size: 12px;
                 color: #b8b0a0;
                 text-decoration: none;
                 line-height: 1.45;
                 display: block;
                 transition: color 0.2s;
             }
-
             .news-item a:hover {
                 color: var(--gold);
             }
 
-            /* ── Spotify ── */
-            .spotify-card iframe {
-                border-radius: 10px;
-                display: block;
-            }
-
-            /* ── Bookmarks ── */
-            .bookmarks {
-                display: flex;
-                gap: 12px;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding: 14px 20px;
-                background: var(--bg3);
-                border: 1px solid var(--border);
-                border-radius: 14px;
-                flex-shrink: 0;
-                position: relative;
-                z-index: 2;
-            }
-
-            .bm {
-                width: 44px;
-                height: 44px;
-                border-radius: 12px;
-                background: rgba(150, 150, 150, 0.04);
-                border: 1px solid transparent;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--muted);
-                transition: all 0.2s ease;
-                text-decoration: none;
-            }
-
-            .bm svg {
-                width: 20px;
-                height: 20px;
-                stroke-width: 1.5px;
-            }
-
-            .bm:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-                background: rgba(200, 150, 58, 0.12); /* Soft gold tint */
-                border-color: var(--border2);
-                color: var(--gold); /* Icon turns gold on hover */
-            }
-
+            /* ── Animations ── */
             @keyframes fadeUp {
                 from {
                     opacity: 0;
@@ -859,7 +974,6 @@
                     transform: translateY(0);
                 }
             }
-
             .card:nth-child(1) {
                 animation-delay: 0.05s;
             }
@@ -869,7 +983,6 @@
             .card:nth-child(3) {
                 animation-delay: 0.15s;
             }
-
             .col:nth-child(2) .card:nth-child(1) {
                 animation-delay: 0.12s;
             }
@@ -877,18 +990,21 @@
                 animation-delay: 0.18s;
             }
             .col:nth-child(3) .card:nth-child(1) {
-                animation-delay: 0.18s;
+                animation-delay: 0.1s;
             }
             .col:nth-child(3) .card:nth-child(2) {
-                animation-delay: 0.23s;
+                animation-delay: 0.18s;
             }
             .col:nth-child(3) .card:nth-child(3) {
+                animation-delay: 0.23s;
+            }
+            .col:nth-child(3) .card:nth-child(4) {
                 animation-delay: 0.28s;
             }
 
             .placeholder {
                 color: var(--muted);
-                font-size: 12px;
+                font-size: 11px;
                 font-family: var(--mono);
             }
         </style>
@@ -898,56 +1014,322 @@
             <div class="grid">
                 <!-- COL 1 -->
                 <div class="col">
-                    <div class="card clock-card">
+                    <!-- Clock (no card) -->
+                    <div class="clock-section">
                         <div class="clock" id="clock">00:00</div>
                         <div class="date-line" id="dateline">
-                            Monday, April 06
-                        </div>
-                        <div class="weather-pill">
-                            <span>&#9675;</span>
-                            <span id="temp">--</span>°C &nbsp;·&nbsp;
-                            <span id="condition">Loading</span>
+                            Monday, April 07
                         </div>
                     </div>
 
+                    <!-- Advanced Weather -->
+                    <div class="weather-block">
+                        <div class="weather-main-row">
+                            <div class="weather-temp-big" id="temp">--°C</div>
+                            <div class="weather-right">
+                                <div class="weather-condition" id="condition">
+                                    Loading…
+                                </div>
+                                <div class="weather-feels" id="feels-like">
+                                    Feels like --°C
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weather-stats">
+                            <div class="weather-stat">
+                                <div class="weather-stat-label">Wind</div>
+                                <div class="weather-stat-val" id="wind">
+                                    -- km/h
+                                </div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-stat-label">Humidity</div>
+                                <div class="weather-stat-val" id="humidity">
+                                    --%
+                                </div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-stat-label">Rain</div>
+                                <div class="weather-stat-val" id="precip">
+                                    -- mm
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clothing-tag">
+                            <span class="clothing-icon" id="clothing-icon"
+                                >🧥</span
+                            >
+                            <span id="clothing-advice"
+                                >Loading outfit suggestion…</span
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Bookmarks (moved below clock) -->
+                    <div class="bookmarks">
+                        <a
+                            href="https://www.icloud.com/calendar/"
+                            class="bm"
+                            title="Calendar"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <rect
+                                    x="3"
+                                    y="4"
+                                    width="18"
+                                    height="18"
+                                    rx="2"
+                                    ry="2"
+                                ></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://www.icloud.com/reminders/"
+                            class="bm"
+                            title="Reminders"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://gemini.google.com/app?hl=pl"
+                            class="bm"
+                            title="Gemini"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"
+                                ></path>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://www.youtube.com"
+                            class="bm"
+                            title="YouTube"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"
+                                ></path>
+                                <polygon
+                                    points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"
+                                ></polygon>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://www.facebook.com/messages/e2ee/t"
+                            class="bm"
+                            title="Messenger"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                                ></path>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://teams.microsoft.com/v2/"
+                            class="bm"
+                            title="Teams"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                                ></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://github.com"
+                            class="bm"
+                            title="GitHub"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                                ></path>
+                            </svg>
+                        </a>
+                        <a
+                            href="https://gitlab.com/sekcja-rakietowa-ska/electronics"
+                            class="bm"
+                            title="GitLab Electronics"
+                            target="_blank"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"
+                                ></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Pomodoro -->
                     <div class="card pomodoro-card">
                         <div class="card-label">Focus Timer</div>
+
+                        <!-- Preset buttons -->
+                        <div class="pom-presets">
+                            <button
+                                class="preset-btn"
+                                onclick="setPreset(5, this)"
+                            >
+                                5m
+                            </button>
+                            <button
+                                class="preset-btn"
+                                onclick="setPreset(10, this)"
+                            >
+                                10m
+                            </button>
+                            <button
+                                class="preset-btn active"
+                                onclick="setPreset(25, this)"
+                            >
+                                25m
+                            </button>
+                            <button
+                                class="preset-btn"
+                                onclick="setPreset(45, this)"
+                            >
+                                45m
+                            </button>
+                            <button
+                                class="preset-btn"
+                                onclick="setPreset(60, this)"
+                            >
+                                60m
+                            </button>
+                            <div class="preset-custom">
+                                <input
+                                    type="number"
+                                    class="custom-min-input"
+                                    id="custom-time"
+                                    placeholder="min"
+                                    min="1"
+                                    max="180"
+                                />
+                                <button
+                                    class="custom-set-btn"
+                                    onclick="setCustomTime()"
+                                >
+                                    Set
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="ring-wrap">
                             <svg
                                 class="progress-ring"
-                                viewBox="0 0 140 140"
-                                width="140"
-                                height="140"
+                                viewBox="0 0 120 120"
+                                width="120"
+                                height="120"
                             >
                                 <circle
                                     class="ring-bg"
-                                    stroke-width="6"
+                                    stroke-width="5"
                                     fill="none"
-                                    r="62"
-                                    cx="70"
-                                    cy="70"
+                                    r="52"
+                                    cx="60"
+                                    cy="60"
                                 />
                                 <circle
                                     class="ring-fg"
-                                    stroke-width="6"
+                                    stroke-width="5"
                                     fill="none"
-                                    r="62"
-                                    cx="70"
-                                    cy="70"
+                                    r="52"
+                                    cx="60"
+                                    cy="60"
                                     id="ring"
                                 />
                             </svg>
-                            <div class="timer-num" id="pomodoro-time">
-                                25:00
+                            <div class="timer-inner">
+                                <div class="timer-num" id="pomodoro-time">
+                                    25:00
+                                </div>
+                                <div class="timer-mode-label" id="timer-mode">
+                                    Focus
+                                </div>
                             </div>
                         </div>
+
+                        <div class="pom-sessions">
+                            Sessions today: <span id="session-count">0</span>
+                        </div>
+
                         <div class="pom-btns">
                             <button
                                 class="btn primary"
                                 onclick="toggleTimer()"
                                 id="timer-btn"
                             >
-                                Start Focus
+                                Start
                             </button>
                             <button class="btn" onclick="resetTimer()">
                                 Reset
@@ -955,12 +1337,14 @@
                         </div>
                     </div>
 
+                    <!-- Reminders/Habits -->
                     <div class="card expand">
                         <div class="card-label">Reminder</div>
                         <div class="scrollable" id="habit-list"></div>
                     </div>
                 </div>
 
+                <!-- COL 2 -->
                 <div class="col">
                     <div class="card expand">
                         <div class="card-label">Schedule</div>
@@ -971,13 +1355,24 @@
                         ></div>
 
                         <div class="upcoming-section">
-                            <div class="card-label small">
+                            <div
+                                class="card-label"
+                                style="
+                                    font-size: 9px;
+                                    opacity: 0.7;
+                                    margin-bottom: 8px;
+                                "
+                            >
                                 Upcoming This Week
                             </div>
                             <div id="upcoming-list-container"></div>
                         </div>
                     </div>
+                </div>
 
+                <!-- COL 3 -->
+                <div class="col">
+                    <!-- Spotify (now at top of col 3) -->
                     <div class="card spotify-card">
                         <div class="card-label">Spotify</div>
                         <div id="spotify-container" class="spotify-layout">
@@ -989,12 +1384,18 @@
                                     alt="Album Art"
                                     style="display: none"
                                 />
+                                <div
+                                    id="album-placeholder"
+                                    class="spotify-cover-placeholder"
+                                >
+                                    ♪
+                                </div>
 
                                 <div class="spotify-details">
                                     <div class="spotify-info">
                                         <div
                                             id="track-name"
-                                            class="spotify-track"
+                                            class="spotify-track idle"
                                         >
                                             Not Playing
                                         </div>
@@ -1002,14 +1403,15 @@
                                             id="artist-name"
                                             class="spotify-artist"
                                         >
-                                            -
+                                            –
                                         </div>
                                     </div>
-
                                     <div class="spotify-controls">
                                         <button
                                             class="icon-btn"
+                                            id="btn-prev"
                                             onclick="controlSpotify('previous')"
+                                            disabled
                                         >
                                             ⏮
                                         </button>
@@ -1019,12 +1421,15 @@
                                             onclick="
                                                 controlSpotify('play/pause')
                                             "
+                                            disabled
                                         >
                                             ⏯
                                         </button>
                                         <button
                                             class="icon-btn"
+                                            id="btn-next"
                                             onclick="controlSpotify('next')"
+                                            disabled
                                         >
                                             ⏭
                                         </button>
@@ -1034,17 +1439,16 @@
 
                             <div class="spotify-queue-container">
                                 <div class="queue-label">Next in Queue</div>
-                                <div
-                                    id="spotify-queue"
-                                    class="spotify-queue"
-                                ></div>
+                                <div id="spotify-queue" class="spotify-queue">
+                                    <div class="spotify-connect-hint">
+                                        Waiting for playback…
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- COL 3 -->
-                <div class="col">
+                    <!-- News cards -->
                     <div class="card expand">
                         <div class="card-label">World News</div>
                         <ul
@@ -1078,178 +1482,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-
-            <!-- Bookmarks -->
-            <div class="bookmarks">
-                <a
-                    href="https://www.icloud.com/calendar/"
-                    class="bm"
-                    title="Calendar"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <rect
-                            x="3"
-                            y="4"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                        ></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://www.icloud.com/reminders/"
-                    class="bm"
-                    title="Reminders"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://gemini.google.com/app?hl=pl"
-                    class="bm"
-                    title="Gemini"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"
-                        ></path>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://www.youtube.com"
-                    class="bm"
-                    title="YouTube"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"
-                        ></path>
-                        <polygon
-                            points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"
-                        ></polygon>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://www.facebook.com/messages/e2ee/t"
-                    class="bm"
-                    title="Messenger"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                        ></path>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://teams.microsoft.com/v2/"
-                    class="bm"
-                    title="Teams"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                        ></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://github.com"
-                    class="bm"
-                    title="GitHub"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                        ></path>
-                    </svg>
-                </a>
-
-                <a
-                    href="https://gitlab.com/sekcja-rakietowa-ska/electronics"
-                    class="bm"
-                    title="GitLab Electronics"
-                    target="_blank"
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path
-                            d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"
-                        ></path>
-                    </svg>
-                </a>
             </div>
         </div>
 
@@ -1295,6 +1527,7 @@
             setInterval(updateClock, 1000);
             updateClock();
 
+            // ── Calendars ─────────────────────────────────────────────────
             const calendars = [
                 {
                     name: "Private",
@@ -1334,33 +1567,21 @@
                         if (!response.ok) throw new Error();
                         const icsData = await response.text();
                         return parseICS(icsData, calendar.colorClass);
-                    } catch (error) {
+                    } catch {
                         failedCalendars.push(calendar.name);
                         return [];
                     }
                 });
-
                 try {
                     const allResults = await Promise.all(fetchPromises);
                     let allEvents = allResults.flat();
-
                     const now = new Date();
-                    const startOfToday = new Date(
-                        now.getFullYear(),
-                        now.getMonth(),
-                        now.getDate(),
-                    );
-
-                    // Sort all events globally
                     allEvents.sort((a, b) => a.start - b.start);
-
-                    // Filter events that haven't ended yet today, or are in the future
                     const validEvents = allEvents.filter((e) => {
                         const end =
-                            e.end || new Date(e.start.getTime() + 3600000); // fallback 1hr
+                            e.end || new Date(e.start.getTime() + 3600000);
                         return end > now || e.start > now;
                     });
-
                     renderEvents(validEvents, failedCalendars);
                 } catch (error) {
                     console.error("Critical error:", error);
@@ -1371,7 +1592,6 @@
                 const lines = icsString.split(/\r\n|\n|\r/);
                 const events = [];
                 let currentEvent = null;
-
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
                     if (line.startsWith("BEGIN:VEVENT")) {
@@ -1383,15 +1603,14 @@
                         }
                         currentEvent = null;
                     } else if (currentEvent) {
-                        if (line.startsWith("SUMMARY:")) {
+                        if (line.startsWith("SUMMARY:"))
                             currentEvent.title = line.substring(8);
-                        } else if (line.startsWith("DTSTART")) {
+                        else if (line.startsWith("DTSTART"))
                             currentEvent.start = parseICSTime(
                                 line.split(":")[1],
                             );
-                        } else if (line.startsWith("DTEND")) {
+                        else if (line.startsWith("DTEND"))
                             currentEvent.end = parseICSTime(line.split(":")[1]);
-                        }
                     }
                 }
                 return events;
@@ -1399,12 +1618,12 @@
 
             function parseICSTime(dateStr) {
                 if (!dateStr || dateStr.length < 15) return new Date();
-                const y = dateStr.substring(0, 4);
-                const m = dateStr.substring(4, 6) - 1;
-                const d = dateStr.substring(6, 8);
-                const h = dateStr.substring(9, 11);
-                const min = dateStr.substring(11, 13);
-                const s = dateStr.substring(13, 15);
+                const y = dateStr.substring(0, 4),
+                    m = dateStr.substring(4, 6) - 1,
+                    d = dateStr.substring(6, 8);
+                const h = dateStr.substring(9, 11),
+                    min = dateStr.substring(11, 13),
+                    s = dateStr.substring(13, 15);
                 return new Date(Date.UTC(y, m, d, h, min, s));
             }
 
@@ -1415,6 +1634,7 @@
                     minute: "2-digit",
                 });
             }
+
             function isSameDay(d1, d2) {
                 return (
                     d1.getFullYear() === d2.getFullYear() &&
@@ -1427,11 +1647,8 @@
                 const today = new Date();
                 const tomorrow = new Date();
                 tomorrow.setDate(today.getDate() + 1);
-
                 if (isSameDay(date, today)) return "Today";
                 if (isSameDay(date, tomorrow)) return "Tomorrow";
-
-                // Returns format like "Mon, Apr 8"
                 return date.toLocaleDateString([], {
                     weekday: "short",
                     month: "short",
@@ -1445,28 +1662,30 @@
                 const listContainer = document.getElementById(
                     "upcoming-list-container",
                 );
-
                 dayContainer.innerHTML = "";
                 listContainer.innerHTML = "";
 
                 const now = new Date();
-                const hourHeight = 60; // Must match .hour-block height in CSS
-                const startHour = 7; // Grid starts at 7 AM
-                const endHour = 23; // Grid ends at 11 PM
+                const hourHeight = 60;
+                const startHour = 7,
+                    endHour = 23;
 
-                // 1. Generate the Time Grid
                 const grid = document.createElement("div");
                 grid.className = "day-grid";
                 for (let i = startHour; i <= endHour; i++) {
                     const hourDiv = document.createElement("div");
                     hourDiv.className = "hour-block";
-                    const label = i > 12 ? i - 12 + " PM" : i + " AM";
+                    const label =
+                        i === 12
+                            ? "12 PM"
+                            : i > 12
+                              ? i - 12 + " PM"
+                              : i + " AM";
                     hourDiv.innerHTML = `<span class="hour-text">${label}</span>`;
                     grid.appendChild(hourDiv);
                 }
                 dayContainer.appendChild(grid);
 
-                // 2. Filter Events
                 const todayEvents = events.filter((e) =>
                     isSameDay(e.start, now),
                 );
@@ -1474,29 +1693,27 @@
                     (e) => !isSameDay(e.start, now),
                 );
 
-                // 3. Render Today's Events on Grid
                 todayEvents.forEach((event) => {
                     const startMins =
                         (event.start.getHours() - startHour) * 60 +
                         event.start.getMinutes();
                     const duration = (event.end - event.start) / (1000 * 60);
-
                     if (startMins >= 0) {
                         const top = (startMins / 60) * hourHeight;
-                        const height = (duration / 60) * hourHeight;
+                        const height = Math.max(
+                            (duration / 60) * hourHeight,
+                            22,
+                        );
                         const extraClass = event.colorClass
                             ? ` ${event.colorClass}`
                             : "";
-
-                        const eventHTML = `
-                            <div class="day-event-block${extraClass}" style="top:${top}px; height:${height}px;">
-                                <div class="title">${event.title}</div>
-                            </div>`;
-                        grid.insertAdjacentHTML("beforeend", eventHTML);
+                        grid.insertAdjacentHTML(
+                            "beforeend",
+                            `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;"><div class="title">${event.title}</div></div>`,
+                        );
                     }
                 });
 
-                // 4. Draw "Now" Line
                 const currentMins =
                     (now.getHours() - startHour) * 60 + now.getMinutes();
                 if (currentMins >= 0 && now.getHours() <= endHour) {
@@ -1505,7 +1722,6 @@
                         "beforeend",
                         `<div class="timeline-now" style="top:${nowTop}px"></div>`,
                     );
-                    // Auto-scroll to now
                     setTimeout(
                         () =>
                             dayContainer.scrollTo({
@@ -1519,17 +1735,13 @@
                 if (failedCalendars.length > 0) {
                     listContainer.insertAdjacentHTML(
                         "beforeend",
-                        `<div class="cal-event dim" style="border-left-color: #ff3b30; font-size:10px; padding:5px 10px; margin-bottom:10px;">Warning: ${failedCalendars.join(", ")} failed.</div>`,
+                        `<div class="cal-event" style="border-left-color:#ff3b30;font-size:9px;padding:4px 8px;margin-bottom:8px;">Warning: ${failedCalendars.join(", ")} failed.</div>`,
                     );
                 }
 
                 let lastLabel = "";
-
-                // Only show the next 5 events to keep the card height manageable
                 futureEvents.slice(0, 5).forEach((event) => {
                     const label = getDayLabel(event.start);
-
-                    // Day Header
                     if (label !== lastLabel) {
                         listContainer.insertAdjacentHTML(
                             "beforeend",
@@ -1537,54 +1749,43 @@
                         );
                         lastLabel = label;
                     }
-
-                    // Color Class logic
                     const extraClass = event.colorClass
                         ? ` ${event.colorClass}`
                         : "";
                     const timeString = `${formatTime(event.start)} – ${formatTime(event.end)}`;
-
-                    // Event HTML
-                    const eventHTML = `
+                    listContainer.insertAdjacentHTML(
+                        "beforeend",
+                        `
                         <div class="cal-event${extraClass}">
                             <div class="cal-time">${timeString}</div>
                             <div class="cal-title">${event.title}</div>
-                        </div>
-                    `;
-
-                    listContainer.insertAdjacentHTML("beforeend", eventHTML);
+                        </div>`,
+                    );
                 });
 
-                // Empty State
                 if (events.length === 0) {
-                    listContainer.innerHTML = `
-                        <div class="cal-event dim">
-                            <div class="cal-title">No events scheduled</div>
-                        </div>
-                    `;
+                    listContainer.innerHTML = `<div class="cal-event"><div class="cal-title">No events scheduled</div></div>`;
                 }
             }
 
             fetchAppleCalendars();
 
-            // SPOTIFY INTEGRATION
+            // ── Spotify ─────────────────────────────────────────────────
             const CLIENT_ID = "778fe57066b24fb3b9c8ef6c48afe754";
             const REDIRECT_URI =
                 "https://karolborecki.github.io/setup/dashboard/index.html";
             const SCOPES =
                 "user-read-currently-playing user-read-playback-state user-modify-playback-state";
-
             let accessToken = null;
 
             function generateRandomString(length) {
                 let text = "";
                 const possible =
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                for (let i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++)
                     text += possible.charAt(
                         Math.floor(Math.random() * possible.length),
                     );
-                }
                 return text;
             }
 
@@ -1604,9 +1805,7 @@
             async function authenticateSpotify() {
                 const codeVerifier = generateRandomString(128);
                 const codeChallenge = await generateCodeChallenge(codeVerifier);
-
                 window.localStorage.setItem("code_verifier", codeVerifier);
-
                 const params = new URLSearchParams({
                     client_id: CLIENT_ID,
                     response_type: "code",
@@ -1615,21 +1814,18 @@
                     code_challenge_method: "S256",
                     code_challenge: codeChallenge,
                 });
-
                 window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
             }
 
             async function getAccessToken(code) {
                 const codeVerifier = localStorage.getItem("code_verifier");
-
                 const body = new URLSearchParams({
                     client_id: CLIENT_ID,
                     grant_type: "authorization_code",
-                    code: code,
+                    code,
                     redirect_uri: REDIRECT_URI,
                     code_verifier: codeVerifier,
                 });
-
                 try {
                     const response = await fetch(
                         "https://accounts.spotify.com/api/token",
@@ -1639,55 +1835,69 @@
                                 "Content-Type":
                                     "application/x-www-form-urlencoded",
                             },
-                            body: body,
+                            body,
                         },
                     );
-
-                    if (!response.ok) {
-                        throw new Error("Nie udało się wymienić kodu na token");
-                    }
-
+                    if (!response.ok) throw new Error();
                     const data = await response.json();
                     return data.access_token;
-                } catch (error) {
-                    console.error("Błąd podczas pobierania tokena:", error);
+                } catch {
                     return null;
                 }
+            }
+
+            function setSpotifyIdleState() {
+                document.getElementById("track-name").textContent =
+                    "Nothing playing";
+                document.getElementById("track-name").className =
+                    "spotify-track idle";
+                document.getElementById("artist-name").textContent = "–";
+                document.getElementById("album-art").style.display = "none";
+                document.getElementById("album-placeholder").style.display =
+                    "flex";
+                document.getElementById("play-pause-btn").textContent = "⏯";
+                document.getElementById("play-pause-btn").disabled = true;
+                document.getElementById("btn-prev").disabled = true;
+                document.getElementById("btn-next").disabled = true;
+                document.getElementById("spotify-queue").innerHTML =
+                    `<div class="spotify-connect-hint">Waiting for playback…</div>`;
+            }
+
+            function setSpotifyActiveState(trackName, artistName, albumArtUrl) {
+                document.getElementById("track-name").textContent = trackName;
+                document.getElementById("track-name").className =
+                    "spotify-track";
+                document.getElementById("artist-name").textContent = artistName;
+                const albumArt = document.getElementById("album-art");
+                albumArt.src = albumArtUrl;
+                albumArt.style.display = "block";
+                document.getElementById("album-placeholder").style.display =
+                    "none";
+                document.getElementById("play-pause-btn").disabled = false;
+                document.getElementById("btn-prev").disabled = false;
+                document.getElementById("btn-next").disabled = false;
             }
 
             async function initSpotify() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const code = urlParams.get("code");
-
                 if (code) {
-                    console.log(
-                        "Znaleziono kod autoryzacji. Wymieniam na token...",
-                    );
                     accessToken = await getAccessToken(code);
-
                     if (accessToken) {
                         window.history.replaceState(
                             {},
                             document.title,
                             window.location.pathname,
                         );
-
-                        console.log("Pobrano token! Uruchamiam odpytywanie.");
                         fetchNowPlaying();
                         setInterval(fetchNowPlaying, 5000);
                     } else {
-                        console.log("Błąd tokena, ponowne logowanie...");
                         authenticateSpotify();
                     }
                 } else {
-                    console.log(
-                        "Brak kodu. Przekierowuję do Spotify automatycznie...",
-                    );
                     authenticateSpotify();
                 }
             }
-
-            initSpotify();
 
             let isPlaying = false;
 
@@ -1695,65 +1905,56 @@
                 try {
                     const response = await fetch(
                         "https://api.spotify.com/v1/me/player/currently-playing",
-                        {
-                            headers: { Authorization: `Bearer ${accessToken}` },
-                        },
+                        { headers: { Authorization: `Bearer ${accessToken}` } },
                     );
 
                     if (response.status === 204 || response.status > 400) {
-                        document.getElementById("track-name").textContent =
-                            "Nothing playing right now";
-                        document.getElementById("artist-name").textContent =
-                            "-";
-                        document.getElementById("album-art").style.display =
-                            "none";
+                        setSpotifyIdleState();
                         isPlaying = false;
-                        document.getElementById("play-pause-btn").textContent =
-                            "⏯";
                         return;
                     }
 
                     const data = await response.json();
+                    if (!data || !data.item) {
+                        setSpotifyIdleState();
+                        isPlaying = false;
+                        return;
+                    }
 
                     isPlaying = data.is_playing;
                     document.getElementById("play-pause-btn").textContent =
-                        isPlaying ? "⏸" : "⏯";
+                        isPlaying ? "⏸" : "▶";
 
-                    document.getElementById("track-name").textContent =
-                        data.item.name;
-                    document.getElementById("artist-name").textContent =
-                        data.item.artists.map((a) => a.name).join(", ");
-
-                    const albumArt = document.getElementById("album-art");
-                    albumArt.src = data.item.album.images[0].url;
-                    albumArt.style.display = "block";
+                    setSpotifyActiveState(
+                        data.item.name,
+                        data.item.artists.map((a) => a.name).join(", "),
+                        data.item.album.images[0].url,
+                    );
 
                     fetchSpotifyQueue();
                 } catch (error) {
                     console.error("Error fetching Spotify data:", error);
+                    setSpotifyIdleState();
                 }
             }
 
             async function controlSpotify(action) {
-                let endpoint = "";
-                let method = "POST";
-
+                let endpoint = "",
+                    method = "POST";
                 if (action === "next") endpoint = "next";
                 if (action === "previous") endpoint = "previous";
                 if (action === "play/pause") {
                     endpoint = isPlaying ? "pause" : "play";
                     method = "PUT";
                 }
-
                 try {
                     await fetch(
                         `https://api.spotify.com/v1/me/player/${endpoint}`,
                         {
-                            method: method,
+                            method,
                             headers: { Authorization: `Bearer ${accessToken}` },
                         },
                     );
-
                     setTimeout(fetchNowPlaying, 500);
                 } catch (error) {
                     console.error("Error controlling Spotify:", error);
@@ -1764,47 +1965,37 @@
                 try {
                     const response = await fetch(
                         "https://api.spotify.com/v1/me/player/queue",
-                        {
-                            headers: { Authorization: `Bearer ${accessToken}` },
-                        },
+                        { headers: { Authorization: `Bearer ${accessToken}` } },
                     );
-
                     if (!response.ok) return;
                     const data = await response.json();
-
                     const queueContainer =
                         document.getElementById("spotify-queue");
                     queueContainer.innerHTML = "";
-
                     if (!data.queue || data.queue.length === 0) {
-                        queueContainer.innerHTML = `<div class="queue-item placeholder">Queue is empty</div>`;
+                        queueContainer.innerHTML = `<div class="spotify-connect-hint">Queue is empty</div>`;
                         return;
                     }
-
                     data.queue.slice(0, 4).forEach((track) => {
                         const artistName = track.artists
                             .map((a) => a.name)
                             .join(", ");
-
                         const thumbUrl =
                             track.album.images.length > 0
                                 ? track.album.images[
                                       track.album.images.length - 1
                                   ].url
                                 : "";
-
-                        const trackHTML = `
+                        queueContainer.insertAdjacentHTML(
+                            "beforeend",
+                            `
                             <div class="queue-item">
                                 <img src="${thumbUrl}" class="queue-thumb" alt="art">
                                 <div class="queue-details">
                                     <div class="queue-track">${track.name}</div>
                                     <div class="queue-artist">${artistName}</div>
                                 </div>
-                            </div>
-                        `;
-                        queueContainer.insertAdjacentHTML(
-                            "beforeend",
-                            trackHTML,
+                            </div>`,
                         );
                     });
                 } catch (error) {
@@ -1812,45 +2003,57 @@
                 }
             }
 
-            //  Weather
+            initSpotify();
+
+            // ── Advanced Weather ─────────────────────────────────────────
             async function fetchWeather() {
                 try {
                     const r = await fetch(
-                        "https://api.open-meteo.com/v1/forecast?latitude=52.2298&longitude=21.0118&current_weather=true",
+                        "https://api.open-meteo.com/v1/forecast?latitude=52.2298&longitude=21.0118" +
+                            "&current=temperature_2m,apparent_temperature,precipitation,weathercode,wind_speed_10m,relative_humidity_2m",
                     );
                     const d = await r.json();
-                    const temp = Math.round(d.current_weather.temperature);
-                    const code = d.current_weather.weathercode;
+                    const cur = d.current;
+                    const temp = Math.round(cur.temperature_2m);
+                    const feels = Math.round(cur.apparent_temperature);
+                    const wind = Math.round(cur.wind_speed_10m);
+                    const humidity = Math.round(cur.relative_humidity_2m);
+                    const precip = cur.precipitation;
+                    const code = cur.weathercode;
 
-                    document.getElementById("temp").textContent = temp;
+                    // Temp color
+                    let textColor;
+                    if (temp < 0) textColor = "#9c27b0";
+                    else if (temp < 5) textColor = "#0288d1";
+                    else if (temp < 10) textColor = "#6ec6ff";
+                    else if (temp < 15) textColor = "#4caf78";
+                    else if (temp < 22) textColor = "#e8a820";
+                    else textColor = "#ff5252";
+
+                    document.getElementById("temp").textContent = temp + "°C";
+                    document.getElementById("temp").style.color = textColor;
                     document.getElementById("condition").textContent =
                         decodeWeather(code);
+                    document.getElementById("feels-like").textContent =
+                        `Feels like ${feels}°C`;
+                    document.getElementById("wind").textContent =
+                        wind + " km/h";
+                    document.getElementById("humidity").textContent =
+                        humidity + "%";
+                    document.getElementById("precip").textContent =
+                        precip + " mm";
 
-                    let textColor, borderColor;
-
-                    if (temp < 0) {
-                        textColor = "#9c27b0";
-                        borderColor = "rgba(156, 39, 176, 0.3)";
-                    } else if (temp < 5) {
-                        textColor = "#0288d1";
-                        borderColor = "rgba(2, 136, 209, 0.3)";
-                    } else if (temp < 15) {
-                        textColor = "#6ec6ff";
-                        borderColor = "rgba(110, 198, 255, 0.3)";
-                    } else if (temp < 20) {
-                        textColor = "#4caf78";
-                        borderColor = "rgba(76, 175, 120, 0.3)";
-                    } else if (temp < 25) {
-                        textColor = "#e8a820";
-                        borderColor = "rgba(232, 168, 32, 0.3)";
-                    } else {
-                        textColor = "#ff5252";
-                        borderColor = "rgba(255, 82, 82, 0.3)";
-                    }
-
-                    const pill = document.querySelector(".weather-pill");
-                    pill.style.color = textColor;
-                    pill.style.borderColor = borderColor;
+                    // Clothing suggestion
+                    const { icon, advice } = getClothingAdvice(
+                        temp,
+                        feels,
+                        wind,
+                        code,
+                        precip,
+                    );
+                    document.getElementById("clothing-icon").textContent = icon;
+                    document.getElementById("clothing-advice").textContent =
+                        advice;
                 } catch {
                     document.getElementById("condition").textContent =
                         "Unavailable";
@@ -1860,22 +2063,78 @@
             function decodeWeather(c) {
                 if (c === 0) return "Clear Sky";
                 if (c <= 3) return "Partly Cloudy";
-                if (c <= 49) return "Fog";
+                if (c <= 49) return "Foggy";
                 if (c <= 69) return "Rainy";
                 if (c <= 79) return "Snowy";
                 if (c <= 99) return "Stormy";
                 return "Unknown";
             }
+
+            function getClothingAdvice(temp, feels, wind, code, precip) {
+                const isRainy = (code >= 50 && code <= 69) || precip > 0.5;
+                const isSnowy = code >= 70 && code <= 79;
+                const isStormy = code >= 80;
+                const isWindy = wind > 25;
+
+                let base = "";
+                let icon = "👕";
+
+                if (feels < -5) {
+                    base =
+                        "Heavy winter coat, thermal layers, gloves, scarf & hat.";
+                    icon = "🧣";
+                } else if (feels < 0) {
+                    base = "Winter coat, gloves, scarf and a warm hat.";
+                    icon = "🧥";
+                } else if (feels < 5) {
+                    base = "Heavy jacket, gloves, and layers underneath.";
+                    icon = "🧥";
+                } else if (feels < 10) {
+                    base = "Warm jacket, consider a hoodie underneath.";
+                    icon = "🧥";
+                } else if (feels < 16) {
+                    base = "Light jacket or thick hoodie should work.";
+                    icon = "🧤";
+                } else if (feels < 20) {
+                    base = "A light layer or long sleeves will do.";
+                    icon = "👔";
+                } else if (feels < 25) {
+                    base = "T-shirt weather — comfortable and mild.";
+                    icon = "👕";
+                } else {
+                    base =
+                        "Lightweight, breathable clothing. Don't forget sunscreen.";
+                    icon = "🌞";
+                }
+
+                let extra = "";
+                if (isStormy) {
+                    extra = " ⛈ Avoid being outside if possible.";
+                    icon = "⛈️";
+                } else if (isSnowy) {
+                    extra = " ❄️ Boots and waterproof outerwear.";
+                } else if (isRainy) {
+                    extra = " ☂️ Take an umbrella.";
+                } else if (isWindy) {
+                    extra = " 💨 Windbreaker recommended.";
+                }
+
+                return { icon, advice: base + extra };
+            }
+
             fetchWeather();
             setInterval(fetchWeather, 600000);
 
-            //  Pomodoro
-            const TOTAL = 25 * 60;
+            // ── Pomodoro ─────────────────────────────────────────────────
+            let TOTAL = 25 * 60;
             let timeLeft = TOTAL,
                 ticker = null,
                 running = false;
+            let sessionCount = 0;
+            let currentModeLabel = "Focus";
+
             const ring = document.getElementById("ring");
-            const r = 62;
+            const r = 52;
             const circ = r * 2 * Math.PI;
             ring.style.strokeDasharray = `${circ} ${circ}`;
             ring.style.strokeDashoffset = 0;
@@ -1892,6 +2151,50 @@
                 setRing((timeLeft / TOTAL) * 100);
             }
 
+            function setPreset(minutes, btn) {
+                const wasRunning = running;
+                if (running) {
+                    clearInterval(ticker);
+                    running = false;
+                }
+                TOTAL = minutes * 60;
+                timeLeft = TOTAL;
+
+                // Label based on minutes
+                if (minutes <= 10) currentModeLabel = "Short Break";
+                else if (minutes <= 20) currentModeLabel = "Long Break";
+                else currentModeLabel = "Focus";
+                document.getElementById("timer-mode").textContent =
+                    currentModeLabel;
+
+                document
+                    .querySelectorAll(".preset-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                if (btn) btn.classList.add("active");
+                document.getElementById("timer-btn").textContent = "Start";
+                updateDisplay();
+            }
+
+            function setCustomTime() {
+                const val = parseInt(
+                    document.getElementById("custom-time").value,
+                );
+                if (!val || val < 1 || val > 180) return;
+                document
+                    .querySelectorAll(".preset-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                currentModeLabel = "Custom";
+                document.getElementById("timer-mode").textContent = "Custom";
+                if (running) {
+                    clearInterval(ticker);
+                    running = false;
+                }
+                TOTAL = val * 60;
+                timeLeft = TOTAL;
+                document.getElementById("timer-btn").textContent = "Start";
+                updateDisplay();
+            }
+
             function toggleTimer() {
                 const btn = document.getElementById("timer-btn");
                 if (running) {
@@ -1904,8 +2207,15 @@
                             updateDisplay();
                         } else {
                             clearInterval(ticker);
-                            alert("Focus session complete! Take a break.");
-                            resetTimer();
+                            running = false;
+                            sessionCount++;
+                            document.getElementById(
+                                "session-count",
+                            ).textContent = sessionCount;
+                            alert(`${currentModeLabel} session complete!`);
+                            timeLeft = TOTAL;
+                            updateDisplay();
+                            btn.textContent = "Start";
                         }
                     }, 1000);
                     btn.textContent = "Pause";
@@ -1917,13 +2227,12 @@
                 clearInterval(ticker);
                 timeLeft = TOTAL;
                 running = false;
-                document.getElementById("timer-btn").textContent =
-                    "Start Focus";
+                document.getElementById("timer-btn").textContent = "Start";
                 updateDisplay();
             }
             updateDisplay();
 
-            //  Habits
+            // ── Habits ───────────────────────────────────────────────────
             const HABITS = [
                 "Mindfulness",
                 "Workout",
@@ -1939,11 +2248,7 @@
                     const saved = localStorage.getItem(`habit_${i}`) === "true";
                     const el = document.createElement("label");
                     el.className = "habit-item" + (saved ? " checked" : "");
-                    el.innerHTML = `
-              <input type="checkbox" ${saved ? "checked" : ""}/>
-              <div class="habit-box"></div>
-              <span>${h}</span>
-            `;
+                    el.innerHTML = `<input type="checkbox" ${saved ? "checked" : ""}/><div class="habit-box"></div><span>${h}</span>`;
                     el.querySelector("input").addEventListener(
                         "change",
                         (e) => {
@@ -1959,7 +2264,7 @@
             }
             renderHabits();
 
-            //  News helpers
+            // ── News ─────────────────────────────────────────────────────
             function renderNews(listId, items) {
                 const ul = document.getElementById(listId);
                 ul.innerHTML = "";
@@ -1997,13 +2302,14 @@
                             "https://hacker-news.firebaseio.com/v0/topstories.json",
                         )
                     ).json();
-                    const top = ids.slice(0, 7);
                     const stories = await Promise.all(
-                        top.map((id) =>
-                            fetch(
-                                `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
-                            ).then((r) => r.json()),
-                        ),
+                        ids
+                            .slice(0, 7)
+                            .map((id) =>
+                                fetch(
+                                    `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
+                                ).then((r) => r.json()),
+                            ),
                     );
                     renderNews(
                         "hn-list",
