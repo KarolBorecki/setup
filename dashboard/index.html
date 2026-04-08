@@ -2159,7 +2159,8 @@
                     grid.appendChild(hourDiv);
                 }
                 dayContainer.appendChild(grid);
-
+                console.log("All fetched events:", events);
+                console.log("Current time:", now);
                 const todayEvents = events.filter((e) =>
                     isSameDay(e.start, now),
                 );
