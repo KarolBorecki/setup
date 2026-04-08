@@ -2031,7 +2031,7 @@
                         );
                         return e.start >= startOfToday;
                     });
-                    renderEvents(allEvents, failedCalendars);
+                    renderEvents(validEvents, failedCalendars);
                 } catch (error) {
                     console.error("Critical error:", error);
                 }
@@ -2043,6 +2043,7 @@
                 let currentEvent = null;
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
+                    console.log("Processing line:", line);
                     if (line.startsWith("BEGIN:VEVENT")) {
                         currentEvent = { allDay: false };
                     } else if (line.startsWith("END:VEVENT")) {
