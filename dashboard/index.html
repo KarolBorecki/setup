@@ -470,8 +470,8 @@
             .bookmarks-bar {
                 display: flex;
                 flex-direction: row;
-                align-items: space-between;
-                gap: 0;
+                align-items: start;
+                gap: 20px;
                 background: var(--bg3);
                 border: 1px solid var(--border);
                 border-radius: 12px;
@@ -1995,32 +1995,119 @@
             updateClock();
 
             // ── Calendars ─────────────────────────────────────────────────
+            function expandRecurringEvents(events, maxDaysToExpand = 14) {
+                const expanded = [];
+                const now = new Date();
+                const startOfToday = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate(),
+                );
+                const limitDate = new Date(
+                    startOfToday.getTime() +
+                        maxDaysToExpand * 24 * 60 * 60 * 1000,
+                );
+
+                events.forEach((event) => {
+                    expanded.push(event);
+
+                    if (!event.rrule) return;
+
+                    const rules = {};
+                    event.rrule.split(";").forEach((p) => {
+                        const [k, v] = p.split("=");
+                        rules[k] = v;
+                    });
+
+                    if (rules.FREQ === "WEEKLY" || rules.FREQ === "DAILY") {
+                        let currentStart = new Date(event.start);
+                        const duration = event.end
+                            ? event.end.getTime() - event.start.getTime()
+                            : 0;
+
+                        for (let i = 0; i < maxDaysToExpand * 52; i++) {
+                            currentStart.setDate(currentStart.getDate() + 1);
+
+                            if (currentStart > limitDate) break;
+                            if (currentStart < startOfToday) continue;
+
+                            let matches = false;
+                            if (rules.FREQ === "DAILY") {
+                                matches = true;
+                            } else if (rules.FREQ === "WEEKLY") {
+                                if (rules.BYDAY) {
+                                    const dayMap = {
+                                        SU: 0,
+                                        MO: 1,
+                                        TU: 2,
+                                        WE: 3,
+                                        TH: 4,
+                                        FR: 5,
+                                        SA: 6,
+                                    };
+                                    const targetDays = rules.BYDAY.split(
+                                        ",",
+                                    ).map(
+                                        (d) => dayMap[d.replace(/[0-9-]/g, "")],
+                                    );
+                                    if (
+                                        targetDays.includes(
+                                            currentStart.getDay(),
+                                        )
+                                    )
+                                        matches = true;
+                                } else {
+                                    if (
+                                        currentStart.getDay() ===
+                                        event.start.getDay()
+                                    )
+                                        matches = true;
+                                }
+                            }
+
+                            if (matches) {
+                                expanded.push({
+                                    ...event,
+                                    start: new Date(currentStart),
+                                    end: event.end
+                                        ? new Date(
+                                              currentStart.getTime() + duration,
+                                          )
+                                        : null,
+                                });
+                            }
+                        }
+                    }
+                });
+
+                return expanded;
+            }
             const calendars = [
-                // {
-                //     name: "Private",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY",
-                //     colorClass: "dark-green",
-                // },
-                // {
-                //     name: "Exams",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkAOEMf7v8Z8Hkcnjo0oOQyeqn_UGv3TLQlhEr5mN7xLG5okW3cF4_CvGfCHYVvvdBA",
-                //     colorClass: "orange",
-                // },
-                // {
-                //     name: "Holidays",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                //     colorClass: "yellow",
-                // },
+                {
+                    name: "Private",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY",
+                    colorClass: "dark-green",
+                },
+                {
+                    name: "Exams",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkAOEMf7v8Z8Hkcnjo0oOQyeqn_UGv3TLQlhEr5mN7xLG5okW3cF4_CvGfCHYVvvdBA",
+                    colorClass: "orange",
+                },
+                {
+                    name: "Holidays",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+                    colorClass: "yellow",
+                },
                 {
                     name: "School",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkC0WuIMLarWx6-sl4FVEhVW0cJwAdPUB0hOujpXACsaAgMbguioo9ic4d5-jUts5MM",
                     colorClass: "dark-blue",
                 },
-                // {
-                //     name: "Work",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                //     colorClass: "gold",
-                // },
+                {
+                    name: "Work",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+                    colorClass: "gold",
+                },
             ];
 
             async function fetchAppleCalendars() {
@@ -2039,11 +2126,15 @@
                         return [];
                     }
                 });
+
                 try {
                     const allResults = await Promise.all(fetchPromises);
                     let allEvents = allResults.flat();
-                    console.log("all events before filtering:", allEvents);
+
+                    allEvents = expandRecurringEvents(allEvents, 14);
+
                     allEvents.sort((a, b) => a.start - b.start);
+
                     const validEvents = allEvents.filter((e) => {
                         const now = new Date();
                         const startOfToday = new Date(
@@ -2053,6 +2144,7 @@
                         );
                         return e.start >= startOfToday;
                     });
+
                     renderEvents(validEvents, failedCalendars);
                 } catch (error) {
                     console.error("Critical error:", error);
@@ -2065,7 +2157,6 @@
                 let currentEvent = null;
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
-                    console.log("Processing line:", line);
                     if (line.startsWith("BEGIN:VEVENT")) {
                         currentEvent = { allDay: false };
                     } else if (line.startsWith("END:VEVENT")) {
@@ -2087,6 +2178,8 @@
                             if (res.isAllDay) currentEvent.allDay = true;
                         } else if (prop.startsWith("DTEND")) {
                             currentEvent.end = parseICSTime(val).date;
+                        } else if (prop.startsWith("RRULE")) {
+                            currentEvent.rrule = val;
                         }
                     }
                 }
