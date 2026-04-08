@@ -567,6 +567,52 @@
                 color: var(--gold);
             }
 
+            /* ── Search Bar ── */
+            .search-container {
+                display: flex;
+                align-items: center;
+                flex-shrink: 0;
+            }
+
+            .search-input {
+                background: rgba(150, 150, 150, 0.04);
+                border: 1px solid transparent;
+                border-radius: 10px;
+                padding: 10px 14px;
+                color: var(--cream);
+                font-family: var(--sans);
+                font-size: 12px;
+                width: 140px;
+                transition: all 0.3s ease;
+                outline: none;
+            }
+
+            .search-input:focus {
+                background: rgba(200, 150, 58, 0.08);
+                border-color: var(--gold-dim);
+                width: 200px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            }
+
+            .search-input::placeholder {
+                color: var(--muted);
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+            }
+
+            /* Make it full width on mobile */
+            @media (max-width: 699px) {
+                .search-container {
+                    width: 100%;
+                }
+                .search-input,
+                .search-input:focus {
+                    width: 100%;
+                }
+            }
+
             /* ── Pomodoro (horizontal layout) ── */
             .pomodoro-card {
                 /* card is flex-direction: column by default; pom-layout handles inner layout */
@@ -1791,6 +1837,17 @@
                                 </svg>
                             </a>
                         </div>
+
+                        <div class="search-container">
+                            <input
+                                type="text"
+                                id="global-search"
+                                class="search-input"
+                                placeholder="Search web..."
+                                autocomplete="off"
+                                spellcheck="false"
+                            />
+                        </div>
                     </div>
 
                     <!-- Cols 2 + 3 side by side -->
@@ -1997,6 +2054,34 @@
             }
             setInterval(updateClock, 1000);
             updateClock();
+
+            // ── Global Search ────────────────────────────────────────────────────────
+            const searchInput = document.getElementById("global-search");
+
+            // Auto-focus when typing anywhere on the page
+            document.addEventListener("keydown", (e) => {
+                if (
+                    document.activeElement.tagName === "INPUT" ||
+                    document.activeElement.tagName === "TEXTAREA"
+                ) {
+                    return;
+                }
+
+                if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+                if (e.key.length === 1) {
+                    searchInput.focus();
+                }
+            });
+
+            searchInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
 
             // ── Calendars ─────────────────────────────────────────────────
             function expandRecurringEvents(events, maxDaysToExpand = 14) {
