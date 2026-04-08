@@ -2166,6 +2166,8 @@
                 const futureEvents = events.filter(
                     (e) => !isSameDay(e.start, now),
                 );
+                console.log("Today's events:", todayEvents);
+                console.log("Future events:", futureEvents);
 
                 todayEvents.forEach((event) => {
                     const extraClass = event.colorClass
