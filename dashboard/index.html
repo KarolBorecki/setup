@@ -2009,7 +2009,12 @@
                 );
 
                 events.forEach((event) => {
-                    expanded.push(event);
+                    if (
+                        event.start >= startOfToday ||
+                        (event.allDay && isSameDay(event.start, now))
+                    ) {
+                        expanded.push(event);
+                    }
 
                     if (!event.rrule) return;
 
@@ -2018,6 +2023,14 @@
                         const [k, v] = p.split("=");
                         rules[k] = v;
                     });
+
+                    let untilDate = null;
+                    if (rules.UNTIL) {
+                        untilDate = parseICSTime(rules.UNTIL).date;
+                    }
+
+                    let maxCount = rules.COUNT ? parseInt(rules.COUNT) : null;
+                    let currentCount = 1; // The original event counts as occurrence #1
 
                     if (rules.FREQ === "WEEKLY" || rules.FREQ === "DAILY") {
                         let currentStart = new Date(event.start);
@@ -2029,7 +2042,8 @@
                             currentStart.setDate(currentStart.getDate() + 1);
 
                             if (currentStart > limitDate) break;
-                            if (currentStart < startOfToday) continue;
+
+                            if (untilDate && currentStart > untilDate) break;
 
                             let matches = false;
                             if (rules.FREQ === "DAILY") {
@@ -2066,15 +2080,26 @@
                             }
 
                             if (matches) {
-                                expanded.push({
-                                    ...event,
-                                    start: new Date(currentStart),
-                                    end: event.end
-                                        ? new Date(
-                                              currentStart.getTime() + duration,
-                                          )
-                                        : null,
-                                });
+                                currentCount++;
+
+                                if (
+                                    maxCount !== null &&
+                                    currentCount > maxCount
+                                )
+                                    break;
+
+                                if (currentStart >= startOfToday) {
+                                    expanded.push({
+                                        ...event,
+                                        start: new Date(currentStart),
+                                        end: event.end
+                                            ? new Date(
+                                                  currentStart.getTime() +
+                                                      duration,
+                                              )
+                                            : null,
+                                    });
+                                }
                             }
                         }
                     }
@@ -2082,6 +2107,7 @@
 
                 return expanded;
             }
+
             const calendars = [
                 {
                     name: "Private",
