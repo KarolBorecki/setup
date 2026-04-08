@@ -177,20 +177,11 @@
                     max-height: 1111px;
                 }
                 .col-3 {
-                    flex-direction: row !important;
-                    flex-wrap: wrap;
-                }
-                .col-3 .card {
-                    flex: 1 1 45%;
-                    min-width: 200px;
-                }
-                .col-3 .spotify-card {
-                    flex: 1 1 100%;
+                    flex-direction: column !important;
                 }
                 .col-3 .card.expand {
-                    flex: 1 1 45%;
                     min-height: 300px;
-                    height: 45vh;
+                    height: auto;
                 }
             }
 
@@ -235,7 +226,7 @@
                 }
                 .col-3 .card.expand {
                     min-height: 200px;
-                    height: 50vh;
+                    height: auto;
                 }
             }
 
@@ -470,7 +461,7 @@
             .bookmarks-bar {
                 display: flex;
                 flex-direction: row;
-                align-items: space-between;
+                align-items: center;
                 gap: 0;
                 background: var(--bg3);
                 border: 1px solid var(--border);
@@ -485,7 +476,7 @@
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 12px;
+                gap: 4px;
                 flex: 1;
                 justify-content: center;
             }
@@ -1335,9 +1326,7 @@
     <body>
         <div class="layout">
             <div class="grid">
-                <!-- COL 1: Clock, Weather, Pomodoro, Habits -->
                 <div class="col col-1">
-                    <!-- Clock (no card) -->
                     <div class="clock-section">
                         <div class="clock" id="clock">00:00</div>
                         <div class="date-line" id="dateline">
@@ -1345,7 +1334,6 @@
                         </div>
                     </div>
 
-                    <!-- Advanced Weather -->
                     <div class="weather-block">
                         <div class="weather-main-row">
                             <div class="weather-temp-big" id="temp">--°C</div>
@@ -1388,11 +1376,9 @@
                         </div>
                     </div>
 
-                    <!-- Pomodoro — ring left, controls right -->
                     <div class="card pomodoro-card">
                         <div class="card-label">Focus Timer</div>
                         <div class="pom-layout">
-                            <!-- Left: ring + session count -->
                             <div class="pom-left">
                                 <div class="ring-wrap">
                                     <svg
@@ -1438,7 +1424,6 @@
                                     Sessions: <span id="session-count">0</span>
                                 </div>
                             </div>
-                            <!-- Right: presets + buttons -->
                             <div class="pom-right">
                                 <div class="pom-presets">
                                     <button
@@ -1504,18 +1489,14 @@
                         </div>
                     </div>
 
-                    <!-- Reminders/Habits -->
                     <div class="card expand">
                         <div class="card-label">Reminder</div>
                         <div class="scrollable" id="habit-list"></div>
                     </div>
                 </div>
 
-                <!-- RIGHT PANEL: Bookmarks + Cols 2 & 3 -->
                 <div class="right-panel">
-                    <!-- Bookmarks Bar (spans above col-2 and col-3) -->
                     <div class="bookmarks-bar">
-                        <!-- Group 1: Productivity -->
                         <div class="bm-group">
                             <a
                                 href="https://www.icloud.com/calendar/"
@@ -1613,7 +1594,6 @@
 
                         <div class="bm-vdivider"></div>
 
-                        <!-- Group 2: Dev & Comms -->
                         <div class="bm-group">
                             <a
                                 href="https://github.com"
@@ -1690,7 +1670,6 @@
 
                         <div class="bm-vdivider"></div>
 
-                        <!-- Group 3: Media -->
                         <div class="bm-group">
                             <a
                                 href="https://www.youtube.com"
@@ -1767,9 +1746,7 @@
                         </div>
                     </div>
 
-                    <!-- Cols 2 + 3 side by side -->
                     <div class="cols-right">
-                        <!-- COL 2 -->
                         <div class="col col-2">
                             <div class="card expand">
                                 <div class="card-label">Schedule</div>
@@ -1793,9 +1770,7 @@
                             </div>
                         </div>
 
-                        <!-- COL 3 -->
                         <div class="col col-3">
-                            <!-- Spotify -->
                             <div class="card spotify-card">
                                 <div class="card-label">Spotify</div>
                                 <div
@@ -1885,7 +1860,6 @@
                                 </div>
                             </div>
 
-                            <!-- News cards -->
                             <div class="card expand">
                                 <div class="card-label">World News</div>
                                 <ul
@@ -1974,31 +1948,31 @@
 
             // ── Calendars ─────────────────────────────────────────────────
             const calendars = [
-                // {
-                //     name: "Private",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY",
-                //     colorClass: "dark-green",
-                // },
-                // {
-                //     name: "Exams",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkAOEMf7v8Z8Hkcnjo0oOQyeqn_UGv3TLQlhEr5mN7xLG5okW3cF4_CvGfCHYVvvdBA",
-                //     colorClass: "orange",
-                // },
-                // {
-                //     name: "Holidays",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                //     colorClass: "yellow",
-                // },
+                {
+                    name: "Private",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCmlvqcwqHmGXEHMfBOpcr7d0-ONDtxECNPWMfN7pvS_C0_OqpJwPNL0b4C8SRPGmY",
+                    colorClass: "dark-green",
+                },
+                {
+                    name: "Exams",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkAOEMf7v8Z8Hkcnjo0oOQyeqn_UGv3TLQlhEr5mN7xLG5okW3cF4_CvGfCHYVvvdBA",
+                    colorClass: "orange",
+                },
+                {
+                    name: "Holidays",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+                    colorClass: "yellow",
+                },
                 {
                     name: "School",
                     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkC0WuIMLarWx6-sl4FVEhVW0cJwAdPUB0hOujpXACsaAgMbguioo9ic4d5-jUts5MM",
                     colorClass: "dark-blue",
                 },
-                // {
-                //     name: "Work",
-                //     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
-                //     colorClass: "gold",
-                // },
+                {
+                    name: "Work",
+                    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+                    colorClass: "gold",
+                },
             ];
 
             async function fetchAppleCalendars() {
@@ -2020,7 +1994,6 @@
                 try {
                     const allResults = await Promise.all(fetchPromises);
                     let allEvents = allResults.flat();
-                    console.log("all events before filtering:", allEvents);
                     allEvents.sort((a, b) => a.start - b.start);
                     const validEvents = allEvents.filter((e) => {
                         const now = new Date();
@@ -2043,7 +2016,6 @@
                 let currentEvent = null;
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
-                    console.log("Processing line:", line);
                     if (line.startsWith("BEGIN:VEVENT")) {
                         currentEvent = { allDay: false };
                     } else if (line.startsWith("END:VEVENT")) {
@@ -2161,16 +2133,13 @@
                     grid.appendChild(hourDiv);
                 }
                 dayContainer.appendChild(grid);
-                console.log("All fetched events:", events);
-                console.log("Current time:", now);
+
                 const todayEvents = events.filter((e) =>
                     isSameDay(e.start, now),
                 );
                 const futureEvents = events.filter(
                     (e) => !isSameDay(e.start, now),
                 );
-                console.log("Today's events:", todayEvents);
-                console.log("Future events:", futureEvents);
 
                 todayEvents.forEach((event) => {
                     const extraClass = event.colorClass
