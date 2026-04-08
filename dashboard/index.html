@@ -1919,170 +1919,163 @@
                                 />
                             </div>
                         </div>
-
-                        <!-- Cols 2 + 3 side by side -->
-                        <div class="cols-right">
-                            <!-- COL 2 -->
-                            <div class="col col-2">
-                                <div class="card expand">
-                                    <div class="card-label">Schedule</div>
+                    </div>
+                    <!-- Cols 2 + 3 side by side -->
+                    <div class="cols-right">
+                        <!-- COL 2 -->
+                        <div class="col col-2">
+                            <div class="card expand">
+                                <div class="card-label">Schedule</div>
+                                <div
+                                    class="day-view-scroll"
+                                    id="day-view-container"
+                                ></div>
+                                <div class="upcoming-section">
                                     <div
-                                        class="day-view-scroll"
-                                        id="day-view-container"
-                                    ></div>
-                                    <div class="upcoming-section">
+                                        class="card-label"
+                                        style="
+                                            font-size: 9px;
+                                            opacity: 0.7;
+                                            margin-bottom: 8px;
+                                        "
+                                    >
+                                        Upcoming This Week
+                                    </div>
+                                    <div id="upcoming-list-container"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COL 3 -->
+                        <div class="col col-3">
+                            <!-- Spotify -->
+                            <div class="card spotify-card">
+                                <div class="card-label">Spotify</div>
+                                <div
+                                    id="spotify-container"
+                                    class="spotify-layout"
+                                >
+                                    <div class="spotify-now-playing">
+                                        <img
+                                            id="album-art"
+                                            class="spotify-cover"
+                                            src=""
+                                            alt="Album Art"
+                                            style="display: none"
+                                        />
                                         <div
-                                            class="card-label"
-                                            style="
-                                                font-size: 9px;
-                                                opacity: 0.7;
-                                                margin-bottom: 8px;
-                                            "
+                                            id="album-placeholder"
+                                            class="spotify-cover-placeholder"
                                         >
-                                            Upcoming This Week
+                                            ♪
                                         </div>
-                                        <div id="upcoming-list-container"></div>
+                                        <div class="spotify-details">
+                                            <div class="spotify-info">
+                                                <div
+                                                    id="track-name"
+                                                    class="spotify-track idle"
+                                                >
+                                                    Not Playing
+                                                </div>
+                                                <div
+                                                    id="artist-name"
+                                                    class="spotify-artist"
+                                                >
+                                                    –
+                                                </div>
+                                            </div>
+                                            <div class="spotify-controls">
+                                                <button
+                                                    class="icon-btn"
+                                                    id="btn-prev"
+                                                    onclick="
+                                                        controlSpotify(
+                                                            'previous',
+                                                        )
+                                                    "
+                                                    disabled
+                                                >
+                                                    ⏮
+                                                </button>
+                                                <button
+                                                    class="icon-btn primary"
+                                                    id="play-pause-btn"
+                                                    onclick="
+                                                        controlSpotify(
+                                                            'play/pause',
+                                                        )
+                                                    "
+                                                    disabled
+                                                >
+                                                    ⏯
+                                                </button>
+                                                <button
+                                                    class="icon-btn"
+                                                    id="btn-next"
+                                                    onclick="
+                                                        controlSpotify('next')
+                                                    "
+                                                    disabled
+                                                >
+                                                    ⏭
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="spotify-queue-container">
+                                        <div class="queue-label">
+                                            Next in Queue
+                                        </div>
+                                        <div
+                                            id="spotify-queue"
+                                            class="spotify-queue"
+                                        >
+                                            <div class="spotify-connect-hint">
+                                                Waiting for playback…
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- COL 3 -->
-                            <div class="col col-3">
-                                <!-- Spotify -->
-                                <div class="card spotify-card">
-                                    <div class="card-label">Spotify</div>
-                                    <div
-                                        id="spotify-container"
-                                        class="spotify-layout"
-                                    >
-                                        <div class="spotify-now-playing">
-                                            <img
-                                                id="album-art"
-                                                class="spotify-cover"
-                                                src=""
-                                                alt="Album Art"
-                                                style="display: none"
-                                            />
-                                            <div
-                                                id="album-placeholder"
-                                                class="spotify-cover-placeholder"
-                                            >
-                                                ♪
-                                            </div>
-                                            <div class="spotify-details">
-                                                <div class="spotify-info">
-                                                    <div
-                                                        id="track-name"
-                                                        class="spotify-track idle"
-                                                    >
-                                                        Not Playing
-                                                    </div>
-                                                    <div
-                                                        id="artist-name"
-                                                        class="spotify-artist"
-                                                    >
-                                                        –
-                                                    </div>
-                                                </div>
-                                                <div class="spotify-controls">
-                                                    <button
-                                                        class="icon-btn"
-                                                        id="btn-prev"
-                                                        onclick="
-                                                            controlSpotify(
-                                                                'previous',
-                                                            )
-                                                        "
-                                                        disabled
-                                                    >
-                                                        ⏮
-                                                    </button>
-                                                    <button
-                                                        class="icon-btn primary"
-                                                        id="play-pause-btn"
-                                                        onclick="
-                                                            controlSpotify(
-                                                                'play/pause',
-                                                            )
-                                                        "
-                                                        disabled
-                                                    >
-                                                        ⏯
-                                                    </button>
-                                                    <button
-                                                        class="icon-btn"
-                                                        id="btn-next"
-                                                        onclick="
-                                                            controlSpotify(
-                                                                'next',
-                                                            )
-                                                        "
-                                                        disabled
-                                                    >
-                                                        ⏭
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="spotify-queue-container">
-                                            <div class="queue-label">
-                                                Next in Queue
-                                            </div>
-                                            <div
-                                                id="spotify-queue"
-                                                class="spotify-queue"
-                                            >
-                                                <div
-                                                    class="spotify-connect-hint"
-                                                >
-                                                    Waiting for playback…
-                                                </div>
-                                            </div>
-                                        </div>
+                            <!-- News cards -->
+                            <div class="card expand">
+                                <div class="card-label">World News</div>
+                                <ul
+                                    class="scrollable"
+                                    id="world-list"
+                                    style="list-style: none"
+                                >
+                                    <div class="placeholder">
+                                        Fetching headlines…
                                     </div>
-                                </div>
+                                </ul>
+                            </div>
 
-                                <!-- News cards -->
-                                <div class="card expand">
-                                    <div class="card-label">World News</div>
-                                    <ul
-                                        class="scrollable"
-                                        id="world-list"
-                                        style="list-style: none"
-                                    >
-                                        <div class="placeholder">
-                                            Fetching headlines…
-                                        </div>
-                                    </ul>
-                                </div>
-
-                                <div class="card expand">
-                                    <div class="card-label">
-                                        Programming News
+                            <div class="card expand">
+                                <div class="card-label">Programming News</div>
+                                <ul
+                                    class="scrollable"
+                                    id="hn-list"
+                                    style="list-style: none"
+                                >
+                                    <div class="placeholder">
+                                        Loading top stories…
                                     </div>
-                                    <ul
-                                        class="scrollable"
-                                        id="hn-list"
-                                        style="list-style: none"
-                                    >
-                                        <div class="placeholder">
-                                            Loading top stories…
-                                        </div>
-                                    </ul>
-                                </div>
+                                </ul>
+                            </div>
 
-                                <div class="card expand">
-                                    <div class="card-label">Space News</div>
-                                    <ul
-                                        class="scrollable"
-                                        id="space-list"
-                                        style="list-style: none"
-                                    >
-                                        <div class="placeholder">
-                                            Loading launches…
-                                        </div>
-                                    </ul>
-                                </div>
+                            <div class="card expand">
+                                <div class="card-label">Space News</div>
+                                <ul
+                                    class="scrollable"
+                                    id="space-list"
+                                    style="list-style: none"
+                                >
+                                    <div class="placeholder">
+                                        Loading launches…
+                                    </div>
+                                </ul>
                             </div>
                         </div>
                     </div>
