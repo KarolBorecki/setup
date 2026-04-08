@@ -2014,6 +2014,7 @@
                         (event.allDay && isSameDay(event.start, now))
                     ) {
                         expanded.push(event);
+                        console.log("Added non-recurring or already upcoming event:", event);
                     }
 
                     if (!event.rrule) return;
@@ -2099,6 +2100,15 @@
                                               )
                                             : null,
                                     });
+                                    console.log("Added expanded recurring event:", {
+                                        ...event,
+                                        start: new Date(currentStart),
+                                        end: event.end
+                                            ? new Date(
+                                                  currentStart.getTime() +
+                                                      duration,
+                                              )
+                                            : null,
                                 }
                             }
                         }
