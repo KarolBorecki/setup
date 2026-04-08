@@ -466,6 +466,13 @@
                 margin-top: 1px;
             }
 
+            .top-bookmarks-and-search-bar {
+                display: flex;
+                flex-direction: row;
+                gap: 14px;
+                align-items: stretch;
+            }
+
             /* ── Bookmarks Bar (above col-2 and col-3) ── */
             .bookmarks-bar {
                 display: flex;
@@ -598,7 +605,6 @@
                 color: var(--cream);
                 font-family: var(--sans);
                 font-size: 12px;
-                width: 100%; /* Stretches to fill the flex container */
                 transition: all 0.3s ease;
                 outline: none;
             }
@@ -1590,6 +1596,7 @@
 
                 <!-- RIGHT PANEL: Bookmarks + Cols 2 & 3 -->
                 <div class="right-panel">
+                <div class="top-bookmarks-and-search-bar">
                     <div class="bookmarks-bar">
                         <div class="bm-group">
                             <div class="bm-title">Productivity</div>
@@ -1843,15 +1850,15 @@
                         </div>
 
                         <div class="bm-vdivider"></div>
-
-                        <div class="bookmarks-bar">
-                            <div class="search-container">
-                                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                                <input type="text" id="global-search" class="search-input" placeholder="Search web..." autocomplete="off" spellcheck="false" />
-                            </div>
+                    </div>
+                    <div class="bookmarks-bar">
+                        <div class="search-container">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="global-search" class="search-input" placeholder="Search web..." autocomplete="off" spellcheck="false" />
+                        </div>
                     </div>
 
                     <!-- Cols 2 + 3 side by side -->
