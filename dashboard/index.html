@@ -574,7 +574,16 @@
                 color: var(--gold);
             }
             /* ── Search Bar ── */
-            .search-container {
+            .search-bar-container {
+                display: flex;
+                align-items: center;
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 8px 16px;
+                animation: fadeUp 0.45s ease both;
+            }
+            .search-bar {
                 position: relative;
                 display: flex;
                 align-items: center;
@@ -1891,8 +1900,8 @@
 
                             <div class="bm-vdivider"></div>
                         </div>
-                        <div class="bookmarks-bar">
-                            <div class="search-container">
+                        <div class="search-bar-container">
+                            <div class="search-bar">
                                 <svg
                                     class="search-icon"
                                     viewBox="0 0 24 24"
