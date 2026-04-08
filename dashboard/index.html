@@ -2020,6 +2020,7 @@
                 try {
                     const allResults = await Promise.all(fetchPromises);
                     let allEvents = allResults.flat();
+                    console.log("all events before filtering:", allEvents);
                     allEvents.sort((a, b) => a.start - b.start);
                     const validEvents = allEvents.filter((e) => {
                         const now = new Date();
@@ -2030,7 +2031,7 @@
                         );
                         return e.start >= startOfToday;
                     });
-                    renderEvents(validEvents, failedCalendars);
+                    renderEvents(allEvents, failedCalendars);
                 } catch (error) {
                     console.error("Critical error:", error);
                 }
