@@ -22,6 +22,8 @@ Repozytorium zawierające konfigurację mojego środowiska
 
 Moja powłoka to **Zsh** zarządzana przez **Oh-My-Zsh** z motywem **Starship**.
 
+Powłoka terminala: [Ghostty]()
+
 ### Core Tools
 | Narzędzie | Zamiennik dla | Opis |
 | :--- | :--- | :--- |
@@ -47,6 +49,37 @@ Używam **Tmux** do zarządzania sesjami i podziału terminala.
   - `catppuccin/tmux`: Motyw paska statusu.
 
 ---
+
+## Interesting applications I use
+
+- [Little snitch](https://obdev.at/products/littlesnitch-linux/index.html) - an desktop app allowing more control over network connections made by apps inside my system.
+
+---
+
+## My programming setup
+
+- [ZED](https://zed.dev/) - main IDE
+
+- [Docker](https://www.docker.com/) - of course!
+- [DBeaver](https://dbeaver.io/) - Free, open source DB client
+- [Bruno](https://www.usebruno.com) - Free, open source API client
+
+- [Lazy GIT](https://github.com/jesseduffield/lazygit)
+- [Git custom configuration](https://github.com/KarolBorecki/setup/blob/master/,gitconfig)
+  
+## Everyday tools:
+
+- [Flamshot]() - screenshots
+- [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
+- [Gimp]() - Vector images manipulation tool
+- 
+
+### MacOS
+- [RayCast](https://www.raycast.com/) - Interesting shortcut app
+
+
+---
+
 
 ## 🌐 Custom Browser Dashboard (GitHub Pages)
 
