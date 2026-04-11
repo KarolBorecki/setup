@@ -1,0 +1,11 @@
+# theme = catppuccin-mocha
+
+font-family = "JetBrainsMono Nerd Font"
+font-size = 12
+
+window-decoration = true
+background-opacity = 0.95
+background-blur = true
+
+cursor-style = block
+shell-integration-features = sudo,no-cursor

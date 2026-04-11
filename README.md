@@ -8,7 +8,7 @@ Repozytorium zawierające konfigurację mojego środowiska
 ## 🖥️ System & Desktop Environment
 - **OS:** [Debian GNU/Linux](https://www.debian.org/) (Stable/Testing)
 - **DE:** [GNOME](https://www.gnome.org/)
-- **Window Management:** [Forge](https://github.com/forge-ext/forge) (Tiling Assistant)
+- **Window Management:** [Forge](https://github.com/forge-ext/forge) (Tiling Assistant) - I don't always use that, but in some cases this is usefull.
 - **Theme:** Adw-gtk3 + Papirus Icons
 
 ### GNOME Extensions
@@ -82,6 +82,22 @@ Używam również **Tmux** do zarządzania sesjami i podziału terminala.
 
 ---
 
+## My programming setup
+
+- [ZED](https://zed.dev/) - main IDE
+
+- [Docker](https://www.docker.com/) - of course!
+- [DBeaver](https://dbeaver.io/) - Free, open source DB client
+- [Bruno](https://www.usebruno.com) - Free, open source API client
+
+- [Lazy GIT](https://github.com/jesseduffield/lazygit) - greate gui for git!
+  
+## Everyday tools:
+
+- [Flameshot]() - screenshots
+- [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
+- [Gimp]() - Vector images manipulation tool
+- 
 ### MacOS
 
 - [RayCast](https://www.raycast.com/) - Interesting shortcut app
@@ -124,3 +140,7 @@ curl -sS [https://starship.rs/install.sh](https://starship.rs/install.sh) | sh
 ```
 
 ---
+
+## Other important notices
+
+- I set swappiness to 10 because I have lots of RAM (32GB): `echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf`
