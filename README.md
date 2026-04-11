@@ -18,13 +18,24 @@ Repozytorium zawierające konfigurację mojego środowiska
 
 ---
 
-## 🐚 Terminal Stack (The "Modern" Way)
+## 🐚 Terminal Stack
 
-Moja powłoka to **Zsh** zarządzana przez **Oh-My-Zsh** z motywem **Starship**.
+Używam [Ghostty](). Moja powłoka to **Zsh** zarządzana przez **Oh-My-Zsh** z motywem **Starship**. 
+Używam również **Tmux** do zarządzania sesjami i podziału terminala.
 
-Powłoka terminala: [Ghostty]()
+### Zsh Plugins
+- `zsh-autosuggestions` - Podpowiedzi na podstawie historii.
+- `zsh-syntax-highlighting` - Kolorowanie komend w czasie rzeczywistym.
+- `fzf-tab` - Fzf zamiast standardowego menu tab-completion.
 
-### Core Tools
+### 🪟 Tmux Configuration
+- **Manager wtyczek:** [TPM](https://github.com/tmux-plugins/tpm)
+- **Główne wtyczki:**
+  - `tmux-resurrect`: Przywracanie sesji po restarcie.
+  - `tmux-continuum`: Automatyczny zapis stanu.
+  - `catppuccin/tmux`: Motyw paska statusu.
+
+### Podstawowe narzędzia i ich zamienniki:
 | Narzędzie | Zamiennik dla | Opis |
 | :--- | :--- | :--- |
 | `eza` | `ls` | Nowoczesne listowanie plików z kolorami i ikonami. |
@@ -33,20 +44,35 @@ Powłoka terminala: [Ghostty]()
 | `zoxide` | `cd` | Inteligentna nawigacja po katalogach. |
 | `gtop` | `top` | Interaktywny monitor zasobów systemowych. |
 
-### Zsh Plugins
-- `zsh-autosuggestions` - Podpowiedzi na podstawie historii.
-- `zsh-syntax-highlighting` - Kolorowanie komend w czasie rzeczywistym.
-- `fzf-tab` - Fzf zamiast standardowego menu tab-completion.
-
 ---
 
-## 🪟 Tmux Configuration
-Używam **Tmux** do zarządzania sesjami i podziału terminala.
-- **Manager wtyczek:** [TPM](https://github.com/tmux-plugins/tpm)
-- **Główne wtyczki:**
-  - `tmux-resurrect`: Przywracanie sesji po restarcie.
-  - `tmux-continuum`: Automatyczny zapis stanu.
-  - `catppuccin/tmux`: Motyw paska statusu.
+## My programming setup
+
+- [ZED](https://zed.dev/) - main IDE
+- [nvim](https://neovim.io/) - for quick edits in terminal
+
+- [Docker](https://www.docker.com/) - of course!
+- [DBeaver](https://dbeaver.io/) - Free, open source DB client
+- [Bruno](https://www.usebruno.com) - Free, open source API client
+
+- [Lazy GIT](https://github.com/jesseduffield/lazygit)
+- [Git custom configuration](https://github.com/KarolBorecki/setup/blob/master/,gitconfig)
+  
+---
+
+## Everyday tools:
+
+- [Flamshot]() - screenshots
+- [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
+- [Gimp]() - Vector images manipulation tool
+- [Draw.io]() - Diagrams
+- [VLC]() - media player
+- [Evince]() - PDF viewer 
+- [Zathura]() - PDF viewer for terminal
+- [Neovide]() - Neovim GUI
+- [Bitwarden]() - password manager
+- [Notion]() - note-taking app
+- [Eye of GNOME]() - image viewer
 
 ---
 
@@ -56,30 +82,11 @@ Używam **Tmux** do zarządzania sesjami i podziału terminala.
 
 ---
 
-## My programming setup
-
-- [ZED](https://zed.dev/) - main IDE
-
-- [Docker](https://www.docker.com/) - of course!
-- [DBeaver](https://dbeaver.io/) - Free, open source DB client
-- [Bruno](https://www.usebruno.com) - Free, open source API client
-
-- [Lazy GIT](https://github.com/jesseduffield/lazygit)
-- [Git custom configuration](https://github.com/KarolBorecki/setup/blob/master/,gitconfig)
-  
-## Everyday tools:
-
-- [Flamshot]() - screenshots
-- [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
-- [Gimp]() - Vector images manipulation tool
-- 
-
 ### MacOS
+
 - [RayCast](https://www.raycast.com/) - Interesting shortcut app
 
-
 ---
-
 
 ## 🌐 Custom Browser Dashboard (GitHub Pages)
 
