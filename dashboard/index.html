@@ -2900,49 +2900,92 @@
                 return "Unknown";
             }
 
-            function getClothingAdvice(temp, feels, wind, code, precip) {
+            /**
+             * @param {number} temp - Actual temperature (°C)
+             * @param {number} feels - Apparent temperature (°C)
+             * @param {number} wind - Wind speed (km/h)
+             * @param {number} code - Weather condition code
+             * @param {number} precip - Precipitation probability or mm
+             * @param {boolean} isActive - If true, lightens recommendations (e.g., for exercise)
+             */
+            function getClothingAdvice(
+                temp,
+                feels,
+                wind,
+                code,
+                precip,
+                isActive = false,
+            ) {
+                // 1. Adjust 'feels' if the user is active (activity adds ~5-8 degrees of warmth)
+                let effectiveTemp = isActive ? feels + 7 : feels;
+
                 const isRainy = (code >= 50 && code <= 69) || precip > 0.5;
                 const isSnowy = code >= 70 && code <= 79;
-                const isStormy = code >= 80;
-                const isWindy = wind > 25;
-                let base = "",
-                    icon = "👕";
-                if (feels < -5) {
-                    base =
-                        "Heavy winter coat, thermal layers, gloves, scarf & hat.";
-                    icon = "🧣";
-                } else if (feels < 0) {
-                    base = "Winter coat, gloves, scarf and a warm hat.";
-                    icon = "🧥";
-                } else if (feels < 5) {
-                    base = "Heavy jacket, gloves, and layers underneath.";
-                    icon = "🧥";
-                } else if (feels < 10) {
-                    base = "Warm jacket, consider a hoodie underneath.";
-                    icon = "🧥";
-                } else if (feels < 16) {
-                    base = "Light jacket or thick hoodie should work.";
-                    icon = "🧤";
-                } else if (feels < 20) {
-                    base = "A light layer or long sleeves will do.";
-                    icon = "👔";
-                } else if (feels < 25) {
-                    base = "T-shirt weather — comfortable and mild.";
-                    icon = "👕";
+                const isWindy = wind > 30;
+
+                let advice = {
+                    upper: "",
+                    lower: "Pants/Jeans",
+                    extra: [],
+                    icon: "👕",
+                };
+
+                // 2. Refined Temperature Logic
+                if (effectiveTemp < -10) {
+                    advice.upper = "Heavy parka and thermal base layer";
+                    advice.extra.push("Heavy gloves", "Scarf", "Thermal hat");
+                    advice.icon = "🥶";
+                } else if (effectiveTemp < 2) {
+                    advice.upper = "Winter coat and a sweater";
+                    advice.extra.push("Gloves", "Beanie");
+                    advice.icon = "🧥";
+                } else if (effectiveTemp < 10) {
+                    advice.upper = "Mid-weight jacket or fleece";
+                    advice.icon = "🧥";
+                } else if (effectiveTemp < 16) {
+                    advice.upper = "Light jacket or windbreaker";
+                    advice.icon = "🧥";
+                } else if (effectiveTemp < 22) {
+                    advice.upper = "Long sleeve shirt or a light hoodie";
+                    advice.icon = "👕";
+                } else if (effectiveTemp < 27) {
+                    advice.upper = "T-shirt";
+                    advice.lower = "Light pants or shorts";
+                    advice.icon = "👕";
                 } else {
-                    base =
-                        "Lightweight, breathable clothing. Don't forget sunscreen.";
-                    icon = "🌞";
+                    advice.upper = "Breathable T-shirt/Tank top";
+                    advice.lower = "Shorts";
+                    advice.icon = "☀️";
                 }
-                let extra = "";
-                if (isStormy) {
-                    extra = " ⛈ Avoid being outside if possible.";
-                    icon = "⛈️";
-                } else if (isSnowy)
-                    extra = " ❄️ Boots and waterproof outerwear.";
-                else if (isRainy) extra = " ☂️ Take an umbrella.";
-                else if (isWindy) extra = " 💨 Windbreaker recommended.";
-                return { icon, advice: base + extra };
+
+                // 3. Conditional Overrides (Rain/Wind)
+                if (isRainy) {
+                    advice.upper =
+                        effectiveTemp > 15
+                            ? "Rain shell/Light raincoat"
+                            : "Waterproof insulated jacket";
+                    advice.extra.push("Umbrella");
+                    advice.icon = "☔";
+                }
+
+                if (isWindy && effectiveTemp > 10 && !isRainy) {
+                    advice.extra.push("Windbreaker (it's gusty)");
+                }
+
+                if (isSnowy) {
+                    advice.extra.push("Waterproof boots");
+                    advice.icon = "❄️";
+                }
+
+                // 4. Final Formatting
+                const accessories =
+                    advice.extra.length > 0
+                        ? ` + ${advice.extra.join(", ")}`
+                        : "";
+                return {
+                    icon: advice.icon,
+                    advice: `${advice.upper}, ${advice.lower}${accessories}.`,
+                };
             }
 
             fetchWeather();
