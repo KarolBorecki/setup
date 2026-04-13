@@ -7,6 +7,11 @@ ZSH_THEME="robbyrussell"
 # Preferred editor for local and remote sessions
 export EDITOR='nvim'
 
+# my universal aliases
+
+alias open="xdg-open"
+alias cargofmt="cargo fix --allow-dirty && cargo clippy --fix --tests --allow-dirty && cargo fmt && cargo machete"
+
 # EZA - ls replacement
 alias ls='eza --icons'
 alias ll='eza -lh --icons --grid --group-directories-first'
@@ -55,9 +60,9 @@ alias cd='z'
 alias lg='lazygit'
 
 # PATH modification
-export PATH=$PATH:/home/kawakey/.local/bin/
-export PATH=$PATH:/home/kawakey/.cargo/bin/
-export PATH=$PATH:/opt/st/stm32cubeide_1.19.0/plugins/YOUR_TOOLCHAIN_PATH/tools/bin
+export PATH=$PATH:$HOME/.local/bin/
+export PATH=$PATH:$HOME/.cargo/bin/
+# Only for my debian setup - had problems heh
 export PATH=$PATH:/opt/st/stm32cubeide_1.19.0/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.linux64_1.0.0.202410170706/tools/bin/
 
 source $ZSH/oh-my-zsh.sh

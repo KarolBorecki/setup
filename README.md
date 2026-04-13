@@ -8,11 +8,9 @@ Repozytorium zawierające konfigurację mojego środowiska
 ## 🖥️ System & Desktop Environment
 - **OS:** [Debian GNU/Linux](https://www.debian.org/) (Stable/Testing)
 - **DE:** [GNOME](https://www.gnome.org/)
-- **Window Management:** [Forge](https://github.com/forge-ext/forge) (Tiling Assistant) - I don't always use that, but in some cases this is usefull.
 - **Theme:** Adw-gtk3 + Papirus Icons
 
 ### GNOME Extensions
-- **Forge:** Prawdziwy tiling wewnątrz GNOME.
 - **Just Perfection:** Minimalizm i usuwanie zbędnych elementów UI.
 - **Blur my Shell:** Estetyczne rozmycie panelu i podglądu.
 
@@ -20,8 +18,10 @@ Repozytorium zawierające konfigurację mojego środowiska
 
 ## 🐚 Terminal Stack
 
-Używam [Ghostty](). Moja powłoka to **Zsh** zarządzana przez **Oh-My-Zsh** z motywem **Starship**. 
+Używam [Ghostty]() - konfiguracja w pliku `ghostty-config`. Moja powłoka to **Zsh** zarządzana przez **Oh-My-Zsh** z motywem **Starship**. 
 Używam również **Tmux** do zarządzania sesjami i podziału terminala.
+
+Mój plik `.zshrc` znajduje się w `zshrc`.
 
 ### Zsh Plugins
 - `zsh-autosuggestions` - Podpowiedzi na podstawie historii.
@@ -34,6 +34,8 @@ Używam również **Tmux** do zarządzania sesjami i podziału terminala.
   - `tmux-resurrect`: Przywracanie sesji po restarcie.
   - `tmux-continuum`: Automatyczny zapis stanu.
   - `catppuccin/tmux`: Motyw paska statusu.
+
+konfiguracja w pliku `tmux-config`
 
 ### Podstawowe narzędzia i ich zamienniki:
 | Narzędzie | Zamiennik dla | Opis |
@@ -68,7 +70,6 @@ Używam również **Tmux** do zarządzania sesjami i podziału terminala.
 - [Draw.io]() - Diagrams
 - [VLC]() - media player
 - [Evince]() - PDF viewer 
-- [Zathura]() - PDF viewer for terminal
 - [Neovide]() - Neovim GUI
 - [Bitwarden]() - password manager
 - [Notion]() - note-taking app
@@ -91,13 +92,8 @@ Używam również **Tmux** do zarządzania sesjami i podziału terminala.
 - [Bruno](https://www.usebruno.com) - Free, open source API client
 
 - [Lazy GIT](https://github.com/jesseduffield/lazygit) - greate gui for git!
-  
-## Everyday tools:
 
-- [Flameshot]() - screenshots
-- [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
-- [Gimp]() - Vector images manipulation tool
-- 
+
 ### MacOS
 
 - [RayCast](https://www.raycast.com/) - Interesting shortcut app
