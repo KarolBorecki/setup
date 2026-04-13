@@ -62,17 +62,24 @@ konfiguracja w pliku `tmux-config`
   
 ---
 
-## Everyday tools:
+## Everyday tools
 
 - [Flamshot]() - screenshots
 - [Pano]([https://copyq.net/](https://extensions.gnome.org/extension/5278/pano/)) - clipboard manager
+
+## Everyday apps
+
+- [Notion]() - note-taking app
+- [Blue mail]() - email client
 - [Gimp]() - Vector images manipulation tool
 - [Draw.io]() - Diagrams
+- [Bitwarden]() - password manager
+
+## Default apps
+
 - [VLC]() - media player
 - [Evince]() - PDF viewer 
 - [Neovide]() - Neovim GUI
-- [Bitwarden]() - password manager
-- [Notion]() - note-taking app
 - [Eye of GNOME]() - image viewer
 
 ---
