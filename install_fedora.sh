@@ -21,8 +21,16 @@ sudo dnf install -y \
     zsh tmux curl git wget util-linux-user \
     neovim eza bat fzf zoxide \
     nodejs npm \
-    flameshot gimp evince eog \
+    gimp evince eog \
     adw-gtk3-theme papirus-icon-theme --skip-unavailable  # FEDORA 42 has problems with EZA - no active mainrainer so it was removed from official repos
+
+# I notice it's available via cargo!
+cargo install eza
+
+# bat in anavilable also :/
+git clone https://github.com/fdellwing/zsh-bat.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-bat
+
+# Flamshot fix for Wayland + Fedora 42+ - DONT USE FLAMESHOT :) it sucks
 
 # 4. Dodanie repozytoriów Copr dla specyficznych narzędzi (Neovide, Lazygit)
 echo -e "${GREEN}Aktywacja repozytoriów Copr...${NC}"

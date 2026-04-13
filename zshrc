@@ -2,8 +2,6 @@ export ZSH="$HOME/.oh-my-zsh"
 
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-bat fzf zoxide fzf-tab)
 
-ZSH_THEME="robbyrussell"
-
 # Preferred editor for local and remote sessions
 export EDITOR='nvim'
 
