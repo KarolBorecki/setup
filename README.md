@@ -140,3 +140,8 @@ curl -sS [https://starship.rs/install.sh](https://starship.rs/install.sh) | sh
 ## Other important notices
 
 - I set swappiness to 10 because I have lots of RAM (32GB): `echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf`
+- I use SSD so I enable TRIM: `sudo systemctl enable fstrim.timer`
+- Usually I turn off animations, but not always: `gsettings set org.gnome.desktop.interface enable-animations false`
+- I use `preload` to optimize my workflow: `sudo apt install preload`
+- I use ZRAM: `sudo apt install zram-tools` && `sudo systemctl enable --now zramswap`
+- I disable services: `sudo systemctl disable NetworkManager-wait-online.service` `sudo systemctl mask plymouth-quit-wait.service`

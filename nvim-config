@@ -1,0 +1,47 @@
+-- =====================================================================
+-- 1. USTAWIENIA PODSTAWOWE I KLAWISZ LIDERA
+-- =====================================================================
+-- "Leader key" to Twój główny klawisz do skrótów. Spacja to obecnie najpopularniejszy wybór.
+vim.g.mapleader = " " 
+vim.g.maplocalleader = " "
+
+-- =====================================================================
+-- 2. NUMERY LINII I WYGLĄD
+-- =====================================================================
+-- Neovim domyślnie ma włączone kolorowanie składni, ale warto włączyć True Color
+vim.opt.termguicolors = true  -- Lepsze, bardziej nasycone kolory w terminalu
+vim.cmd("syntax on")          -- Upewnienie się, że podstawowa składnia jest włączona
+
+-- Numery linii
+vim.opt.number = true         -- Pokazuje bezwzględny numer obecnej linii
+vim.opt.relativenumber = true -- Pokazuje relatywne numery nad/pod kursorem (genialne do skakania: np. wpisujesz '5j' i wiesz gdzie trafisz)
+
+-- =====================================================================
+-- 3. NAJLEPSZE SKRÓTY KLAWISZOWE (Keymaps)
+-- =====================================================================
+-- Funkcja pomocnicza do skrótów
+local map = vim.keymap.set
+
+-- Szybkie zapisywanie i wychodzenie (Spacja + w, Spacja + q)
+map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Zapisz plik' })
+map('n', '<leader>q', '<cmd>q<CR>', { desc = 'Wyjdź z Neovima' })
+
+-- Czyszczenie podświetlenia wyszukiwania (Spacja + h)
+-- Gdy czegoś szukasz (klawisz '/'), Neovim podświetla wyniki na stałe. To usuwa podświetlenie.
+map('n', '<leader>h', '<cmd>nohlsearch<CR>', { desc = 'Wyczyść podświetlenie' })
+
+-- Błyskawiczne poruszanie się między oknami (kombinacja Ctrl + h/j/k/l)
+-- Użyteczne, gdy podzielisz ekran (np. poleceniem :vsplit)
+map('n', '<C-h>', '<C-w>h', { desc = 'Przejdź do lewego okna' })
+map('n', '<C-j>', '<C-w>j', { desc = 'Przejdź do dolnego okna' })
+map('n', '<C-k>', '<C-w>k', { desc = 'Przejdź do górnego okna' })
+map('n', '<C-l>', '<C-w>l', { desc = 'Przejdź do prawego okna' })
+
+-- Magia w trybie wizualnym (zaznaczania): Przesuwanie bloków kodu góra/dół
+-- Zaznacz tekst przez 'v', a następnie użyj Shift+J lub Shift+K, aby przenieść blok
+map('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w dół' })
+map('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w górę' })
+
+-- Utrzymanie kursora na środku podczas przewijania (Ctrl+d / Ctrl+u)
+map('n', '<C-d>', '<C-d>zz', { desc = 'Przewiń w dół i wyśrodkuj' })
+map('n', '<C-u>', '<C-u>zz', { desc = 'Przewiń w górę i wyśrodkuj' })

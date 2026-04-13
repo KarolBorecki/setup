@@ -1,0 +1,18 @@
+# Włączenie myszy (scrollowanie, zmiana rozmiaru paneli)
+set -g mouse on
+
+# Wsparcie dla 256 kolorów i True Color (krytyczne dla ładnego Neovima!)
+set -g default-terminal "screen-256color"
+set -ga terminal-overrides ",*256col*:Tc"
+
+# Automatyczne przenumerowanie okien, gdy jakieś zamkniesz
+set-option -g renumber-windows on
+
+# Zwiększenie limitu historii przewijania (domyślnie jest to zazwyczaj 2000)
+set -g history-limit 10000
+
+bind -r Up resize-pane -U 5
+bind -r Down resize-pane -D 5
+bind -r Left resize-pane -L 5
+bind -r Right resize-pane -R 5
+
