@@ -448,11 +448,6 @@ body::after {
     margin-top: 1px;
 }
 
-#clothing-advice {
-    white-space: pre-wrap;
-    line-height: 1.4;
-}
-
 .top-bookmarks-and-search-bar {
     display: flex;
     flex-direction: row;
