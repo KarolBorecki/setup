@@ -2519,24 +2519,30 @@
                 }
                 dayContainer.appendChild(grid);
 
-                const seen = new Set();
-                events = events.filter((item) => {
-                    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+                let todayEvents = events.filter((e) => isSameDay(e.start, now));
+                let futureEvents = events.filter(
+                    (e) => !isSameDay(e.start, now),
+                );
 
+                const seenToday = new Set();
+                todayEvents = todayEvents.filter((item) => {
+                    const compositeKey = `${item.start}-${item.end}-${item.title}`;
                     if (seen.has(compositeKey)) {
                         return false;
                     }
-
                     seen.add(compositeKey);
                     return true;
                 });
 
-                const todayEvents = events.filter((e) =>
-                    isSameDay(e.start, now),
-                );
-                const futureEvents = events.filter(
-                    (e) => !isSameDay(e.start, now),
-                );
+                const seenFuture = new Set();
+                futureEvents = futureEvents.filter((item) => {
+                    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+                    if (seen.has(compositeKey)) {
+                        return false;
+                    }
+                    seen.add(compositeKey);
+                    return true;
+                });
 
                 let allDayCount = 0;
                 console.log("todayEvents", todayEvents);
