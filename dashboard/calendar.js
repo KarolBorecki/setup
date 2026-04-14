@@ -322,10 +322,10 @@ function renderEvents(events, failedCalendars) {
     if (event.allDay) {
       const topOffset = allDayCount * 32;
       calCardLabel.insertAdjacentHTML(
-        "beforeend",
+        "afterend",
         `<div class="day-event-block all-day-event${extraClass}" style="position: sticky; top: ${topOffset}px; height: 30px; width: calc(100% - 12px); z-index: 15; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                                    <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
-                                  </div>`,
+           <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
+         </div>`,
       );
       allDayCount++;
     } else {
