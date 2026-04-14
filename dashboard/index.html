@@ -2523,7 +2523,9 @@
                     (e) => !isSameDay(e.start, now),
                 );
 
-                let allDayCount = 0; // Counter to stack all-day events
+                let allDayCount = 0;
+                console.log("todayEvents", todayEvents);
+                console.log("futureEvents", futureEvents);
 
                 todayEvents.forEach((event) => {
                     const extraClass = event.colorClass
@@ -2532,9 +2534,8 @@
                     const titlePrefixClass = getTitleColorClass(event.title);
 
                     if (event.allDay) {
-                        // Stack them at the top and make them sticky so they follow the user's scroll
                         const topOffset = allDayCount * 32;
-                        grid.insertAdjacentHTML(
+                        dayContainer.insertAdjacentHTML(
                             "beforeend",
                             `<div class="day-event-block all-day-event${extraClass}" style="position: sticky; top: ${topOffset}px; height: 30px; width: calc(100% - 12px); z-index: 15; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                               <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
