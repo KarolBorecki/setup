@@ -263,84 +263,82 @@ function getTitleColorClass(title) {
   return "";
 }
 
-  function renderEvents(events, failedCalendars) {
-    const dayContainer = document.getElementById("day-view-container");
-    const listContainer = document.getElementById("upcoming-list-container");
-    dayContainer.innerHTML = "";
-    listContainer.innerHTML = "";
-    const now = new Date();
-    const hourHeight = 60;
-    const grid = document.createElement("div");
-    grid.className = "day-grid";
-    for (let i = 0; i <= 23; i++) {
-      const hourDiv = document.createElement("div");
-      hourDiv.className = "hour-block";
-      let label;
-      if (i === 0) label = "12 AM";
-      else if (i === 12) label = "12 PM";
-      else if (i > 12) label = i - 12 + " PM";
-      else label = i + " AM";
-      hourDiv.innerHTML = `<span class="hour-text">${label}</span>`;
-      grid.appendChild(hourDiv);
+function renderEvents(events, failedCalendars) {
+  const dayContainer = document.getElementById("day-view-container");
+  const listContainer = document.getElementById("upcoming-list-container");
+  dayContainer.innerHTML = "";
+  listContainer.innerHTML = "";
+  const now = new Date();
+  const hourHeight = 60;
+  const grid = document.createElement("div");
+  grid.className = "day-grid";
+  for (let i = 0; i <= 23; i++) {
+    const hourDiv = document.createElement("div");
+    hourDiv.className = "hour-block";
+    let label;
+    if (i === 0) label = "12 AM";
+    else if (i === 12) label = "12 PM";
+    else if (i > 12) label = i - 12 + " PM";
+    else label = i + " AM";
+    hourDiv.innerHTML = `<span class="hour-text">${label}</span>`;
+    grid.appendChild(hourDiv);
+  }
+  dayContainer.appendChild(grid);
+
+  let todayEvents = events.filter((e) => isSameDay(e.start, now));
+  let futureEvents = events.filter((e) => !isSameDay(e.start, now));
+
+  console.log("todayEvents", todayEvents);
+  console.log("futureEvents", futureEvents);
+
+  const seenToday = new Set();
+  todayEvents = todayEvents.filter((item) => {
+    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+    if (seenToday.has(compositeKey)) {
+      return false;
     }
-    dayContainer.appendChild(grid);
+    seenToday.add(compositeKey);
+    return true;
+  });
 
-    let todayEvents = events.filter((e) => isSameDay(e.start, now));
-    let futureEvents = events.filter((e) => !isSameDay(e.start, now));
+  const seenFuture = new Set();
+  futureEvents = futureEvents.filter((item) => {
+    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+    if (seenFuture.has(compositeKey)) {
+      return false;
+    }
+    seenFuture.add(compositeKey);
+    return true;
+  });
 
-    console.log("todayEvents", todayEvents);
-    console.log("futureEvents", futureEvents);
+  let allDayCount = 0;
+  console.log("todayEvents", todayEvents);
+  console.log("futureEvents", futureEvents);
 
-    const seenToday = new Set();
-    todayEvents = todayEvents.filter((item) => {
-      const compositeKey = `${item.start}-${item.end}-${item.title}`;
-      if (seenToday.has(compositeKey)) {
-        return false;
-      }
-      seenToday.add(compositeKey);
-      return true;
-    });
-
-    const seenFuture = new Set();
-    futureEvents = futureEvents.filter((item) => {
-      const compositeKey = `${item.start}-${item.end}-${item.title}`;
-      if (seenFuture.has(compositeKey)) {
-        return false;
-      }
-      seenFuture.add(compositeKey);
-      return true;
-    });
-
-    let allDayCount = 0;
-    console.log("todayEvents", todayEvents);
-    console.log("futureEvents", futureEvents);
-
-    todayEvents.forEach((event) => {
-      const extraClass = event.colorClass ? ` ${event.colorClass}` : "";
-      const titlePrefixClass = getTitleColorClass(event.title);
-      if (event.allDay) {
-        const topOffset = allDayCount * 32;
-        grid.insertAdjacentHTML(
-          "beforeend",
-          `<div class="day-event-block all-day-event${extraClass}" style="position: sticky; top: ${topOffset}px; height: 30px; width: calc(100% - 12px); z-index: 15; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  todayEvents.forEach((event) => {
+    const extraClass = event.colorClass ? ` ${event.colorClass}` : "";
+    const titlePrefixClass = getTitleColorClass(event.title);
+    if (event.allDay) {
+      const topOffset = allDayCount * 32;
+      grid.insertAdjacentHTML(
+        "beforeend",
+        `<div class="day-event-block all-day-event${extraClass}" style="position: sticky; top: ${topOffset}px; height: 30px; width: calc(100% - 12px); z-index: 15; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                     <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
                                   </div>`,
-        );
-        allDayCount++;
-      } else {
-        const startMins =
-          event.start.getHours() * 60 + event.start.getMinutes();
-        const duration = (event.end - event.start) / (1000 * 60);
-        const top = (startMins / 60) * hourHeight;
-        const height = Math.max((duration / 60) * hourHeight, 22);
-        grid.insertAdjacentHTML(
-          "beforeend",
-          `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
+      );
+      allDayCount++;
+    } else {
+      const startMins = event.start.getHours() * 60 + event.start.getMinutes();
+      const duration = (event.end - event.start) / (1000 * 60);
+      const top = (startMins / 60) * hourHeight;
+      const height = Math.max((duration / 60) * hourHeight, 22);
+      grid.insertAdjacentHTML(
+        "beforeend",
+        `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
                     <div class="title ${titlePrefixClass}">${event.title}</div>
                   </div>`,
-        );
-      }
-    });
+      );
+    }
 
     const currentMins = now.getHours() * 60 + now.getMinutes();
     const nowTop = (currentMins / 60) * hourHeight;
@@ -363,69 +361,7 @@ function getTitleColorClass(title) {
             </div>`,
       );
     }
-
-    let lastLabel = "";
-    futureEvents.slice(0, 5).forEach((event) => {
-      const label = getDayLabel(event.start);
-      if (label !== lastLabel) {
-        listContainer.insertAdjacentHTML(
-          "beforeend",
-          `<div class="cal-day-label">${label}</div>`,
-        );
-        lastLabel = label;
-      }
-      const extraClass = event.colorClass ? ` ${event.colorClass}` : "";
-      const timeString = event.allDay
-        ? "All Day"
-        : `${formatTime(event.start)} – ${formatTime(event.end)}`;
-      const titlePrefixClass = getTitleColorClass(event.title);
-      listContainer.insertAdjacentHTML(
-        "beforeend",
-        `<div class="cal-event${extraClass}">
-                <div class="cal-time">${timeString}</div>
-                <div class="cal-title ${titlePrefixClass}">${event.title}</div>
-              </div>`,
-      );
-    });
-
-    if (events.length === 0) {
-      listContainer.innerHTML = `<div class="cal-event"><div class="cal-title">No events scheduled</div></div>`;
-    }
-  }
-
-  // --- Automatic Scrolling & Timeline Marker Logic ---
-  function updateTimeline() {
-    const currentTime = new Date();
-    const currentMins = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const nowTop = (currentMins / 60) * hourHeight;
-
-    let timeline = grid.querySelector(".timeline-now");
-    if (!timeline) {
-      timeline = document.createElement("div");
-      timeline.className = "timeline-now";
-      grid.appendChild(timeline);
-    }
-    timeline.style.top = `${nowTop}px`;
-
-    dayContainer.scrollTo({
-      top: nowTop - 100,
-      behavior: "instant",
-    });
-  }
-
-  updateTimeline();
-
-  if (window.calendarScrollInterval)
-    clearInterval(window.calendarScrollInterval);
-  window.calendarScrollInterval = setInterval(updateTimeline, 60000);
-
-  if (failedCalendars.length > 0) {
-    listContainer.insertAdjacentHTML(
-      "beforeend",
-      `<div class="cal-event" style="border-left-color:#ff3b30;font-size:9px;padding:4px 8px;margin-bottom:8px;">Warning: ${failedCalendars.join(", ")} failed.</div>`,
-    );
-  }
-
+  });
   let lastLabel = "";
   futureEvents.slice(0, 5).forEach((event) => {
     const label = getDayLabel(event.start);
@@ -441,13 +377,12 @@ function getTitleColorClass(title) {
       ? "All Day"
       : `${formatTime(event.start)} – ${formatTime(event.end)}`;
     const titlePrefixClass = getTitleColorClass(event.title);
-
     listContainer.insertAdjacentHTML(
       "beforeend",
       `<div class="cal-event${extraClass}">
-                          <div class="cal-time">${timeString}</div>
-                          <div class="cal-title ${titlePrefixClass}">${event.title}</div>
-                        </div>`,
+                <div class="cal-time">${timeString}</div>
+                <div class="cal-title ${titlePrefixClass}">${event.title}</div>
+              </div>`,
     );
   });
 
@@ -455,5 +390,27 @@ function getTitleColorClass(title) {
     listContainer.innerHTML = `<div class="cal-event"><div class="cal-title">No events scheduled</div></div>`;
   }
 }
+
+// --- Automatic Scrolling & Timeline Marker Logic ---
+function updateTimeline() {
+  const currentTime = new Date();
+  const currentMins = currentTime.getHours() * 60 + currentTime.getMinutes();
+  const nowTop = (currentMins / 60) * hourHeight;
+
+  let timeline = grid.querySelector(".timeline-now");
+  if (!timeline) {
+    timeline = document.createElement("div");
+    timeline.className = "timeline-now";
+    grid.appendChild(timeline);
+  }
+  timeline.style.top = `${nowTop}px`;
+
+  dayContainer.scrollTo({
+    top: nowTop - 100,
+    behavior: "instant",
+  });
+}
+
+updateTimeline();
 
 fetchAppleCalendars();
