@@ -37,6 +37,22 @@ body {
     font-family: var(--sans);
 }
 
+@media (min-width: 1150px) {
+    html,
+    body {
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 1150px) {
+    html,
+    body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+    }
+}
+
 body::before {
     content: "";
     position: fixed;
@@ -74,6 +90,135 @@ body::after {
 .grid {
     display: grid;
     gap: 14px;
+}
+
+/* Wide: col-1 + right-panel */
+@media (min-width: 1150px) {
+    .layout {
+        height: 100vh;
+    }
+    .grid {
+        grid-template-columns: 390px 1fr;
+        grid-template-rows: 1fr;
+        height: 100%;
+    }
+    .col-1 {
+        overflow: hidden;
+    }
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow: hidden;
+        min-height: 0;
+    }
+    .cols-right {
+        display: flex;
+        flex-direction: row;
+        gap: 14px;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+    }
+    .col-2 {
+        overflow: hidden;
+        flex: 1.15;
+    }
+    .col-3 {
+        overflow: hidden;
+        flex: 0.95;
+    }
+}
+
+/* Medium: 2-col grid, right-panel stacks cols */
+@media (min-width: 700px) and (max-width: 1150px) {
+    .layout {
+        min-height: 100vh;
+    }
+    .grid {
+        grid-template-columns: 360px 1fr;
+        grid-template-rows: auto;
+    }
+    .col-1 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    .right-panel {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .cols-right {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .col-2 {
+        max-height: 1111px;
+    }
+    .col-3 {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+    }
+    .col-3 .card {
+        flex: 1 1 45%;
+        min-width: 200px;
+    }
+    .col-3 .spotify-card {
+        flex: 1 1 100%;
+    }
+    .col-3 .card.expand {
+        flex: 1 1 45%;
+        min-height: 300px;
+        height: 45vh;
+    }
+}
+
+/* Narrow: single column stack */
+@media (max-width: 699px) {
+    .layout {
+        padding: 12px 14px;
+        min-height: 100vh;
+    }
+    .grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .col-1 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    .right-panel {
+        grid-column: 1;
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .cols-right {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .clock {
+        font-size: 72px !important;
+    }
+    .spotify-layout {
+        flex-direction: column !important;
+    }
+    .spotify-queue-container {
+        border-left: none !important;
+        border-top: 1px solid var(--border);
+        padding-left: 0 !important;
+        padding-top: 12px;
+        height: auto !important;
+    }
+    .col-3 .card.expand {
+        min-height: 200px;
+        height: 50vh;
+    }
 }
 
 .col {
@@ -141,6 +286,22 @@ body::after {
         transparent 60%
     );
     pointer-events: none;
+}
+
+@media (min-width: 1150px) {
+    .card.expand {
+        flex: 1;
+        min-height: 0;
+    }
+}
+@media (max-width: 1150px) {
+    .card.expand {
+        min-height: 280px;
+        max-height: 1114px;
+    }
+    .card.day-view-scroll {
+        max-height: 700px;
+    }
 }
 
 .card-label {
@@ -287,6 +448,11 @@ body::after {
     margin-top: 1px;
 }
 
+#clothing-advice {
+    white-space: pre-wrap;
+    line-height: 1.4;
+}
+
 .top-bookmarks-and-search-bar {
     display: flex;
     flex-direction: row;
@@ -340,6 +506,36 @@ body::after {
     letter-spacing: 0.12em;
     margin-right: 6px;
     white-space: nowrap;
+}
+
+/* Ensure the title sits nicely on narrow screens */
+@media (max-width: 699px) {
+    .bm-title {
+        width: 100%;
+        text-align: center;
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+    .bm-group {
+        flex-wrap: wrap;
+    }
+}
+
+/* On narrow screens: vertical stacking */
+@media (max-width: 699px) {
+    .bookmarks-bar {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    .bm-group {
+        justify-content: space-around;
+    }
+    .bm-vdivider {
+        width: 100%;
+        height: 1px;
+        margin: 0;
+    }
 }
 
 .bm {
@@ -691,6 +887,13 @@ body::after {
     margin-bottom: 12px;
     padding-right: 5px;
     min-height: 0;
+}
+
+@media (max-width: 1150px) {
+    .day-view-scroll {
+        flex: none;
+        max-height: 240px;
+    }
 }
 
 .day-grid {
@@ -1119,6 +1322,27 @@ body::after {
     letter-spacing: 0.06em;
 }
 
+/* Spotify responsive: cover full available space < 1150px */
+@media (max-width: 1150px) {
+    .spotify-card {
+        flex-shrink: 0;
+    }
+    .spotify-layout {
+        align-items: stretch;
+        height: auto;
+    }
+    .spotify-queue-container {
+        height: auto;
+        min-height: 120px;
+        flex: 1;
+    }
+    .spotify-cover,
+    .spotify-cover-placeholder {
+        height: 160px;
+        width: 160px;
+    }
+}
+
 /* ── News ── */
 .news-item {
     padding-bottom: 9px;
@@ -1185,174 +1409,4 @@ body::after {
     color: var(--muted);
     font-size: 11px;
     font-family: var(--mono);
-}
-
-/* ── Responsive Layouts ── */
-
-/* 1. Large Desktop (>= 1150px) */
-@media (min-width: 1150px) {
-    html,
-    body {
-        overflow: hidden;
-    }
-    .layout {
-        height: 100vh;
-    }
-    .grid {
-        grid-template-columns: 390px 1fr;
-        grid-template-rows: 1fr;
-        height: 100%;
-    }
-    .col-1 {
-        overflow: hidden;
-    }
-    .right-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        overflow: hidden;
-        min-height: 0;
-    }
-    .cols-right {
-        display: flex;
-        flex-direction: row;
-        gap: 14px;
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-    }
-    .col-2 {
-        overflow: hidden;
-        flex: 1.15;
-    }
-    .col-3 {
-        overflow: hidden;
-        flex: 0.95;
-    }
-}
-
-/* 2. Medium Screens (Tablets & Small Laptops: 850px to 1149px) */
-@media (max-width: 1149px) and (min-width: 850px) {
-    html,
-    body {
-        overflow-y: auto;
-        overflow-x: hidden;
-        height: auto;
-    }
-    .layout {
-        height: auto;
-        min-height: 100vh;
-    }
-    .grid {
-        /* Slightly narrower left column to give the right panel breathing room */
-        grid-template-columns: 320px 1fr;
-    }
-    .col-1 {
-        grid-column: 1;
-    }
-    .right-panel {
-        grid-column: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .top-bookmarks-and-search-bar {
-        /* Stack the bookmarks and search bar to save horizontal space */
-        flex-direction: column;
-    }
-    .bookmarks-bar {
-        width: 100%;
-        overflow-x: auto;
-    }
-    .cols-right {
-        /* Stack the Schedule and Media/News columns vertically */
-        flex-direction: column;
-    }
-    .col-2 {
-        max-height: 600px;
-    }
-    .col-3 {
-        /* Put the news cards into a neat 2-column grid to utilize width */
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-    .col-3 .spotify-card {
-        /* Spotify takes up the full width of the col-3 grid */
-        grid-column: 1 / -1;
-    }
-    .col-3 .card.expand {
-        height: 350px;
-        min-height: auto;
-    }
-}
-
-/* 3. Small Screens (Mobile & Portrait Tablets: < 850px) */
-@media (max-width: 849px) {
-    html,
-    body {
-        overflow-y: auto;
-        overflow-x: hidden;
-        height: auto;
-    }
-    .layout {
-        padding: 12px;
-        height: auto;
-        min-height: 100vh;
-    }
-    .grid {
-        /* Switch to a pure single-column layout */
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    .clock {
-        font-size: 72px; /* Prevent the clock from overflowing */
-        text-align: center;
-    }
-    .date-line {
-        text-align: center;
-    }
-    .top-bookmarks-and-search-bar {
-        flex-direction: column;
-    }
-    .bookmarks-bar {
-        /* Allow bookmark groups to wrap to the next line on very small screens */
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-    .bm-vdivider {
-        display: none; /* Hide dividers so they don't break the wrapping UI */
-    }
-    .cols-right {
-        flex-direction: column;
-    }
-    .col-2 {
-        max-height: 500px;
-    }
-    .spotify-layout {
-        /* Stack the cover art on top of the queue */
-        flex-direction: column;
-    }
-    .spotify-now-playing {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .spotify-info {
-        text-align: center;
-    }
-    .spotify-controls {
-        justify-content: center;
-    }
-    .spotify-queue-container {
-        border-left: none;
-        border-top: 1px solid var(--border);
-        padding-left: 0;
-        padding-top: 16px;
-        height: 250px; /* Give the queue enough space to be usable */
-    }
-    .col-3 .card.expand {
-        height: 350px; /* Fixed height so news feeds don't run infinitely long */
-    }
 }
