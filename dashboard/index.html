@@ -2527,20 +2527,20 @@
                 const seenToday = new Set();
                 todayEvents = todayEvents.filter((item) => {
                     const compositeKey = `${item.start}-${item.end}-${item.title}`;
-                    if (seen.has(compositeKey)) {
+                    if (seenToday.has(compositeKey)) {
                         return false;
                     }
-                    seen.add(compositeKey);
+                    seenToday.add(compositeKey);
                     return true;
                 });
 
                 const seenFuture = new Set();
                 futureEvents = futureEvents.filter((item) => {
                     const compositeKey = `${item.start}-${item.end}-${item.title}`;
-                    if (seen.has(compositeKey)) {
+                    if (seenFuture.has(compositeKey)) {
                         return false;
                     }
-                    seen.add(compositeKey);
+                    seenFuture.add(compositeKey);
                     return true;
                 });
 
