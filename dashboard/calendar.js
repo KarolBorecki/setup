@@ -265,6 +265,7 @@ function getTitleColorClass(title) {
 
 function renderEvents(events, failedCalendars) {
   const dayContainer = document.getElementById("day-view-container");
+  const calCardLabel = document.getElementById("cal-card-label");
   const listContainer = document.getElementById("upcoming-list-container");
   dayContainer.innerHTML = "";
   listContainer.innerHTML = "";
@@ -320,7 +321,7 @@ function renderEvents(events, failedCalendars) {
     const titlePrefixClass = getTitleColorClass(event.title);
     if (event.allDay) {
       const topOffset = allDayCount * 32;
-      grid.insertAdjacentHTML(
+      calCardLabel.insertAdjacentHTML(
         "beforeend",
         `<div class="day-event-block all-day-event${extraClass}" style="position: sticky; top: ${topOffset}px; height: 30px; width: calc(100% - 12px); z-index: 15; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                     <div class="title ${titlePrefixClass}" style="font-size:10px;">☀️ All Day: ${event.title}</div>
