@@ -24,6 +24,16 @@ I also use **Tmux** for session management and terminal splitting.
 
 My `.zshrc` file is located in `zshrc`.
 
+### Core tools and their replacements:
+
+| Tool | Replacement for | Description |
+| :--- | :--- | :--- |
+| `eza` | `ls` | Modern file listing with colors and icons. |
+| `bat` | `cat` | File viewing with syntax highlighting. |
+| `fzf` | `CTRL+R` | Fuzzy searching through history and files. |
+| `zoxide` | `cd` | Smarter directory navigation. |
+| `gtop` | `top` | Interactive system resource monitor. |
+
 ### Zsh Plugins
 
   - `zsh-autosuggestions` - Suggestions based on history.
@@ -39,16 +49,6 @@ My `.zshrc` file is located in `zshrc`.
       - `catppuccin/tmux`: Status bar theme.
 
 Configuration in the `tmux-config` file.
-
-### Core tools and their replacements:
-
-| Tool | Replacement for | Description |
-| :--- | :--- | :--- |
-| `eza` | `ls` | Modern file listing with colors and icons. |
-| `bat` | `cat` | File viewing with syntax highlighting. |
-| `fzf` | `CTRL+R` | Fuzzy searching through history and files. |
-| `zoxide` | `cd` | Smarter directory navigation. |
-| `gtop` | `top` | Interactive system resource monitor. |
 
 -----
 
@@ -73,7 +73,7 @@ Configuration in the `tmux-config` file.
 
   - [Brave](https://brave.com/download/) - web browser
   - [Notion](https://www.notion.so/) - note-taking app
-  - [BlueMail](https://www.bluemail.me/) - email client
+  - [Thunderbird](https://www.thunderbird.net/en-US/thunderbird/all/) - email client - I also use custom styling for it :)
   - [GIMP](https://www.gimp.org/) - Image manipulation tool
   - [Draw.io](https://app.diagrams.net/) - Diagrams
   - [Bitwarden](https://bitwarden.com/) - password manager
@@ -96,6 +96,16 @@ Configuration in the `tmux-config` file.
 ### MacOS
 
   - [Raycast](https://www.raycast.com/) - Interesting shortcut app
+
+-----
+
+## Custom Thunderbird setup
+
+1. Rnable `toolkit.legacyUserProfileCustomizations.stylesheets` in General -> Config Editor... (Scroll down)
+2. Account settings -> Local Folders (check Local Directory path and open it)
+3. Create directory `chrome` inside and `userChrome.css` file inside
+4. Paste `thunderbird-style.css` inside
+5. Install `Auto Profile Picture` by Noam Schmitt to have auto-profile pictures
 
 -----
 
