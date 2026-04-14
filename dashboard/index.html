@@ -1500,7 +1500,9 @@
 
                     <!-- Pomodoro — ring left, controls right -->
                     <div class="card pomodoro-card">
-                        <div class="card-label">Focus Timer</div>
+                        <div class="card-label" id="cal-card-label">
+                            Focus Timer
+                        </div>
                         <div class="pom-layout">
                             <!-- Left: ring + session count -->
                             <div class="pom-left">
@@ -2492,7 +2494,7 @@
             function renderEvents(events, failedCalendars) {
                 const dayContainer =
                     document.getElementById("day-view-container");
-                const cardLabel = document.getElementById("card-label");
+                const cardLabel = document.getElementById("cal-card-label");
                 const listContainer = document.getElementById(
                     "upcoming-list-container",
                 );
