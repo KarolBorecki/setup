@@ -2517,6 +2517,7 @@
                 }
                 dayContainer.appendChild(grid);
 
+                const seen = new Set();
                 events = events.filter((item) => {
                     const compositeKey = `${item.start}-${item.end}-${item.title}`;
 
