@@ -293,7 +293,7 @@ function renderEvents(events, failedCalendars) {
 
   const seenToday = new Set();
   todayEvents = todayEvents.filter((item) => {
-    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+    const compositeKey = `${item.start}-${item.end}-${item.title.toLowerCase()}`;
     if (seenToday.has(compositeKey)) {
       return false;
     }
@@ -312,8 +312,8 @@ function renderEvents(events, failedCalendars) {
   });
 
   let allDayCount = 0;
-  console.log("todayEvents", todayEvents);
-  console.log("futureEvents", futureEvents);
+  console.log("todayEvents2", todayEvents);
+  console.log("futureEvents2", futureEvents);
 
   todayEvents.forEach((event) => {
     const extraClass = event.colorClass ? ` ${event.colorClass}` : "";
