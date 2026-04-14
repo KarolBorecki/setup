@@ -393,6 +393,7 @@ function renderEvents(events, failedCalendars) {
 
 // --- Automatic Scrolling & Timeline Marker Logic ---
 function updateTimeline() {
+  const hourHeight = 60;
   const currentTime = new Date();
   const currentMins = currentTime.getHours() * 60 + currentTime.getMinutes();
   const nowTop = (currentMins / 60) * hourHeight;
