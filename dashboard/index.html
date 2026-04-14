@@ -1488,9 +1488,16 @@
                             <span class="clothing-icon" id="clothing-icon"
                                 >🧥</span
                             >
-                            <span id="clothing-advice"
-                                >Loading outfit suggestion…</span
+                            <span
+                                id="clothing-advice"
+                                style="
+                                    white-space: pre-line;
+                                    display: block;
+                                    margin-top: 10px;
+                                "
                             >
+                                Loading outfit suggestion…
+                            </span>
                         </div>
                     </div>
 
@@ -3066,24 +3073,39 @@
                     }
                 }
 
-                // 6. Final Formatting
-                // Filter out empty layers
-                const activeLayers = [
-                    layers.base && `Base: ${layers.base}`,
-                    layers.mid && `Mid: ${layers.mid}`,
-                    layers.outer && `Outer: ${layers.outer}`,
-                    `Bottoms: ${layers.bottoms}`,
-                ].filter(Boolean);
+                // 5. Environmental Overrides (Modified to handle footwear separately)
+                let footwear = "Comfortable sneakers"; // Default
+                if (isRainingHeavy || isDrizzling) {
+                    footwear = "Waterproof shoes or boots";
+                } else if (isSnowy || effectiveTemp < 0) {
+                    footwear = "Insulated winter boots";
+                } else if (effectiveTemp > 25) {
+                    footwear = "Lightweight breathable shoes or sandals";
+                }
 
-                const accessoriesText =
-                    layers.accessories.length > 0
-                        ? `\nAccessories: ${layers.accessories.join(" • ")}`
-                        : "";
+                // 6. Final Formatting (The 4-Line Construction)
+                // We extract head-related accessories for the "Head" line
+                const headGear =
+                    layers.accessories
+                        .filter((a) =>
+                            /hat|beanie|cap|sunglasses|scarf|buff/i.test(a),
+                        )
+                        .join(", ") || "No headgear needed";
+
+                // Combine upper layers into one descriptive "Shirt" line
+                const upperBody = [layers.outer, layers.mid, layers.base]
+                    .filter(Boolean)
+                    .join(" + ");
+
+                // Construct the 4 specific lines
+                const line1 = `👤 Head: ${headGear}`;
+                const line2 = `👕 Top: ${upperBody}`;
+                const line3 = `👖 Bottom: ${layers.bottoms}`;
+                const line4 = `🥾 Boots: ${footwear}`;
 
                 return {
                     icon: layers.icon,
-                    rawLayers: layers,
-                    adviceString: `${activeLayers.join(" | ")}${accessoriesText}`,
+                    adviceString: `${line1}\n${line2}\n${line3}\n${line4}`,
                 };
             }
 
