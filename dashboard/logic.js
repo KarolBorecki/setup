@@ -359,6 +359,8 @@ function renderEvents(events, failedCalendars) {
 
   let todayEvents = events.filter((e) => isSameDay(e.start, now));
   let futureEvents = events.filter((e) => !isSameDay(e.start, now));
+  console.log("todayEvents", todayEvents);
+  console.log("futureEvents", futureEvents);
 
   const seenToday = new Set();
   todayEvents = todayEvents.filter((item) => {
@@ -719,7 +721,7 @@ async function fetchWeather() {
     document.getElementById("precip").textContent = precip + " mm";
 
     // Call the new advanced function with the object parameters
-    const { icon, adviceString } = getAdvancedClothingAdvice({
+    const { icon, adviceString } = getClothingAdvice({
       temp: temp,
       feels: feels,
       wind: wind,
@@ -748,168 +750,46 @@ function decodeWeather(c) {
   return "Unknown";
 }
 
-/**
- * Generates advanced, layered clothing advice based on comprehensive weather and activity metrics.
- * * @param {Object} params - The weather and activity parameters.
- * @param {number} params.temp - Actual temperature (°C).
- * @param {number} params.feels - Apparent/feels-like temperature (°C).
- * @param {number} params.wind - Wind speed (km/h).
- * @param {number} params.code - WMO Weather condition code.
- * @param {number} params.precip - Precipitation intensity (mm/h).
- * @param {number} [params.uvIndex=0] - UV Index (0-11+).
- * @param {number} [params.humidity=50] - Relative humidity (%).
- * @param {string} [params.activityLevel='sedentary'] - 'sedentary', 'moderate', or 'vigorous'.
- * @returns {Object} A detailed layering guide and formatted string.
- */
-function getAdvancedClothingAdvice({
-  temp,
-  feels,
-  wind,
-  code,
-  precip,
-  uvIndex = 0,
-  humidity = 50,
-  activityLevel = "sedentary",
-}) {
-  // 1. Calculate Activity Metabolic Heat Offset
-  const activityOffsets = {
-    sedentary: 0,
-    moderate: 6,
-    vigorous: 12,
-  };
-  const offset = activityOffsets[activityLevel.toLowerCase()] || 0;
-  const effectiveTemp = feels + offset;
-
-  // 2. Weather Condition Flags
-  const isDrizzling =
-    (code >= 50 && code <= 59) || (precip > 0 && precip <= 2.5);
-  const isRainingHeavy = (code >= 60 && code <= 69) || precip > 2.5;
+function getClothingAdvice(temp, feels, wind, code, precip) {
+  const isRainy = (code >= 50 && code <= 69) || precip > 0.5;
   const isSnowy = code >= 70 && code <= 79;
+  const isStormy = code >= 80;
   const isWindy = wind > 25;
-  const isHumid = humidity > 70;
-  const isSunny = code <= 3; // Clear to partly cloudy
-
-  // 3. Layering System Initialization
-  let layers = {
-    base: "",
-    mid: "",
-    outer: "",
-    bottoms: "Jeans or casual pants",
-    accessories: [],
-    icon: "👕",
-  };
-
-  // Material logic based on conditions
-  const teeMaterial =
-    isHumid || effectiveTemp > 25 || activityLevel !== "sedentary"
-      ? "Moisture-wicking athletic tee"
-      : "Cotton T-shirt";
-
-  // 4. Core Temperature Logic (Using Effective Temp)
-  if (effectiveTemp < -10) {
-    layers.icon = "🥶";
-    layers.base = "Thermal long-sleeve base layer (Merino wool/synthetic)";
-    layers.mid = "Heavy fleece or thick wool sweater";
-    layers.outer = "Heavy insulated parka";
-    layers.bottoms = "Thermal leggings under winter-lined pants";
-    layers.accessories.push("Insulated gloves", "Thick scarf", "Winter beanie");
-  } else if (effectiveTemp < 5) {
-    layers.icon = "🧥";
-    layers.base = "Long-sleeve thermal or warm shirt";
-    layers.mid = "Sweater or mid-weight fleece";
-    layers.outer = "Winter coat";
-    layers.bottoms = "Warm pants or jeans";
-    layers.accessories.push("Light gloves", "Beanie");
-  } else if (effectiveTemp < 12) {
-    layers.icon = "🧥";
-    layers.base = teeMaterial;
-    layers.mid = "Light sweater or hoodie";
-    layers.outer = "Fall/Spring jacket";
-    layers.bottoms = "Pants or jeans";
-  } else if (effectiveTemp < 18) {
-    layers.icon = "👕";
-    layers.base = teeMaterial;
-    layers.mid = "Flannel or light zip-up (optional)";
-    layers.bottoms = "Light chinos or jeans";
-  } else if (effectiveTemp < 25) {
-    layers.icon = "☀️";
-    layers.base = teeMaterial;
-    layers.bottoms = "Shorts or light breathable trousers";
+  let base = "",
+    icon = "👕";
+  if (feels < -5) {
+    base = "Heavy winter coat, thermal layers, gloves, scarf & hat.";
+    icon = "🧣";
+  } else if (feels < 0) {
+    base = "Winter coat, gloves, scarf and a warm hat.";
+    icon = "🧥";
+  } else if (feels < 5) {
+    base = "Heavy jacket, gloves, and layers underneath.";
+    icon = "🧥";
+  } else if (feels < 10) {
+    base = "Warm jacket, consider a hoodie underneath.";
+    icon = "🧥";
+  } else if (feels < 16) {
+    base = "Light jacket or thick hoodie should work.";
+    icon = "🧤";
+  } else if (feels < 20) {
+    base = "A light layer or long sleeves will do.";
+    icon = "👔";
+  } else if (feels < 25) {
+    base = "T-shirt weather — comfortable and mild.";
+    icon = "👕";
   } else {
-    layers.icon = "🔥";
-    layers.base = "Breathable tank top or ultra-light tee";
-    layers.bottoms = "Shorts";
+    base = "Lightweight, breathable clothing. Don't forget sunscreen.";
+    icon = "🌞";
   }
-
-  // 5. Environmental Overrides (Wind, Rain, Sun)
-
-  // Precipitation
-  if (isRainingHeavy) {
-    layers.icon = "⛈️";
-    layers.outer =
-      effectiveTemp > 18
-        ? "Lightweight breathable rain shell"
-        : "Waterproof hardshell jacket";
-    layers.accessories.push("Sturdy Umbrella", "Waterproof footwear");
-  } else if (isDrizzling) {
-    layers.icon = "🌧️";
-    layers.outer = layers.outer || "Water-resistant windbreaker";
-    layers.accessories.push("Compact umbrella");
-  } else if (isSnowy) {
-    layers.icon = "❄️";
-    layers.outer = layers.outer || "Water-resistant insulated jacket";
-    layers.accessories.push("Waterproof winter boots");
-  }
-
-  // Wind (Only apply if it's not already raining/snowing heavily to avoid conflicting outer layers)
-  if (isWindy && !isRainingHeavy && !isSnowy) {
-    layers.icon = "💨";
-    if (effectiveTemp < 18 && !layers.outer) {
-      layers.outer = "Windbreaker";
-    }
-    layers.accessories.push("Wind-resistant buff or scarf");
-  }
-
-  // UV / Sun Protection
-  if (uvIndex >= 5 && isSunny) {
-    layers.accessories.push("Sunglasses", "Sunscreen (SPF 30+)");
-    if (effectiveTemp > 15) {
-      layers.accessories.push("Brimmed hat");
-    }
-  }
-
-  // 5. Environmental Overrides (Modified to handle footwear separately)
-  let footwear = "Comfortable sneakers"; // Default
-  if (isRainingHeavy || isDrizzling) {
-    footwear = "Waterproof shoes or boots";
-  } else if (isSnowy || effectiveTemp < 0) {
-    footwear = "Insulated winter boots";
-  } else if (effectiveTemp > 25) {
-    footwear = "Lightweight breathable shoes or sandals";
-  }
-
-  // 6. Final Formatting (The 4-Line Construction)
-  // We extract head-related accessories for the "Head" line
-  const headGear =
-    layers.accessories
-      .filter((a) => /hat|beanie|cap|sunglasses|scarf|buff/i.test(a))
-      .join(", ") || "No headgear needed";
-
-  // Combine upper layers into one descriptive "Shirt" line
-  const upperBody = [layers.outer, layers.mid, layers.base]
-    .filter(Boolean)
-    .join(" + ");
-
-  // Construct the 4 specific lines
-  const line1 = `👤 ${headGear}`;
-  const line2 = `👕 ${upperBody}`;
-  const line3 = `👖 ${layers.bottoms}`;
-  const line4 = `🥾 ${footwear}`;
-
-  return {
-    icon: layers.icon,
-    adviceString: `${line1}\n${line2}\n${line3}\n${line4}`,
-  };
+  let extra = "";
+  if (isStormy) {
+    extra = " ⛈ Avoid being outside if possible.";
+    icon = "⛈️";
+  } else if (isSnowy) extra = " ❄️ Boots and waterproof outerwear.";
+  else if (isRainy) extra = " ☂️ Take an umbrella.";
+  else if (isWindy) extra = " 💨 Windbreaker recommended.";
+  return { icon, advice: base + extra };
 }
 
 fetchWeather();
