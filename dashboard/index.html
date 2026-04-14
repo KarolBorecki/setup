@@ -2492,6 +2492,7 @@
             function renderEvents(events, failedCalendars) {
                 const dayContainer =
                     document.getElementById("day-view-container");
+                const cardLabel = document.getElementById("card-label");
                 const listContainer = document.getElementById(
                     "upcoming-list-container",
                 );
@@ -2515,6 +2516,17 @@
                     grid.appendChild(hourDiv);
                 }
                 dayContainer.appendChild(grid);
+
+                events = events.filter((item) => {
+                    const compositeKey = `${item.start}-${item.end}-${item.title}`;
+
+                    if (seen.has(compositeKey)) {
+                        return false;
+                    }
+
+                    seen.add(compositeKey);
+                    return true;
+                });
 
                 const todayEvents = events.filter((e) =>
                     isSameDay(e.start, now),
@@ -2554,7 +2566,7 @@
                             22,
                         );
 
-                        grid.insertAdjacentHTML(
+                        cardLabel.insertAdjacentHTML(
                             "beforeend",
                             `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
                               <div class="title ${titlePrefixClass}">${event.title}</div>
