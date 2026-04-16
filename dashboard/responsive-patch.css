@@ -1,0 +1,383 @@
+/* ============================================================
+   RESPONSIVE PATCH — screens ≤ 1150px
+   Drop this file AFTER style.css in your HTML:
+   <link rel="stylesheet" href="responsive-patch.css" />
+   ============================================================ */
+
+/* ── Shared helpers ── */
+@media (max-width: 1150px) {
+    /* Give the layout room to breathe vertically */
+    .layout {
+        padding: 14px 16px;
+        min-height: 100vh;
+        height: auto;
+    }
+
+    /* Single scrollable page instead of locked viewport */
+    html,
+    body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+    }
+}
+
+/* ════════════════════════════════════════════
+   MEDIUM  700 – 1150 px
+   Two-column: left sidebar | right content
+   ════════════════════════════════════════════ */
+@media (min-width: 700px) and (max-width: 1150px) {
+    .grid {
+        grid-template-columns: 320px 1fr;
+        grid-template-rows: auto;
+        gap: 12px;
+        align-items: start;
+    }
+
+    /* ── Col 1 ── */
+    .col-1 {
+        grid-column: 1;
+        grid-row: 1;
+        position: sticky;
+        top: 14px; /* stays visible while right side scrolls */
+        max-height: calc(100vh - 28px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted2) transparent;
+        padding-right: 4px;
+    }
+    .col-1::-webkit-scrollbar {
+        width: 3px;
+    }
+    .col-1::-webkit-scrollbar-thumb {
+        background: var(--muted2);
+        border-radius: 10px;
+    }
+
+    /* ── Right panel ── */
+    .right-panel {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    /* ── Bookmarks + search row ── */
+    .top-bookmarks-and-search-bar {
+        flex-direction: row;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .bookmarks-bar {
+        flex-shrink: 1;
+        overflow-x: auto;
+        padding: 8px 12px;
+        gap: 14px;
+        scrollbar-width: none;
+    }
+    .bookmarks-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .search-bar-container {
+        flex-shrink: 0;
+        width: 180px;
+        padding: 8px 12px;
+    }
+
+    /* ── cols-right: stack col-2 then col-3 vertically ── */
+    .cols-right {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* ── Col 2 – Calendar ── */
+    .col-2 .card.expand {
+        min-height: 480px;
+        max-height: none;
+        height: auto;
+    }
+
+    .day-view-scroll {
+        flex: none;
+        max-height: 300px; /* taller than default 240 */
+    }
+
+    .upcoming-section {
+        max-height: 200px;
+    }
+
+    /* ── Col 3 – compact cards in a 2-col grid ── */
+    .col-3 {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        gap: 12px;
+        flex-direction: unset !important;
+        flex-wrap: unset !important;
+    }
+
+    /* Spotify spans full width */
+    .col-3 .spotify-card {
+        grid-column: 1 / -1;
+    }
+
+    /* News cards each take one cell, consistent height */
+    .col-3 .card.expand {
+        min-height: 220px;
+        max-height: 320px;
+        height: auto;
+        flex: none !important;
+    }
+
+    /* Spotify: keep side-by-side layout at this breakpoint */
+    .spotify-layout {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 16px;
+    }
+    .spotify-now-playing {
+        flex: 1.2;
+        gap: 12px;
+    }
+    .spotify-cover,
+    .spotify-cover-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    .spotify-queue-container {
+        flex: 1.4;
+        height: 120px;
+        border-left: 1px solid var(--border);
+        padding-left: 14px;
+    }
+
+    /* Pomodoro ring – slightly smaller to save space */
+    .ring-wrap {
+        width: 96px;
+        height: 96px;
+    }
+    .progress-ring {
+        width: 96px;
+        height: 96px;
+    }
+    .timer-num {
+        font-size: 20px;
+    }
+    .clock {
+        font-size: 80px;
+        letter-spacing: -3px;
+    }
+}
+
+/* ════════════════════════════════════════════
+   NARROW  < 700 px
+   Single column, everything stacks
+   ════════════════════════════════════════════ */
+@media (max-width: 699px) {
+    .layout {
+        padding: 10px 12px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .col-1 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .right-panel {
+        grid-column: 1;
+        grid-row: 2;
+        gap: 10px;
+    }
+
+    /* ── Clock ── */
+    .clock {
+        font-size: 64px !important;
+        letter-spacing: -2px;
+    }
+
+    /* ── Bookmarks + search: stack vertically ── */
+    .top-bookmarks-and-search-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .bookmarks-bar {
+        flex-direction: row !important; /* keep icons horizontal */
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0;
+        padding: 8px 10px;
+        scrollbar-width: none;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .bookmarks-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bm-group {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+    }
+    .bm-group-bookmarks {
+        gap: 8px;
+    }
+
+    .bm-title {
+        display: none; /* hide group labels on tiny screens */
+    }
+
+    .bm-vdivider {
+        width: 1px;
+        height: 28px;
+        margin: 0 6px;
+    }
+
+    .bm {
+        width: 36px;
+        height: 36px;
+    }
+
+    .search-bar-container {
+        width: 100%;
+        padding: 8px 12px;
+    }
+
+    /* ── cols-right: single column ── */
+    .cols-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* ── Calendar card ── */
+    .col-2 .card.expand {
+        min-height: 380px;
+        height: auto;
+        max-height: none;
+    }
+
+    .day-view-scroll {
+        flex: none;
+        max-height: 220px;
+    }
+
+    .upcoming-section {
+        max-height: 180px;
+    }
+
+    /* ── Col 3: all cards full-width, consistent heights ── */
+    .col-3 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px;
+    }
+
+    .col-3 .card.expand {
+        min-height: 180px;
+        max-height: 260px;
+        height: auto;
+    }
+
+    /* ── Spotify: stack cover + queue ── */
+    .spotify-layout {
+        flex-direction: column !important;
+        gap: 14px;
+    }
+
+    .spotify-now-playing {
+        flex-direction: row;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .spotify-cover,
+    .spotify-cover-placeholder {
+        width: 90px !important;
+        height: 90px !important;
+    }
+
+    .spotify-queue-container {
+        border-left: none !important;
+        border-top: 1px solid var(--border);
+        padding-left: 0 !important;
+        padding-top: 12px;
+        height: 120px !important;
+    }
+
+    /* ── Pomodoro: keep ring + right layout, just tighter ── */
+    .pom-layout {
+        gap: 12px;
+    }
+    .ring-wrap {
+        width: 90px;
+        height: 90px;
+    }
+    .progress-ring {
+        width: 90px;
+        height: 90px;
+    }
+    .timer-num {
+        font-size: 19px;
+    }
+    .pom-presets {
+        gap: 4px;
+    }
+    .preset-btn {
+        padding: 4px 2px;
+        font-size: 9px;
+    }
+
+    /* ── Weather block ── */
+    .weather-temp-big {
+        font-size: 30px;
+    }
+
+    /* ── Cards general ── */
+    .card {
+        padding: 14px 14px;
+    }
+}
+
+/* ════════════════════════════════════════════
+   VERY NARROW  < 380 px  (small phones)
+   ════════════════════════════════════════════ */
+@media (max-width: 379px) {
+    .clock {
+        font-size: 52px !important;
+        letter-spacing: -1px;
+    }
+
+    .pom-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pom-right {
+        width: 100%;
+    }
+
+    .spotify-now-playing {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .spotify-cover,
+    .spotify-cover-placeholder {
+        width: 100% !important;
+        height: 140px !important;
+        border-radius: 8px;
+    }
+}
