@@ -1,0 +1,100 @@
+/* ───────────────────────────────────────────────────────────
+   Responsive Patch — screens < 1150px
+   Layout goals:
+     · Row 1: bookmarks + search bar    (full width)
+     · Row 2: col-1 | col-2             (side by side, stay on top)
+     · Row 3: col-3                     (full width) containing:
+              — Spotify card            (100% width)
+              — 3 news cards            (1/3 width each, in a row)
+   On very narrow screens (<700px) everything collapses to a
+   single column stack and the 3 news cards go full-width too.
+   ─────────────────────────────────────────────────────────── */
+
+/* ── Medium breakpoint: 700 ≤ width < 1150 ───────────────── */
+@media (max-width: 1150px) {
+    /* Flatten the nested structure so .grid can place every
+       panel directly via grid-template-areas.               */
+    .right-panel {
+        display: contents !important;
+    }
+    .cols-right {
+        display: contents !important;
+    }
+
+    .grid {
+        grid-template-columns: 360px minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto !important;
+        grid-template-areas:
+            "top top"
+            "c1  c2"
+            "c3  c3" !important;
+        align-items: start;
+        gap: 12px;
+    }
+
+    /* Row 1 — bookmarks + search bar, full width */
+    .top-bookmarks-and-search-bar {
+        grid-area: top;
+        width: 100%;
+    }
+
+    /* Row 2 — col-1 + col-2 side by side */
+    .col-1 {
+        grid-area: c1;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        min-width: 0;
+    }
+    .col-2 {
+        grid-area: c2;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        max-height: none !important;
+        min-width: 0;
+    }
+
+    /* Row 3 — col-3 full-width, internal row layout */
+    .col-3 {
+        grid-area: c3;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Spotify card takes the full row */
+    .col-3 .spotify-card {
+        flex: 1 1 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* 3 news cards — each exactly 1/3 of the available width
+       (gap: 12px × 2 between the 3 cards = 24px / 3 = 8px)   */
+    .col-3 .card.expand {
+        flex: 1 1 calc(33.333% - 8px) !important;
+        min-width: 0 !important;
+        min-height: 300px;
+        max-height: none;
+        height: auto;
+    }
+}
+
+/* ── Narrow breakpoint: width < 700 ───────────────────────── */
+@media (max-width: 699px) {
+    .grid {
+        grid-template-columns: 1fr !important;
+        grid-template-areas:
+            "top"
+            "c1"
+            "c2"
+            "c3" !important;
+    }
+
+    /* News cards go full-width on very narrow screens */
+    .col-3 .card.expand {
+        flex: 1 1 100% !important;
+        height: auto;
+    }
+}
