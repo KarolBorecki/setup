@@ -62,5 +62,6 @@ export PATH=$PATH:$HOME/.local/bin/
 export PATH=$PATH:$HOME/.cargo/bin/
 # Only for my debian setup - had problems heh
 export PATH=$PATH:/opt/st/stm32cubeide_1.19.0/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.linux64_1.0.0.202410170706/tools/bin/
+export PATH="/home/kawakey/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
