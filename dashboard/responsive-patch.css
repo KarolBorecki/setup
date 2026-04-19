@@ -80,6 +80,9 @@
         max-height: none;
         height: auto;
     }
+    #habit-list {
+        min-height: 440px;
+    }
 }
 
 /* ── Narrow breakpoint: width < 700 ───────────────────────── */

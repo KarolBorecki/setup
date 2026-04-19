@@ -892,7 +892,7 @@ body::after {
 @media (max-width: 1150px) {
     .day-view-scroll {
         flex: none;
-        max-height: 507px;
+        max-height: 727px;
     }
 }
 
