@@ -1338,8 +1338,8 @@ body::after {
     }
     .spotify-cover,
     .spotify-cover-placeholder {
-        height: 160px;
-        width: 160px;
+        height: 208px;
+        width: 208px;
     }
 }
 
