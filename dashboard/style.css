@@ -524,7 +524,7 @@ body::after {
 /* On narrow screens: vertical stacking */
 @media (max-width: 699px) {
     .bookmarks-bar {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 8px;
         align-items: stretch;
     }
