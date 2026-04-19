@@ -36,6 +36,7 @@
     .top-bookmarks-and-search-bar {
         grid-area: top;
         width: 100%;
+        flex-direction: column;
     }
 
     /* Row 2 — col-1 + col-2 side by side */
