@@ -1,4 +1,15 @@
 // ── Calendars ─────────────────────────────────────────────────
+
+// Compare two Date objects that are supposed to represent the same recurrence
+// slot. For timed events EXDATE usually matches the exact start; for all-day
+// events it may differ in time-of-day, so we also allow a same-day match.
+function isSameOccurrence(exdate, occurrence, allDay) {
+  if (!exdate) return false;
+  if (exdate.getTime() === occurrence.getTime()) return true;
+  if (allDay && isSameDay(exdate, occurrence)) return true;
+  return false;
+}
+
 function expandRecurringEvents(events, maxDaysToExpand = 14) {
   const expanded = [];
   const now = new Date();
@@ -12,7 +23,7 @@ function expandRecurringEvents(events, maxDaysToExpand = 14) {
   );
 
   events.forEach((event) => {
-    // Fix: If it's NOT a recurring event, push it and move on.
+    // Non-recurring events pass through unchanged.
     if (!event.rrule) {
       if (
         event.start >= startOfToday ||
@@ -23,7 +34,7 @@ function expandRecurringEvents(events, maxDaysToExpand = 14) {
       return;
     }
 
-    // If it IS a recurring event, parse the rules
+    // Parse the RRULE into a key/value map.
     const rules = {};
     event.rrule.split(";").forEach((p) => {
       const [k, v] = p.split("=");
@@ -78,7 +89,13 @@ function expandRecurringEvents(events, maxDaysToExpand = 14) {
         if (matches) {
           if (maxCount !== null && currentCount > maxCount) break;
 
-          if (currentStart >= startOfToday) {
+          // Skip occurrences removed via EXDATE or replaced by a
+          // RECURRENCE-ID override.
+          const isExcluded = (event.exdates || []).some((exdate) =>
+            isSameOccurrence(exdate, currentStart, event.allDay),
+          );
+
+          if (!isExcluded && currentStart >= startOfToday) {
             expanded.push({
               ...event,
               start: new Date(currentStart),
@@ -94,6 +111,59 @@ function expandRecurringEvents(events, maxDaysToExpand = 14) {
   });
 
   return expanded;
+}
+
+// Given a list of timed events, assign each one a column index and a total
+// column count so overlapping events can be rendered side by side. Events
+// that transitively overlap share a "cluster" and all receive the same
+// total-column count.
+function layoutOverlappingEvents(events) {
+  const sorted = [...events].sort((a, b) => a.start - b.start);
+  const layouts = new Map();
+
+  function assignColumns(cluster) {
+    const columns = []; // columns[i] = array of events placed in column i
+    for (const ev of cluster) {
+      let placed = false;
+      for (let i = 0; i < columns.length; i++) {
+        const last = columns[i][columns[i].length - 1];
+        if (last.end <= ev.start) {
+          columns[i].push(ev);
+          layouts.set(ev, { column: i });
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        columns.push([ev]);
+        layouts.set(ev, { column: columns.length - 1 });
+      }
+    }
+    for (const ev of cluster) {
+      layouts.get(ev).totalColumns = columns.length;
+    }
+  }
+
+  let clusterStart = 0;
+  let clusterEnd = null;
+  for (let i = 0; i < sorted.length; i++) {
+    const ev = sorted[i];
+    if (clusterEnd !== null && ev.start >= clusterEnd) {
+      assignColumns(sorted.slice(clusterStart, i));
+      clusterStart = i;
+      clusterEnd = ev.end;
+    } else {
+      clusterEnd =
+        clusterEnd === null
+          ? ev.end
+          : new Date(Math.max(clusterEnd.getTime(), ev.end.getTime()));
+    }
+  }
+  if (clusterStart < sorted.length) {
+    assignColumns(sorted.slice(clusterStart));
+  }
+
+  return layouts;
 }
 
 const calendars = [
@@ -165,17 +235,35 @@ async function fetchAppleCalendars() {
 }
 
 function parseICS(icsString, colorClass) {
-  const lines = icsString.split(/\r\n|\n|\r/);
+  // Unfold ICS line continuations: per RFC 5545 a line that begins with a
+  // space or tab is a continuation of the previous line. EXDATE lists are a
+  // common case where this matters.
+  const rawLines = icsString.split(/\r\n|\n|\r/);
+  const lines = [];
+  for (const line of rawLines) {
+    if ((line.startsWith(" ") || line.startsWith("\t")) && lines.length) {
+      lines[lines.length - 1] += line.substring(1);
+    } else {
+      lines.push(line);
+    }
+  }
+
   const events = [];
+  const overrides = []; // events that carry RECURRENCE-ID
   let currentEvent = null;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (line.startsWith("BEGIN:VEVENT")) {
-      currentEvent = { allDay: false };
+      currentEvent = { allDay: false, exdates: [] };
     } else if (line.startsWith("END:VEVENT")) {
       if (currentEvent && currentEvent.start) {
         currentEvent.colorClass = colorClass;
-        events.push(currentEvent);
+        if (currentEvent.recurrenceId) {
+          overrides.push(currentEvent);
+        } else {
+          events.push(currentEvent);
+        }
       }
       currentEvent = null;
     } else if (currentEvent) {
@@ -183,24 +271,60 @@ function parseICS(icsString, colorClass) {
       if (firstColon === -1) continue;
       const prop = line.substring(0, firstColon);
       const val = line.substring(firstColon + 1);
-      if (prop.startsWith("SUMMARY")) {
+      const propName = prop.split(";")[0];
+
+      if (propName === "SUMMARY") {
         currentEvent.title = val;
-      } else if (prop.startsWith("DTSTART")) {
+      } else if (propName === "DTSTART") {
         const res = parseICSTime(val);
         currentEvent.start = res.date;
         if (res.isAllDay) currentEvent.allDay = true;
-      } else if (prop.startsWith("DTEND")) {
+      } else if (propName === "DTEND") {
         currentEvent.end = parseICSTime(val).date;
-      } else if (prop.startsWith("RRULE")) {
+      } else if (propName === "RRULE") {
         currentEvent.rrule = val;
+      } else if (propName === "EXDATE") {
+        // EXDATE may carry multiple comma-separated dates on a single line.
+        val.split(",").forEach((v) => {
+          const trimmed = v.trim();
+          if (trimmed) currentEvent.exdates.push(parseICSTime(trimmed).date);
+        });
+      } else if (propName === "UID") {
+        currentEvent.uid = val;
+      } else if (propName === "RECURRENCE-ID") {
+        currentEvent.recurrenceId = parseICSTime(val).date;
       }
     }
   }
+
+  // Fold RECURRENCE-ID overrides into their parent event by exdate-ing the
+  // replaced slot, then emit the override itself as a regular (non-recurring)
+  // event so it still shows up.
+  const uidMap = new Map();
+  events.forEach((e) => {
+    if (e.uid) uidMap.set(e.uid, e);
+  });
+  overrides.forEach((override) => {
+    const parent = uidMap.get(override.uid);
+    if (parent) {
+      parent.exdates.push(override.recurrenceId);
+    }
+    delete override.recurrenceId;
+    delete override.rrule;
+    events.push(override);
+  });
+
   return events;
 }
 
 function parseICSTime(dateStr) {
   if (!dateStr) return { date: new Date(), isAllDay: false };
+  // Strip any leading parameter remnants like "VALUE=DATE:" that might
+  // sneak in when callers pass a raw parameter value.
+  const colonIdx = dateStr.indexOf(":");
+  if (colonIdx !== -1 && /[A-Z=]/.test(dateStr.substring(0, colonIdx))) {
+    dateStr = dateStr.substring(colonIdx + 1);
+  }
   const y = parseInt(dateStr.substring(0, 4)),
     m = parseInt(dateStr.substring(4, 6)) - 1,
     d = parseInt(dateStr.substring(6, 8));
@@ -289,15 +413,10 @@ function renderEvents(events, failedCalendars) {
   let todayEvents = events.filter((e) => isSameDay(e.start, now));
   let futureEvents = events.filter((e) => !isSameDay(e.start, now));
 
-  console.log("todayEvents", todayEvents);
-  console.log("futureEvents", futureEvents);
-
   const seenToday = new Set();
   todayEvents = todayEvents.filter((item) => {
     const compositeKey = `${item.start}-${item.end}-${item.title.toLowerCase()}`;
-    if (seenToday.has(compositeKey)) {
-      return false;
-    }
+    if (seenToday.has(compositeKey)) return false;
     seenToday.add(compositeKey);
     return true;
   });
@@ -305,16 +424,16 @@ function renderEvents(events, failedCalendars) {
   const seenFuture = new Set();
   futureEvents = futureEvents.filter((item) => {
     const compositeKey = `${item.start}-${item.end}-${item.title}`;
-    if (seenFuture.has(compositeKey)) {
-      return false;
-    }
+    if (seenFuture.has(compositeKey)) return false;
     seenFuture.add(compositeKey);
     return true;
   });
 
+  // Compute side-by-side layout for today's timed events.
+  const timedTodayEvents = todayEvents.filter((e) => !e.allDay && e.end);
+  const layouts = layoutOverlappingEvents(timedTodayEvents);
+
   let allDayCount = 0;
-  console.log("todayEvents2", todayEvents);
-  console.log("futureEvents2", futureEvents);
 
   todayEvents.forEach((event) => {
     const extraClass = event.colorClass ? ` ${event.colorClass}` : "";
@@ -333,27 +452,33 @@ function renderEvents(events, failedCalendars) {
       const duration = (event.end - event.start) / (1000 * 60);
       const top = (startMins / 60) * hourHeight;
       const height = Math.max((duration / 60) * hourHeight, 22);
+
+      // Side-by-side layout: only override left/width when this event
+      // actually shares a time slot with another one. Single events keep
+      // the original CSS-driven sizing.
+      const layout = layouts.get(event) || { column: 0, totalColumns: 1 };
+      let overlapStyle = "";
+      if (layout.totalColumns > 1) {
+        // --cal-label-width = room reserved for hour labels on the left.
+        // --cal-right-pad  = padding on the right edge of the grid.
+        // Override these in CSS if your layout uses different values.
+        const lanes = layout.totalColumns;
+        const idx = layout.column;
+        overlapStyle =
+          `left: calc(var(--cal-label-width, 50px) + ${idx} * ` +
+          `(100% - var(--cal-label-width, 50px) - var(--cal-right-pad, 5px)) / ${lanes});` +
+          `width: calc((100% - var(--cal-label-width, 50px) - var(--cal-right-pad, 5px)) / ${lanes} - 2px);`;
+      }
+
       grid.insertAdjacentHTML(
         "beforeend",
-        `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;">
+        `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;${overlapStyle}">
                     <div class="title ${titlePrefixClass}">${event.title}</div>
                   </div>`,
       );
     }
-
-    const currentMins = now.getHours() * 60 + now.getMinutes();
-    const nowTop = (currentMins / 60) * hourHeight;
-    grid.insertAdjacentHTML(
-      "beforeend",
-      `<div class="timeline-now" style="top:${nowTop}px"></div>`,
-    );
-    setTimeout(() => {
-      dayContainer.scrollTo({
-        top: nowTop - 100,
-        behavior: "smooth",
-      });
-    }, 500);
   });
+
   // --- Automatic Scrolling & Timeline Marker Logic ---
   function updateTimeline() {
     const currentTime = new Date();
@@ -368,17 +493,14 @@ function renderEvents(events, failedCalendars) {
     }
     timeline.style.top = `${nowTop}px`;
 
-    // Smooth scroll to the updated time
     dayContainer.scrollTo({
       top: nowTop - 100,
       behavior: "instant",
     });
   }
 
-  // Call it immediately on load
   updateTimeline();
 
-  // Clear any existing interval to prevent duplicates on refresh, then set a new one to update every 60 seconds
   if (window.calendarScrollInterval)
     clearInterval(window.calendarScrollInterval);
   window.calendarScrollInterval = setInterval(updateTimeline, 60000);
