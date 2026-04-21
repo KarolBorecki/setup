@@ -458,6 +458,7 @@ function renderEvents(events, failedCalendars) {
       // the original CSS-driven sizing.
       const layout = layouts.get(event) || { column: 0, totalColumns: 1 };
       let overlapStyle = "";
+      let regulatStyle = "";
       if (layout.totalColumns > 1) {
         // --cal-label-width = room reserved for hour labels on the left.
         // --cal-right-pad  = padding on the right edge of the grid.
@@ -468,6 +469,8 @@ function renderEvents(events, failedCalendars) {
           `left: calc(var(--cal-label-width, 50px) + ${idx} * ` +
           `(100% - var(--cal-label-width, 50px) - var(--cal-right-pad, 5px)) / ${lanes});` +
           `width: calc((100% - var(--cal-label-width, 50px) - var(--cal-right-pad, 5px)) / ${lanes} - 2px);`;
+      } else {
+        regularStyle = `left: calc(var(--cal-label-width, 50px)); width: calc(100% - var(--cal-label-width, 50px) - var(--cal-right-pad, 5px) - 2px);`;
       }
 
       grid.insertAdjacentHTML(
