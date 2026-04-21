@@ -458,7 +458,7 @@ function renderEvents(events, failedCalendars) {
       // the original CSS-driven sizing.
       const layout = layouts.get(event) || { column: 0, totalColumns: 1 };
       let overlapStyle = "";
-      let regulatStyle = "";
+      let regularStyle = "";
       if (layout.totalColumns > 1) {
         // --cal-label-width = room reserved for hour labels on the left.
         // --cal-right-pad  = padding on the right edge of the grid.
