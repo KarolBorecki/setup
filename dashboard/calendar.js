@@ -475,7 +475,7 @@ function renderEvents(events, failedCalendars) {
 
       grid.insertAdjacentHTML(
         "beforeend",
-        `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;${overlapStyle}">
+        `<div class="day-event-block${extraClass}" style="top:${top}px;height:${height}px;${overlapStyle}${regularStyle}">
                     <div class="title ${titlePrefixClass}">${event.title}</div>
                   </div>`,
       );
