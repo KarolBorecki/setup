@@ -75,6 +75,7 @@ Configuration in the `tmux-config` file.
   - [Notion](https://www.notion.so/) - note-taking app
   - [Thunderbird](https://www.thunderbird.net/en-US/thunderbird/all/) - email client - I also use custom styling for it :)
   - [GIMP](https://www.gimp.org/) - Image manipulation tool
+  - [ShotCut](https://www.shotcut.org/) - Video manipulation tool
   - [Draw.io](https://app.diagrams.net/) - Diagrams
   - [Bitwarden](https://bitwarden.com/) - password manager
 
