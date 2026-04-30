@@ -88,9 +88,10 @@ Configuration in the `tmux-config` file.
 
 -----
 
-## Interesting applications I use
+## Interesting other applications I use
 
   - [Little Snitch](https://obdev.at/products/littlesnitch-linux/index.html) - a desktop app allowing more control over network connections made by apps inside my system.
+  - [DNS Masq](https://dnsmasq.org/doc.html) - Fast, ligghtweight, easy to use virtual router.
 
 -----
 
