@@ -1,25 +1,64 @@
 -- =====================================================================
--- 1. USTAWIENIA PODSTAWOWE I KLAWISZ LIDERA
+-- KROK 0: AUTOMATYCZNA INSTALACJA MENEDŻERA (LAZY.NVIM)
 -- =====================================================================
--- "Leader key" to Twój główny klawisz do skrótów. Spacja to obecnie najpopularniejszy wybór.
+-- Ten blok kodu sam pobierze menedżera z GitHuba, jeśli jeszcze go nie ma
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Błąd podczas klonowania lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nWciśnij dowolny klawisz, aby kontynuować..." },
+    }, true, {})
+    vim.fn.getchar()
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- =====================================================================
+-- KROK 1: MIEJSCE NA TWOJE WTYCZKI
+-- =====================================================================
+-- Tutaj mówimy menedżerowi, jakie wtyczki ma pobrać. Na start dodajemy Gruvbox Material.
+require("lazy").setup({
+  {
+    "sainnhe/gruvbox-material",
+    lazy = false,    -- Ładuj od razu przy starcie
+    priority = 1000, -- Bardzo wysoki priorytet dla motywu
+    config = function()
+      -- Opcjonalna konfiguracja wyglądu Gruvboxa
+      vim.g.gruvbox_material_background = "medium" -- Opcje: 'hard', 'medium', 'soft'
+      vim.g.gruvbox_material_better_performance = 1
+    end,
+  },
+
+  -- W przyszłości możesz dopisywać kolejne wtyczki po przecinku, np:
+  -- { "nvim-lualine/lualine.nvim" },
+})
+
+-- =====================================================================
+-- KROK 2: USTAWIENIA PODSTAWOWE I KLAWISZ LIDERA
+-- =====================================================================
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- =====================================================================
--- 2. NUMERY LINII I WYGLĄD
+-- KROK 3: NUMERY LINII I WYGLĄD
 -- =====================================================================
--- Neovim domyślnie ma włączone kolorowanie składni, ale warto włączyć True Color
 vim.opt.termguicolors = true  -- Lepsze, bardziej nasycone kolory w terminalu
 vim.cmd("syntax on")          -- Upewnienie się, że podstawowa składnia jest włączona
 
--- Numery linii
-vim.opt.number = true         -- Pokazuje bezwzględny numer obecnej linii
-vim.opt.relativenumber = true -- Pokazuje relatywne numery nad/pod kursorem (genialne do skakania: np. wpisujesz '5j' i wiesz gdzie trafisz)
+-- Numery linii (Zwykłe, kolejne numery)
+vim.opt.number = true          -- Pokazuje bezwzględny numer obecnej linii
+vim.opt.relativenumber = false -- WYŁĄCZONE relatywne numery linii
+
+-- Aktywacja motywu Gruvbox Material
+vim.cmd("colorscheme gruvbox-material")
 
 -- =====================================================================
--- 3. NAJLEPSZE SKRÓTY KLAWISZOWE (Keymaps)
+-- KROK 4: NAJLEPSZE SKRÓTY KLAWISZOWE (Keymaps)
 -- =====================================================================
--- Funkcja pomocnicza do skrótów
 local map = vim.keymap.set
 
 -- Szybkie zapisywanie i wychodzenie (Spacja + w, Spacja + q)
@@ -27,18 +66,15 @@ map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Zapisz plik' })
 map('n', '<leader>q', '<cmd>q<CR>', { desc = 'Wyjdź z Neovima' })
 
 -- Czyszczenie podświetlenia wyszukiwania (Spacja + h)
--- Gdy czegoś szukasz (klawisz '/'), Neovim podświetla wyniki na stałe. To usuwa podświetlenie.
 map('n', '<leader>h', '<cmd>nohlsearch<CR>', { desc = 'Wyczyść podświetlenie' })
 
 -- Błyskawiczne poruszanie się między oknami (kombinacja Ctrl + h/j/k/l)
--- Użyteczne, gdy podzielisz ekran (np. poleceniem :vsplit)
 map('n', '<C-h>', '<C-w>h', { desc = 'Przejdź do lewego okna' })
 map('n', '<C-j>', '<C-w>j', { desc = 'Przejdź do dolnego okna' })
 map('n', '<C-k>', '<C-w>k', { desc = 'Przejdź do górnego okna' })
 map('n', '<C-l>', '<C-w>l', { desc = 'Przejdź do prawego okna' })
 
 -- Magia w trybie wizualnym (zaznaczania): Przesuwanie bloków kodu góra/dół
--- Zaznacz tekst przez 'v', a następnie użyj Shift+J lub Shift+K, aby przenieść blok
 map('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w dół' })
 map('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w górę' })
 
