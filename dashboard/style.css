@@ -1,33 +1,30 @@
 :root {
-    /* Deep Deep Teal/Navy Backgrounds */
-    --bg: #070d0f;
-    --bg2: #0c1417;
-    --bg3: #121c21;
-
-    /* Cool, frosty borders instead of warm gold */
-    --border: rgba(90, 160, 200, 0.12);
-    --border2: rgba(90, 160, 200, 0.22);
-
-    /* Primary Accents (Replaced Gold with Deep Sea Teal/Cyan) */
-    --gold: #639da6; /* Now a muted, metallic seafoam/teal */
-    --gold-dim: #2d5b66; /* Now a dim, shadowy deep teal */
-
-    /* Utility colors adjusted to fit the cooler palette */
-    --dark-green: #0d5231;
-    --dark-blue: #103f6e;
-    --yellow: #20b2aa; /* Swapped hot yellow for Light Sea Green */
-    --purple: #5c3a85; /* Deepened to match the cool vibe */
-    --orange: #e07a5f; /* Muted to a burnt coral so it doesn't clash */
-
-    /* Typography colors (Shifted from warm cream to crisp, icy tones) */
-    --cream: #e2e9eb; /* Cool, fresh ice-white */
-    --muted: #657b83; /* Slate gray/blue */
-    --muted2: #415156; /* Dark slate */
-
-    /* Success Green (Shifted slightly cooler) */
-    --green: #3ca38f;
-
-    /* Fonts */
+    --bg: #0b1213; /* Głęboka, bardzo ciemna morska zieleń/czerń */
+    --bg2: #101a1c; /* Ciemny grafitowy niebieski dla paneli */
+    --bg3: #162326; /* Nieco jaśniejszy odcień do hoverów/elementów */
+    --border: rgba(
+        76,
+        175,
+        140,
+        0.12
+    ); /* Subtelne zielono-niebieskie obramowanie */
+    --border2: rgba(
+        76,
+        175,
+        140,
+        0.22
+    ); /* Mocniejsze zielono-niebieskie obramowanie */
+    --gold: #ac8e68;
+    --gold-dim: #8a6420;
+    --dark-green: #137218;
+    --dark-blue: #134a89;
+    --yellow: #dba318;
+    --purple: #72149b;
+    --orange: #d35400;
+    --cream: #ece8de;
+    --muted: #7a7060;
+    --muted2: #504840;
+    --green: #4caf78;
     --mono: "Montserrat", monospace;
     --serif: "Montserrat", serif;
     --sans: "Montserrat", sans-serif;
