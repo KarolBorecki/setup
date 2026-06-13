@@ -1,0 +1,103 @@
+:root {
+    --accent-color: #3a3a3a !important;
+    --bg-main: #dcd7c9 !important;
+    --bg-sidebar: #1f1f1f !important;
+    --text-primary: #000000 !important;
+    --text-sidebar: #dcd7c9 !important;
+    --border-color: #000000 !important;
+    --border-width: 2px !important;
+    --hover-bg: #a39171 !important;
+}
+
+* {
+    font-family: "Ubuntu Mono", "Courier New", monospace !important;
+    border-radius: 0px !important;
+    transition: none !important;
+}
+
+#folderPane {
+    background-color: var(--bg-sidebar) !important;
+    border-right: var(--border-width) solid var(--border-color) !important;
+    color: var(--text-sidebar) !important;
+}
+
+#folderTree li > .container {
+    border: 1px solid transparent !important;
+    margin: 1px 5px !important;
+}
+
+#folderTree li > .container:hover {
+    background-color: var(--accent-color) !important;
+    border: 1px solid var(--text-sidebar) !important;
+}
+
+.folder-count {
+    background-color: var(--text-sidebar) !important;
+    color: var(--bg-sidebar) !important;
+    border-radius: 0px !important;
+    font-weight: bold !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+#threadPane {
+    background-color: var(--bg-main) !important;
+    border-bottom: var(--border-width) solid var(--border-color) !important;
+}
+
+tr[is="thread-row"] {
+    border-bottom: 1px solid var(--border-color) !important;
+    height: 40px !important;
+}
+
+tr[is="thread-row"].selected {
+    background-color: var(--text-primary) !important;
+    color: var(--bg-main) !important;
+}
+
+#messageHeader {
+    background-color: var(--accent-color) !important;
+    border-bottom: var(--border-width) solid var(--border-color) !important;
+    padding: 20px !important;
+}
+
+#messagePane {
+    background-color: #ffffff !important;
+}
+
+button,
+.button,
+.primary {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary) !important;
+    border: var(--border-width) solid var(--border-color) !important;
+    box-shadow: 4px 4px 0px var(--border-color) !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    margin: 4px !important;
+}
+
+button:hover {
+    background-color: var(--text-primary) !important;
+    color: var(--bg-main) !important;
+    box-shadow: 2px 2px 0px var(--border-color) !important;
+    transform: translate(2px, 2px);
+}
+
+#unifiedSearchBox {
+    background-color: #ffffff !important;
+    border: var(--border-width) solid var(--border-color) !important;
+    color: #000000 !important;
+}
+
+.tabmail-tab {
+    border: var(--border-width) solid var(--border-color) !important;
+    border-bottom: none !important;
+    margin-right: 2px !important;
+    background-color: var(--bg-sidebar) !important;
+    color: var(--text-sidebar) !important;
+}
+
+.tabmail-tab[selected="true"] {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary) !important;
+}
