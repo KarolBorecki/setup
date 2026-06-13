@@ -54,9 +54,9 @@ Configuration in the `tmux-config` file.
 
 ## My programming setup
 
-  - [ZED](https://zed.dev/) - main IDE
-  - [nvim](https://neovim.io/) - for quick edits in terminal
-  - [Docker](https://www.docker.com/) - of course\!
+  - [ZED](https://zed.dev/) - main IDE, using `Gruvbox Dark` theme and `Material Icon Theme` icons (both available in the marketplace)
+  - [nvim](https://neovim.io/) - for quick edits in terminal - check my config in files!
+  - [Docker](https://www.docker.com/) - of course!
   - [DBeaver](https://dbeaver.io/) - Free, open source DB client
   - [Bruno](https://www.usebruno.com) - Free, open source API client
   - [Lazy GIT](https://github.com/jesseduffield/lazygit) - great GUI for git\!
