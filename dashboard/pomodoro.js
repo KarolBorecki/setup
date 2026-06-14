@@ -67,16 +67,14 @@ function toggleTimer() {
   const btn = document.getElementById("timer-btn");
   if (running) {
     clearInterval(ticker);
-    // Capture exact remaining time from wall clock
     timeLeft = Math.max(0, Math.round((timerEndTime - Date.now()) / 1000));
     btn.textContent = "Resume";
     running = false;
   } else {
-    // Set end time relative to now + remaining seconds
     timerEndTime = Date.now() + timeLeft * 1000;
     ticker = setInterval(() => {
-      // Always derive remaining from wall clock — immune to tab throttling
       const remaining = Math.round((timerEndTime - Date.now()) / 1000);
+
       if (remaining <= 0) {
         timeLeft = 0;
         updateDisplay();
@@ -86,14 +84,26 @@ function toggleTimer() {
         sessionCount++;
         document.getElementById("session-count").textContent = sessionCount;
         btn.textContent = "Start";
+
+        const alarm = document.getElementById("alarm-sound");
+        if (alarm) {
+          alarm.play().catch((error) => {
+            console.log(
+              "Audio playback failed or was blocked by browser:",
+              error,
+            );
+          });
+        }
+
         alert(`${currentModeLabel} session complete!`);
+
         timeLeft = TOTAL;
         updateDisplay();
       } else {
         timeLeft = remaining;
         updateDisplay();
       }
-    }, 500); // Poll every 500ms — still accurate even when throttled
+    }, 500);
     btn.textContent = "Pause";
     running = true;
   }

@@ -1,7 +1,3 @@
--- =====================================================================
--- KROK 0: AUTOMATYCZNA INSTALACJA MENEDŻERA (LAZY.NVIM)
--- =====================================================================
--- Ten blok kodu sam pobierze menedżera z GitHuba, jeśli jeszcze go nie ma
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -17,67 +13,55 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- =====================================================================
--- KROK 1: MIEJSCE NA TWOJE WTYCZKI
--- =====================================================================
--- Tutaj mówimy menedżerowi, jakie wtyczki ma pobrać. Na start dodajemy Gruvbox Material.
+
 require("lazy").setup({
   {
     "sainnhe/gruvbox-material",
     lazy = false,    -- Ładuj od razu przy starcie
     priority = 1000, -- Bardzo wysoki priorytet dla motywu
     config = function()
-      -- Opcjonalna konfiguracja wyglądu Gruvboxa
       vim.g.gruvbox_material_background = "medium" -- Opcje: 'hard', 'medium', 'soft'
       vim.g.gruvbox_material_better_performance = 1
     end,
   },
-
-  -- W przyszłości możesz dopisywać kolejne wtyczki po przecinku, np:
-  -- { "nvim-lualine/lualine.nvim" },
+{
+"nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    lazy = false,
+    opts = {
+      ensure_installed = { "lua", "vim", "vimdoc", "query" },
+      highlight = { enable = true },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
 })
 
--- =====================================================================
--- KROK 2: USTAWIENIA PODSTAWOWE I KLAWISZ LIDERA
--- =====================================================================
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- =====================================================================
--- KROK 3: NUMERY LINII I WYGLĄD
--- =====================================================================
-vim.opt.termguicolors = true  -- Lepsze, bardziej nasycone kolory w terminalu
-vim.cmd("syntax on")          -- Upewnienie się, że podstawowa składnia jest włączona
+vim.opt.termguicolors = true
+vim.cmd("syntax on")
 
--- Numery linii (Zwykłe, kolejne numery)
-vim.opt.number = true          -- Pokazuje bezwzględny numer obecnej linii
-vim.opt.relativenumber = false -- WYŁĄCZONE relatywne numery linii
+vim.opt.number = true
+vim.opt.relativenumber = false
 
--- Aktywacja motywu Gruvbox Material
 vim.cmd("colorscheme gruvbox-material")
 
--- =====================================================================
--- KROK 4: NAJLEPSZE SKRÓTY KLAWISZOWE (Keymaps)
--- =====================================================================
 local map = vim.keymap.set
 
--- Szybkie zapisywanie i wychodzenie (Spacja + w, Spacja + q)
 map('n', '<leader>w', '<cmd>w<CR>', { desc = 'Zapisz plik' })
 map('n', '<leader>q', '<cmd>q<CR>', { desc = 'Wyjdź z Neovima' })
-
--- Czyszczenie podświetlenia wyszukiwania (Spacja + h)
 map('n', '<leader>h', '<cmd>nohlsearch<CR>', { desc = 'Wyczyść podświetlenie' })
 
--- Błyskawiczne poruszanie się między oknami (kombinacja Ctrl + h/j/k/l)
 map('n', '<C-h>', '<C-w>h', { desc = 'Przejdź do lewego okna' })
 map('n', '<C-j>', '<C-w>j', { desc = 'Przejdź do dolnego okna' })
 map('n', '<C-k>', '<C-w>k', { desc = 'Przejdź do górnego okna' })
 map('n', '<C-l>', '<C-w>l', { desc = 'Przejdź do prawego okna' })
 
--- Magia w trybie wizualnym (zaznaczania): Przesuwanie bloków kodu góra/dół
 map('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w dół' })
 map('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w górę' })
 
--- Utrzymanie kursora na środku podczas przewijania (Ctrl+d / Ctrl+u)
 map('n', '<C-d>', '<C-d>zz', { desc = 'Przewiń w dół i wyśrodkuj' })
 map('n', '<C-u>', '<C-u>zz', { desc = 'Przewiń w górę i wyśrodkuj' })
