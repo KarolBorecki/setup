@@ -65,3 +65,4 @@ map('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Przesuń zaznaczony tekst w górę' 
 
 map('n', '<C-d>', '<C-d>zz', { desc = 'Przewiń w dół i wyśrodkuj' })
 map('n', '<C-u>', '<C-u>zz', { desc = 'Przewiń w górę i wyśrodkuj' })
+vim.keymap.set({'n', 'i'}, '<C-x>', '<Esc>dd', {desc = 'Delete line with Ctrl+x'})
