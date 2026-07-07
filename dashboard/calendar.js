@@ -189,7 +189,7 @@ const calendars = [
   },
   {
     name: "Work",
-    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+    url: "https://outlook.office365.com/owa/calendar/e027c17fdf9a4506b3fceff526b4c4e6@Creotech.pl/3815e8adbff946d1a9ca63461a90713f1327477391790707610/calendar.ics",
     colorClass: "gold",
   },
 ];
