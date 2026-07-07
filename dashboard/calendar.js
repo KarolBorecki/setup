@@ -199,7 +199,8 @@ async function fetchAppleCalendars() {
   const fetchPromises = calendars.map(async (calendar) => {
     try {
       const proxyUrl =
-        "https://corsproxy.io/?" + encodeURIComponent(calendar.url);
+        "https://api.allorigins.win/raw?url=" +
+        encodeURIComponent(calendar.url);
       const response = await fetch(proxyUrl);
       if (!response.ok) throw new Error();
       const icsData = await response.text();

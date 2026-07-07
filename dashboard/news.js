@@ -12,9 +12,13 @@ function renderNews(listId, items) {
 
 async function fetchWorldNews() {
   try {
-    const r = await fetch(
-      "https://www.reddit.com/r/worldnews/top.json?limit=7&t=day",
-    );
+    const redditUrl =
+      "https://www.reddit.com/r/worldnews/top.json?limit=7&t=day";
+    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(redditUrl);
+
+    const r = await fetch(proxyUrl);
+    if (!r.ok) throw new Error();
+
     const d = await r.json();
     renderNews(
       "world-list",
