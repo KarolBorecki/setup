@@ -179,7 +179,7 @@ const calendars = [
   },
   {
     name: "Holidays",
-    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkCfwdbdu3LI7iiPjmFpKAdwbPJ8Su9o-lw-PNGenqJMIDAY_DkYX7wUZczyAbkK9G8",
+    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkBgDk8FzHsK9rtsUimARROObFZB-1-a3ty-9De_Sd7bzoTDUhJSBoAKoRP86MmB1JI",
     colorClass: "yellow",
   },
   {
