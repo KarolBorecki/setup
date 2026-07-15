@@ -178,6 +178,11 @@ const calendars = [
     colorClass: "orange",
   },
   {
+    name: "Olga",
+    url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkDpvY2kksuXrTokBa5Y9Ke3xWoCCh78XjZnWkjDx2-_5XQNXj8BjoeBCm-gY4G6BWc",
+    colorClass: "purple",
+  },
+  {
     name: "Holidays",
     url: "https://p168-caldav.icloud.com/published/2/MTAwMDIxNTEzMTIxMDAwMnULAWWeM4R3QYo4reFBVkBgDk8FzHsK9rtsUimARROObFZB-1-a3ty-9De_Sd7bzoTDUhJSBoAKoRP86MmB1JI",
     colorClass: "yellow",
